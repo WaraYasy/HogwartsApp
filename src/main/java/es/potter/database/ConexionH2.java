@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class ConexionH2 {
 
-    private Connection ConexionH2 = null;
+    private Connection conexionH2 = null;
 
     private static final Logger logger = LoggerFactory.getLogger(ConexionH2.class);
 
@@ -22,7 +22,7 @@ public class ConexionH2 {
             // Construir URL de conexión JDBC para H2
             String url = "jdbc:h2:" + path;
 
-            ConexionH2 = DriverManager.getConnection(url, user, pass);
+            conexionH2 = DriverManager.getConnection(url, user, pass);
             logger.info("Conexión H2 establecida en {}", path);
 
         } catch (SQLException e) {
@@ -32,13 +32,13 @@ public class ConexionH2 {
     }
 
     public Connection getConnection() {
-        return ConexionH2;
+        return conexionH2;
     }
 
     public void closeConnection() {
-        if (ConexionH2 != null) {
+        if (conexionH2 != null) {
             try {
-                ConexionH2.close();
+                conexionH2.close();
                 logger.info("Conexión H2 cerrada correctamente.");
             } catch (SQLException e) {
                 logger.error("Error al cerrar la conexión H2: {}", e.getMessage());
@@ -46,3 +46,4 @@ public class ConexionH2 {
         }
     }
 }
+
