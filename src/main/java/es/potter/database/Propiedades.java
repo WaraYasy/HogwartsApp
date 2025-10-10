@@ -1,6 +1,5 @@
 package es.potter.database;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -9,11 +8,14 @@ public class Propiedades {
     private static final Properties props = new Properties();
 
     static {
-        try (InputStream input = new FileInputStream("config.properties")) {
-            props.load(input);
+        try (InputStream input = Propiedades.class.getClassLoader().getResourceAsStream("configuration.properties")) {
+            if (input == null) {
+                System.err.println("No se pudo cargar el archivo configuration.properties desde el classpath.");
+            } else {
+                props.load(input);
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
-            // En un entorno real, mejor loggear o lanzar excepción
         }
     }
 
