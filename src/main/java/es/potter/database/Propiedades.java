@@ -20,3 +20,4 @@ public class Propiedades {
     public static String getValor(String clave) {
         return props.getProperty(clave);
     }
+}
