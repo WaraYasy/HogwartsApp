@@ -1,5 +1,6 @@
 package es.potter.database;
 
+import es.potter.util.Propiedades;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,15 +17,6 @@ import java.sql.SQLException;
  *   <li>Logging completo de eventos y errores de conexión</li>
  * </ul>
  *
- * <h2>Configuración requerida:</h2>
- * <p>El archivo {@code configuration.properties} debe contener las siguientes propiedades:</p>
- * <ul>
- *   <li>{@code host} - Dirección del servidor de base de datos</li>
- *   <li>{@code port} - Puerto de conexión</li>
- *   <li>{@code user} - Usuario</li>
- *   <li>{@code pass} - Contraseña</li>
- *   <li>{@code database} - Nombre de la base de datos a conectar</li>
- * </ul>
  *
  * @author Erlantz
  * @version 1.0
@@ -33,12 +25,12 @@ import java.sql.SQLException;
 public class ConexionOracle {
 
     /** Conexión activa a la base de datos MariaDB. */
-    private Connection conexionMDB = null;
+    private Connection conexionOracle = null;
 
     /**
      * Logger para registrar eventos, errores y mensajes de depuración durante el ciclo de vida de la aplicación.
      */
-    private static final Logger loger = LoggerFactory.getLogger(ConexionOracle.class);
+    private static final Logger loger = LoggerFactory.getLogger(es.potter.database.ConexionOracle.class);
 
     /**
      * Constructor que establece automáticamente la conexión a la base de datos.
@@ -51,16 +43,13 @@ public class ConexionOracle {
      */
     public ConexionOracle() throws SQLException{
         try {
-            String host = Propiedades.getValor("host");
-            String user = Propiedades.getValor("user");
-            String pass = Propiedades.getValor("pass");
-            String port = Propiedades.getValor("port");
-            String database = Propiedades.getValor("database");
-            // Construir URL de conexión JDBC
-            String url = "jdbc:oracle://" + host + ":" + port + "/" + database;
-            conexionMDB = DriverManager.getConnection(url, user, pass);
+            String url = Propiedades.getValor("db.oracle.url");
+            String user = Propiedades.getValor("db.oracle.user");
+            String pass = Propiedades.getValor("db.oracle.password");
+
+            conexionOracle = DriverManager.getConnection(url, user, pass);
             // Log de conexión exitosa
-            loger.info("Conexión establecida con {}", database);
+            loger.info("Conexión establecida con {}", url);
 
         } catch (SQLException e) {
             loger.error("Conexión a BD fallida: " + e.getMessage());
@@ -78,7 +67,7 @@ public class ConexionOracle {
      * @see java.sql.Connection
      */
     public Connection getConnection() {
-        return conexionMDB;
+        return conexionOracle;
     }
 
     /**
@@ -92,22 +81,22 @@ public class ConexionOracle {
      * @see java.sql.Connection#close()
      */
     public void closeConnection() {
-        if (conexionMDB != null) {
+        if (conexionOracle != null) {
             try {
-                conexionMDB.close();
+                conexionOracle.close();
                 loger.info("Conexión cerrada");
             } catch (SQLException e) {
                 loger.error("Error al cerrar conexión: " + e.getMessage());
             }
         }
     }
-
-    public static void main(String[] args) {
-        ConexionOracle conexion = null;
+    /*Main de Prueba*/
+        /*public static void main(String[] args) {
+        es.potter.database.ConexionOracle conexion = null;
 
         try {
             // Crear la conexión
-            conexion = new ConexionOracle();
+            conexion = new es.potter.database.ConexionOracle();
 
             // Verificar si la conexión fue exitosa
             if (conexion.getConnection() != null && !conexion.getConnection().isClosed()) {
@@ -124,6 +113,5 @@ public class ConexionOracle {
                 conexion.closeConnection();
             }
         }
-    }
-
+    }*/
 }
