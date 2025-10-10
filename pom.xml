@@ -78,7 +78,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>es.potter.App</mainClass>
+                            <mainClass>es.potter.database.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>
