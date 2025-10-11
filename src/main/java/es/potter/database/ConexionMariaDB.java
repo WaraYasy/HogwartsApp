@@ -12,7 +12,6 @@ import java.sql.SQLException;
  * Clase para gestionar la conexión a la base de datos MariaDB.
  * Proporciona métodos para establecer, obtener y cerrar conexiones a MariaDB
  * utilizando configuraciones definidas en archivos de propiedades.
- * MariaDB es un sistema de gestión de bases de datos relacionales de código abierto.
  * 
  * @author Wara Pacheco
  * @version 1.0
