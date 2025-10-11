@@ -8,8 +8,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Clase para gestionar la conexión a la base de datos SQLite.
+ * Proporciona métodos para establecer, obtener y cerrar conexiones a SQLite
+ * utilizando configuraciones definidas en archivos de propiedades.
+ * SQLite es una base de datos ligera, sin servidor y autocontenida,
+ * ideal para aplicaciones embebidas y desarrollo.
+ * 
+ * @author Wara Pacheco
+ * @version 1.0
+ * @since 2025-10-11
+ */
 public class ConexionSqlite {
-    /** Conexión activa a la base de datos MariaDB. */
+    /** Conexión activa a la base de datos SQLite. */
     private Connection conexionSqlite = null;
 
     /**
@@ -18,10 +29,11 @@ public class ConexionSqlite {
     private static final Logger loger = LoggerFactory.getLogger(ConexionSqlite.class);
 
     /**
-     * Constructor que establece automáticamente la conexión a la base de datos.
+     * Constructor que establece automáticamente la conexión a la base de datos SQLite.
      * <p>
      * Carga la configuración desde el archivo {@code configuration.properties},
-     * construye la URL de conexión JDBC y establece la conexión con MariaDB.
+     * construye la URL de conexión JDBC y establece la conexión con SQLite.
+     * SQLite no requiere servidor y almacena los datos en un archivo local.
      * </p>
      *
      * @throws SQLException si ocurre un error durante el establecimiento de la conexión
@@ -76,6 +88,14 @@ public class ConexionSqlite {
         }
     }
 
+    /**
+     * Método principal para probar la funcionalidad de la conexión a SQLite.
+     * Crea una instancia de la clase, verifica la conexión y la cierra correctamente.
+     * Utiliza manejo de excepciones y bloques try-catch-finally para garantizar
+     * la liberación de recursos.
+     * 
+     * @param args argumentos de línea de comandos (no utilizados)
+     */
     public static void main(String[] args) {
         ConexionSqlite conexion = null;
 
