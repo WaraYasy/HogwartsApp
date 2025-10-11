@@ -12,8 +12,6 @@ import java.sql.SQLException;
  * Clase para gestionar la conexión a la base de datos HSQLDB.
  * Proporciona métodos para establecer, obtener y cerrar conexiones a HSQLDB
  * utilizando configuraciones definidas en archivos de propiedades.
- * HSQLDB es una base de datos relacional ligera escrita en Java, ideal para 
- * aplicaciones embebidas y desarrollo.
  * 
  * @author Wara Pacheco
  * @version 1.0
@@ -33,7 +31,6 @@ public class ConexionHSQLDB {
      * <p>
      * Carga la configuración desde el archivo {@code configuration.properties},
      * construye la URL de conexión JDBC y establece la conexión con HSQLDB.
-     * HSQLDB puede funcionar en modo embebido, servidor o en memoria.
      * </p>
      *
      * @throws SQLException si ocurre un error durante el establecimiento de la conexión
@@ -57,7 +54,6 @@ public class ConexionHSQLDB {
      * Obtiene la conexión activa a la base de datos.
      * <p>
      * Retorna la instancia de {@link Connection} establecida en el constructor.
-     * Esta conexión puede ser utilizada para ejecutar consultas y transacciones.
      * </p>
      *
      * @return la conexión activa a la base de datos, o {@code null} si la conexión falló
