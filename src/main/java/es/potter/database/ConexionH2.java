@@ -12,7 +12,6 @@ import java.sql.SQLException;
  * Clase para gestionar la conexión a la base de datos H2.
  * Proporciona métodos para establecer, obtener y cerrar conexiones a H2
  * utilizando configuraciones definidas en archivos de propiedades.
- * H2 es una base de datos embebida ideal para desarrollo y testing.
  * 
  * @author Nizam
  * @version 1.0
@@ -29,8 +28,7 @@ public class ConexionH2 {
     /**
      * Constructor que establece automáticamente la conexión a la base de datos H2.
      * Lee la configuración de conexión desde el archivo de propiedades y establece
-     * la conexión utilizando DriverManager. H2 puede funcionar en modo embebido
-     * o servidor según la configuración.
+     * la conexión utilizando DriverManager.
      * 
      * @throws SQLException si ocurre un error al establecer la conexión
      */
