@@ -92,7 +92,7 @@ public class ConexionH2 {
 
             // Verificar si la conexión fue exitosa
             if (conexion.getConnection() != null && !conexion.getConnection().isClosed()) {
-                System.out.println("Conexión establecida correctamente con la base de datos Oracle.");
+                System.out.println("Conexión establecida correctamente con la base de datos H2.");
             } else {
                 System.err.println("No se ha podido establecer la conexión con la base de datos.");
             }
