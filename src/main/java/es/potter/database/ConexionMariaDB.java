@@ -8,6 +8,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Clase para gestionar la conexión a la base de datos MariaDB.
+ * Proporciona métodos para establecer, obtener y cerrar conexiones a MariaDB
+ * utilizando configuraciones definidas en archivos de propiedades.
+ * MariaDB es un sistema de gestión de bases de datos relacionales de código abierto.
+ * 
+ * @author Wara Pacheco
+ * @version 1.0
+ * @since 2025-10-11
+ */
 public class ConexionMariaDB {
 
     /** Conexión activa a la base de datos MariaDB. */
@@ -76,6 +86,14 @@ public class ConexionMariaDB {
         }
     }
 
+    /**
+     * Método principal para probar la funcionalidad de la conexión a MariaDB.
+     * Crea una instancia de la clase, verifica la conexión y la cierra correctamente.
+     * Utiliza manejo de excepciones y bloques try-catch-finally para garantizar
+     * la liberación de recursos.
+     * 
+     * @param args argumentos de línea de comandos (no utilizados)
+     */
     public static void main(String[] args) {
         ConexionMariaDB conexion = null;
 
