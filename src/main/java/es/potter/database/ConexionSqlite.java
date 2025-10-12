@@ -26,7 +26,7 @@ public class ConexionSqlite {
     /**
      * Logger para registrar eventos, errores y mensajes de depuración durante el ciclo de vida de la aplicación.
      */
-    private static final Logger loger = LoggerFactory.getLogger(ConexionSqlite.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConexionSqlite.class);
 
     /**
      * Constructor que establece automáticamente la conexión a la base de datos SQLite.
@@ -46,10 +46,10 @@ public class ConexionSqlite {
 
             conexionSqlite = DriverManager.getConnection(url, user, pass);
             // Log de conexión exitosa
-            loger.info("Conexión establecida con {}", url);
+            logger.info("Conexión establecida con {}", url);
 
         } catch (SQLException e) {
-            loger.error("Conexión a BD fallida: " + e.getMessage());
+            logger.error("Conexión a BD fallida: " + e.getMessage());
         }
     }
 
@@ -81,9 +81,9 @@ public class ConexionSqlite {
         if (conexionSqlite != null) {
             try {
                 conexionSqlite.close();
-                loger.info("Conexión cerrada");
+                logger.info("Conexión cerrada");
             } catch (SQLException e) {
-                loger.error("Error al cerrar conexión: " + e.getMessage());
+                logger.error("Error al cerrar conexión: " + e.getMessage());
             }
         }
     }

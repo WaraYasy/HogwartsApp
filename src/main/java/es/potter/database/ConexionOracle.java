@@ -30,7 +30,7 @@ public class ConexionOracle {
     /**
      * Logger para registrar eventos, errores y mensajes de depuración durante el ciclo de vida de la aplicación.
      */
-    private static final Logger loger = LoggerFactory.getLogger(es.potter.database.ConexionOracle.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConexionOracle.class);
 
     /**
      * Constructor que establece automáticamente la conexión a la base de datos.
@@ -49,10 +49,10 @@ public class ConexionOracle {
 
             conexionOracle = DriverManager.getConnection(url, user, pass);
             // Log de conexión exitosa
-            loger.info("Conexión establecida con {}", url);
+            logger.info("Conexión establecida con {}", url);
 
         } catch (SQLException e) {
-            loger.error("Conexión a BD fallida: " + e.getMessage());
+            logger.error("Conexión a BD fallida: " + e.getMessage());
         }
     }
 
@@ -84,9 +84,9 @@ public class ConexionOracle {
         if (conexionOracle != null) {
             try {
                 conexionOracle.close();
-                loger.info("Conexión cerrada");
+                logger.info("Conexión cerrada");
             } catch (SQLException e) {
-                loger.error("Error al cerrar conexión: " + e.getMessage());
+                logger.error("Error al cerrar conexión: " + e.getMessage());
             }
         }
     }
