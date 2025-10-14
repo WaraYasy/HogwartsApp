@@ -91,7 +91,7 @@ public class ConexionOracle {
         }
     }
     /*Main de Prueba*/
-        /*public static void main(String[] args) {
+        public static void main(String[] args) {
         es.potter.database.ConexionOracle conexion = null;
 
         try {
@@ -113,5 +113,5 @@ public class ConexionOracle {
                 conexion.closeConnection();
             }
         }
-    }*/
+    }
 }
