@@ -9,25 +9,36 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Factory para gestionar conexiones a diferentes bases de datos.
- * Proporciona un punto centralizado para la creación de conexiones.
+ * <b>Factory para gestionar conexiones JDBC a diferentes bases de datos.</b>
+ * <p>
+ * Proporciona un punto centralizado para la creación y cierre de conexiones JDBC.
+ * Utiliza la clase {@link Propiedades} para obtener los parámetros de conexión
+ * desde el archivo de configuración.
+ * <br>
  * Las excepciones deben ser capturadas en la capa superior (DAO/Repository).
+ * </p>
  *
  * @author Wara Pacheco
- * @version 2.5
+ * @version 2.6
  * @since 2025-10-12
  */
 public class ConexionFactory implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(ConexionFactory.class);
 
+    /**
+     * Instancia de la conexión JDBC activa.
+     */
     private Connection conexion;
 
     /**
      * Constructor que establece la conexión a la base de datos.
-     * Lanza SQLException si la conexión falla.
+     * <p>
+     * Obtiene los parámetros de conexión (URL, usuario, contraseña) desde el archivo de propiedades
+     * usando el prefijo correspondiente al tipo de base de datos.
+     * </p>
      *
-     * @param tipo el tipo de base de datos
+     * @param tipo el tipo de base de datos (enum {@link TipoBaseDatos})
      * @throws SQLException si ocurre un error al establecer la conexión
      */
     public ConexionFactory(TipoBaseDatos tipo) throws SQLException {
@@ -44,8 +55,13 @@ public class ConexionFactory implements AutoCloseable {
 
     /**
      * Obtiene la conexión activa a la base de datos.
+     * <p>
+     * Retorna la instancia de {@link Connection} establecida en el constructor.
+     * Esta conexión puede ser utilizada para ejecutar consultas y transacciones.
+     * </p>
      *
-     * @return la conexión
+     * @return la conexión activa a la base de datos, o {@code null} si la conexión falló
+     * @see java.sql.Connection
      */
     public Connection getConnection() {
         return conexion;
@@ -53,6 +69,13 @@ public class ConexionFactory implements AutoCloseable {
 
     /**
      * Cierra la conexión de forma segura.
+     * <p>
+     * Verifica que la conexión esté activa antes de cerrarla y registra el evento.
+     * Es importante llamar a este método cuando se termine de usar la conexión
+     * para liberar recursos del sistema.
+     * </p>
+     *
+     * @see java.sql.Connection#close()
      */
     @Override
     public void close() {
