@@ -15,6 +15,9 @@ public class Alumno {
     
     /** Nombre del alumno */
     private String nombre;
+
+    /** Apellidos del alumno */
+    private String apellidos;
     
     /** Curso actual del alumno (1-7) */
     private int curso;
@@ -32,6 +35,7 @@ public class Alumno {
     public Alumno() {
         this.id = null;
         this.nombre = null;
+        this.apellidos = null;
         this.curso = 0;
         this.casa = null;
         this.patronus = null;
@@ -45,11 +49,13 @@ public class Alumno {
      * @param casa la casa de Hogwarts del alumno
      * @param patronus el patronus del alumno
      */
-    public Alumno(String nombre, int curso, String casa, String patronus){
-         this.nombre=nombre;
-         this.curso=curso;
-         this.casa=casa;
-         this.patronus=patronus;
+    public Alumno(String id, String nombre, String apellidos, int curso, String casa, String patronus){
+        this.id = id;
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.curso = curso;
+        this.casa = casa;
+        this.patronus = patronus;
      }
 
     /**
@@ -111,6 +117,28 @@ public class Alumno {
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene los apellidos del alumno.
+     *
+     * @return los apellidos del alumno
+     */
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    /**
+     * Establece los apellidos del alumno.
+     *
+     * @param apellidos los apellidos del alumno
+     * @throws IllegalArgumentException si el campo apellidos es null o está vacío
+     */
+    public void setApellidos(String apellidos) {
+        // Validación del apellidos no nulo o vacío
+        if (apellidos == null || apellidos.trim().isEmpty()) {
+            throw new IllegalArgumentException("El apellido no puede estar vacío.");
+        }
+        this.apellidos = apellidos;
+    }
     /**
      * Obtiene el curso del alumno.
      * 
