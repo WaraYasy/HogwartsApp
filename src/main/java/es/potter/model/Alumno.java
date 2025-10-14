@@ -12,7 +12,7 @@ package es.potter.model;
 public class Alumno {
     /** Identificador único del alumno con formato de 3 letras + 5 dígitos . Ejemplo: GRY00001 */
     private String id;
-    
+
     /** Nombre del alumno */
     private String nombre;
 
@@ -45,12 +45,12 @@ public class Alumno {
      * Constructor que inicializa un alumno con los datos proporcionados.
      * 
      * @param nombre el nombre del alumno
+     * @param apellidos apellidos del alumno
      * @param curso el curso del alumno (1-7)
      * @param casa la casa de Hogwarts del alumno
      * @param patronus el patronus del alumno
      */
-    public Alumno(String id, String nombre, String apellidos, int curso, String casa, String patronus){
-        this.id = id;
+    public Alumno(String nombre, String apellidos, int curso, String casa, String patronus){
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.curso = curso;
