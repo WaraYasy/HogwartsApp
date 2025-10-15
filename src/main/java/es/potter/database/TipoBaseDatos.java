@@ -34,6 +34,7 @@ public enum TipoBaseDatos {
     /** Base de datos Apache Derby */
     APACHE_DERBY("db.derby");
 
+
     private final String prefijo;
 
     /**
@@ -54,5 +55,23 @@ public enum TipoBaseDatos {
      */
     public String getPrefijo() {
         return prefijo;
+    }
+
+    //Método que devuelve la base de datos según la casa
+    public static TipoBaseDatos obtenerTipoBaseDatosPorCasa(String casa) {
+        switch (casa.toLowerCase()) {
+            case "gryffindor":
+                return TipoBaseDatos.APACHE_DERBY;
+            case "slytherin":
+                return TipoBaseDatos.HSQLDB;
+            case "ravenclaw":
+                return TipoBaseDatos.ORACLE;
+            case "hufflepuff":
+                return TipoBaseDatos.H2;
+            case "central":
+                return TipoBaseDatos.SQLITE;
+            default:
+                return TipoBaseDatos.MARIADB; // Por defecto
+        }
     }
 }

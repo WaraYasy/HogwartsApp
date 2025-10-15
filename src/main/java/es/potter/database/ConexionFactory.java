@@ -10,98 +10,59 @@ import java.sql.SQLException;
 
 /**
  * Factory para gestionar conexiones a diferentes bases de datos.
- * Simplifica la creación de conexiones y proporciona un punto centralizado
- * para la configuración y manejo de todas las conexiones.
+ * Proporciona un punto centralizado para la creación de conexiones.
+ * Las excepciones deben ser capturadas en la capa superior (DAO/Repository).
  *
  * @author Wara Pacheco
- * @version 1.0
+ * @version 2.5
  * @since 2025-10-12
  */
-public class ConexionFactory {
+public class ConexionFactory implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(ConexionFactory.class);
 
+    private final Connection conexion;
+
     /**
-     * Crea una conexión a la base de datos especificada.
+     * Constructor que establece la conexión a la base de datos.
+     * Lanza SQLException si la conexión falla.
      *
      * @param tipo el tipo de base de datos
-     * @return la conexión establecida
      * @throws SQLException si ocurre un error al establecer la conexión
      */
-    public static Connection crearConexion(TipoBaseDatos tipo) throws SQLException {
-        try {
-            String url = Propiedades.getValor(tipo.getPrefijo() + ".url");
-            String user = Propiedades.getValor(tipo.getPrefijo() + ".user");
-            String password = Propiedades.getValor(tipo.getPrefijo() + ".password");
+    public ConexionFactory(TipoBaseDatos tipo) throws SQLException {
+        String url = Propiedades.getValor(tipo.getPrefijo() + ".url");
+        String user = Propiedades.getValor(tipo.getPrefijo() + ".user");
+        String password = Propiedades.getValor(tipo.getPrefijo() + ".password");
 
-            Connection conexion = DriverManager.getConnection(url, user, password);
-            logger.info("Conexión {} establecida en {}", tipo.name(), url);
-            return conexion;
+        conexion = DriverManager.getConnection(url, user, password);
+        //Comentar en caso de querer manejar transacciones
+        conexion.setAutoCommit(true);
 
-        } catch (SQLException e) {
-            logger.error("Error al conectar a {}: {}", tipo.name(), e.getMessage());
-            throw e;
-        }
+        logger.debug("Conexión {} establecida", tipo.name());
     }
 
     /**
-     * Cierra una conexión de forma segura.
+     * Obtiene la conexión activa a la base de datos.
      *
-     * @param conexion la conexión a cerrar
+     * @return la conexión
      */
-    public static void cerrarConexion(Connection conexion) {
+    public Connection getConnection() {
+        return conexion;
+    }
+
+    /**
+     * Cierra la conexión de forma segura.
+     */
+    @Override
+    public void close() {
         if (conexion != null) {
             try {
                 conexion.close();
-                logger.info("Conexión cerrada correctamente");
+                logger.debug("Conexión cerrada");
             } catch (SQLException e) {
                 logger.error("Error al cerrar la conexión: {}", e.getMessage());
             }
         }
     }
-
-    /**
-     * Verifica si una conexión está activa y abierta.
-     *
-     * @param conexion la conexión a verificar
-     * @return true si la conexión está abierta, false en caso contrario
-     */
-    public static boolean estaConexionActiva(Connection conexion) {
-        try {
-            return conexion != null && !conexion.isClosed();
-        } catch (SQLException e) {
-            logger.error("Error al verificar la conexión: {}", e.getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Método de prueba para verificar la funcionalidad de la factory.
-     *
-     * @param args argumentos de línea de comandos (no utilizados)
-     */
-     public static void main(String[] args) {
-        Connection conexion = null;
-
-        try {
-            conexion = ConexionFactory.crearConexion(TipoBaseDatos.APACHE_DERBY);
-            /*conexion = ConexionFactory.crearConexion(TipoBaseDatos.ORACLE);
-            conexion = ConexionFactory.crearConexion(TipoBaseDatos.H2);
-            conexion = ConexionFactory.crearConexion(TipoBaseDatos.HSQLDB);
-            conexion = ConexionFactory.crearConexion(TipoBaseDatos.MARIADB);
-            conexion = ConexionFactory.crearConexion(TipoBaseDatos.SQLITE);*/
-
-            if (ConexionFactory.estaConexionActiva(conexion)) {
-                System.out.println("Conexión establecida correctamente.");
-            } else {
-                System.err.println("No se pudo establecer la conexión.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error: " + e.getMessage());
-        } finally {
-            ConexionFactory.cerrarConexion(conexion);
-        }
-    }
-
 }
