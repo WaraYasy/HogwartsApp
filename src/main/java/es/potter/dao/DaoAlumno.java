@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * DaoAlumno gestiona el acceso a datos de alumnos en la base de datos.
@@ -23,6 +25,12 @@ import java.util.concurrent.CompletableFuture;
 public class DaoAlumno {
 
     private static final Logger logger = LoggerFactory.getLogger(DaoAlumno.class);
+
+    /**
+     * Contadores atómicos por casa para generar IDs únicos.
+     * Evita race conditions al generar IDs concurrentemente.
+     */
+    private static final ConcurrentHashMap<String, AtomicInteger> contadoresPorCasa = new ConcurrentHashMap<>();
 
     /*-------------------------------------------*/
     /*           MÉTODOS PÚBLICOS CRUD           */
@@ -176,10 +184,10 @@ public class DaoAlumno {
     }
 
     /**
-     * Genera un ID único para un alumno (GRY00001, SLY00001, etc).
-     * Sincronizado para evitar IDs duplicados.
+     * Genera un ID único para un alumno usando AtomicInteger (GRY00001, SLY00001, etc).
+     * Thread-safe sin necesidad de locks - usa contadores atómicos en memoria.
      */
-    private static synchronized CompletableFuture<String> generarIdAsync(Alumno alumno) {
+    private static CompletableFuture<String> generarIdAsync(Alumno alumno) {
         String casa = alumno.getCasa();
 
         // Validar casa
@@ -191,57 +199,64 @@ public class DaoAlumno {
 
         String prefijo = casa.substring(0, 3).toUpperCase();
 
-        return getUltimoIdAsync(casa)
-                .thenApply(ultimoId -> {
-                    int nuevoNumero = 1;
+        // Obtener o inicializar contador para esta casa
+        AtomicInteger contador = contadoresPorCasa.computeIfAbsent(casa, k -> {
+            // Primera vez para esta casa - obtener último ID de BD
+            logger.debug("Inicializando contador para casa: {}", casa);
+            return new AtomicInteger(obtenerUltimoNumero(casa));
+        });
 
-                    // Si existe un ID previo, incrementar
-                    if (ultimoId != null && ultimoId.startsWith(prefijo)) {
-                        try {
-                            nuevoNumero = Integer.parseInt(ultimoId.substring(3)) + 1;
-                        } catch (NumberFormatException e) {
-                            logger.warn("ID mal formado '{}', reiniciando en 1", ultimoId);
-                        }
-                    }
+        // Incrementar de forma atómica (thread-safe)
+        int nuevoNumero = contador.incrementAndGet();
+        String nuevoId = prefijo + String.format("%05d", nuevoNumero);
 
-                    String nuevoId = prefijo + String.format("%05d", nuevoNumero);
-                    logger.debug("ID generado: {}", nuevoId);
-                    return nuevoId;
-                });
+        logger.debug("ID generado: {} (contador: {})", nuevoId, nuevoNumero);
+        return CompletableFuture.completedFuture(nuevoId);
     }
 
     /**
-     * Obtiene el último ID generado para una casa específica.
+     * Obtiene el último número de ID usado para una casa desde la BD.
+     * Solo se llama una vez por casa al inicializar el contador.
      */
-    private static CompletableFuture<String> getUltimoIdAsync(String casa) {
-        // Validar casa
-        if (casa == null || casa.length() < 3) {
-            return CompletableFuture.failedFuture(
-                new IllegalArgumentException("Casa inválida: " + casa)
-            );
-        }
-
+    private static int obtenerUltimoNumero(String casa) {
         String prefijo = casa.substring(0, 3).toUpperCase();
         TipoBaseDatos baseCasa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(casa);
-        String sql = "SELECT id FROM alumnos WHERE id LIKE ? ORDER BY id DESC LIMIT 1";
 
-        return ConexionFactory.getConnectionAsync(baseCasa)
-                .thenApply(conexion -> {
-                    try (conexion; PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        // Derby usa FETCH FIRST, otros usan LIMIT
+        String sql;
+        if (baseCasa == TipoBaseDatos.APACHE_DERBY) {
+            sql = "SELECT id FROM alumnos WHERE id LIKE ? ORDER BY id DESC FETCH FIRST 1 ROWS ONLY";
+        } else {
+            sql = "SELECT id FROM alumnos WHERE id LIKE ? ORDER BY id DESC LIMIT 1";
+        }
 
-                        stmt.setString(1, prefijo + "%");
+        try {
+            // Llamada bloqueante para inicialización
+            return ConexionFactory.getConnectionAsync(baseCasa)
+                    .thenApply(conexion -> {
+                        try (conexion; PreparedStatement stmt = conexion.prepareStatement(sql)) {
+                            stmt.setString(1, prefijo + "%");
 
-                        try (ResultSet rs = stmt.executeQuery()) {
-                            if (rs.next()) {
-                                return rs.getString("id");
+                            try (ResultSet rs = stmt.executeQuery()) {
+                                if (rs.next()) {
+                                    String ultimoId = rs.getString("id");
+                                    int numero = Integer.parseInt(ultimoId.substring(3));
+                                    logger.debug("Último ID en BD para {}: {} (número: {})", casa, ultimoId, numero);
+                                    return numero;
+                                }
+                                logger.debug("No hay IDs previos para {}, comenzando en 0", casa);
+                                return 0; // No hay IDs previos
                             }
-                            return null; // No hay IDs previos
+                        } catch (SQLException e) {
+                            logger.error("Error obteniendo último número para {}: {}", casa, e.getMessage());
+                            return 0; // En caso de error, empezar en 0
                         }
-
-                    } catch (SQLException e) {
-                        logger.error("Error obteniendo último ID: {}", e.getMessage());
-                        throw new RuntimeException("Error al obtener último ID", e);
-                    }
-                });
+                    })
+                    .join(); // Esperar (bloqueante) - solo pasa una vez por casa
+        } catch (Exception e) {
+            logger.error("Error inicializando contador para {}: {}", casa, e.getMessage());
+            return 0;
+        }
     }
+
 }
