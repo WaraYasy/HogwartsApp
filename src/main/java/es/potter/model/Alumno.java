@@ -51,11 +51,11 @@ public class Alumno {
      * @param patronus el patronus del alumno
      */
     public Alumno(String nombre, String apellidos, int curso, String casa, String patronus){
-        this.nombre = nombre;
-        this.apellidos = apellidos;
-        this.curso = curso;
-        this.casa = casa;
-        this.patronus = patronus;
+        setNombre(nombre);
+        setApellidos(apellidos);
+        setCurso(curso);
+        setCasa(casa);
+        setPatronus(patronus);
      }
 
     /**
