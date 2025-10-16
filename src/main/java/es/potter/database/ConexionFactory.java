@@ -7,62 +7,79 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * Factory para gestionar conexiones a diferentes bases de datos.
- * Proporciona un punto centralizado para la creación de conexiones.
- * Las excepciones deben ser capturadas en la capa superior (DAO/Repository).
+ * Factory asíncrona para gestionar conexiones a diferentes bases de datos.
+ * Proporciona métodos para conectar y cerrar conexiones de forma no bloqueante.
  *
  * @author Wara Pacheco
- * @version 2.5
- * @since 2025-10-12
+ * @version 3.0
+ * @since 2025-10-16
  */
-public class ConexionFactory implements AutoCloseable {
-
+public class ConexionFactory {
     private static final Logger logger = LoggerFactory.getLogger(ConexionFactory.class);
 
-    private final Connection conexion;
-
     /**
-     * Constructor que establece la conexión a la base de datos.
-     * Lanza SQLException si la conexión falla.
+     * Obtiene una conexión asíncrona a la base de datos.
      *
      * @param tipo el tipo de base de datos
-     * @throws SQLException si ocurre un error al establecer la conexión
+     * @return CompletableFuture con la conexión
      */
-    public ConexionFactory(TipoBaseDatos tipo) throws SQLException {
-        String url = Propiedades.getValor(tipo.getPrefijo() + ".url");
-        String user = Propiedades.getValor(tipo.getPrefijo() + ".user");
-        String password = Propiedades.getValor(tipo.getPrefijo() + ".password");
-
-        conexion = DriverManager.getConnection(url, user, password);
-        //Comentar en caso de querer manejar transacciones
-        conexion.setAutoCommit(true);
-
-        logger.debug("Conexión {} establecida", tipo.name());
-    }
-
-    /**
-     * Obtiene la conexión activa a la base de datos.
-     *
-     * @return la conexión
-     */
-    public Connection getConnection() {
-        return conexion;
-    }
-
-    /**
-     * Cierra la conexión de forma segura.
-     */
-    @Override
-    public void close() {
-        if (conexion != null) {
+    public static CompletableFuture<Connection> getConnectionAsync(TipoBaseDatos tipo) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
-                conexion.close();
-                logger.debug("Conexión cerrada");
-            } catch (SQLException e) {
-                logger.error("Error al cerrar la conexión: {}", e.getMessage());
+                String url = Propiedades.getValor(tipo.getPrefijo() + ".url");
+                String user = Propiedades.getValor(tipo.getPrefijo() + ".user");
+                String password = Propiedades.getValor(tipo.getPrefijo() + ".password");
+                
+                logger.debug("Conectando a: {} ({})", tipo, url);
+                Connection conn = DriverManager.getConnection(url, user, password);
+                logger.info("Conexión establecida exitosamente: {}", tipo);
+                return conn;
+            } catch (Exception e) {
+                logger.error("Error al conectar con la base de datos {}", tipo, e);
+                throw new RuntimeException("Error al conectar con " + tipo, e);
             }
-        }
+        });
+    }
+
+    /**
+     * Cierra una conexión de forma asíncrona.
+     *
+     * @param connection la conexión a cerrar
+     * @return CompletableFuture que se completa cuando se cierra la conexión
+     */
+    public static CompletableFuture<Void> closeConnectionAsync(Connection connection) {
+        return CompletableFuture.runAsync(() -> {
+            if (connection != null) {
+                try {
+                    if (!connection.isClosed()) {
+                        connection.close();
+                        logger.debug("Conexión cerrada correctamente");
+                    }
+                } catch (SQLException e) {
+                    logger.error("Error al cerrar la conexión", e);
+                    throw new RuntimeException("Error al cerrar conexión", e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Prueba la conexión de forma asíncrona.
+     *
+     * @param tipo el tipo de base de datos
+     * @return CompletableFuture con true si la conexión es exitosa
+     */
+    public static CompletableFuture<Boolean> testConnectionAsync(TipoBaseDatos tipo) {
+        return getConnectionAsync(tipo)
+                .thenCompose(conn -> 
+                    closeConnectionAsync(conn).thenApply(v -> true)
+                )
+                .exceptionally(ex -> {
+                    logger.error("Test de conexión falló para {}", tipo, ex);
+                    return false;
+                });
     }
 }
