@@ -8,155 +8,240 @@ import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * DaoAlumno gestiona el acceso a datos de alumnos en la base de datos.
+ * Todos los métodos son asíncronos usando CompletableFuture.
+ *
+ * @author WaraYasy
+ * @version 3.0
+ */
 public class DaoAlumno {
 
     private static final Logger logger = LoggerFactory.getLogger(DaoAlumno.class);
 
+    /*-------------------------------------------*/
+    /*           MÉTODOS PÚBLICOS CRUD           */
+    /*-------------------------------------------*/
+
+    /**
+     * Carga todos los alumnos de una base de datos.
+     */
     public static CompletableFuture<ObservableList<Alumno>> cargarAlumnos(TipoBaseDatos tipoBaseDatos) {
-        String consulta = "SELECT id, nombre, apellidos, curso, casa, patronus FROM alumnos";
-        return ConexionFactory.getConnectionAsync(tipoBaseDatos).thenApply(conexion -> {
-            ObservableList<Alumno> listaAlumnos = FXCollections.observableArrayList();
-            try (conexion;PreparedStatement stmt = conexion.prepareStatement(consulta);
-                 ResultSet rs = stmt.executeQuery()) {
+        String sql = "SELECT id, nombre, apellidos, curso, casa, patronus FROM alumnos";
 
-                while (rs.next()) {
-                    Alumno nuevo = new Alumno();
-                    nuevo.setId(rs.getString("id"));
-                    nuevo.setNombre(rs.getString("nombre"));
-                    nuevo.setApellidos(rs.getString("apellidos"));
-                    nuevo.setCurso(rs.getInt("curso"));
-                    nuevo.setCasa(rs.getString("casa"));
-                    nuevo.setPatronus(rs.getString("patronus"));
-                    listaAlumnos.add(nuevo);
-                }
-            } catch (SQLException e) {
-               throw new RuntimeException (e);
-            }
-            return listaAlumnos;
-        });
+        return ConexionFactory.getConnectionAsync(tipoBaseDatos)
+                .thenApply(conexion -> {
+                    ObservableList<Alumno> lista = FXCollections.observableArrayList();
+
+                    try (conexion;
+                         PreparedStatement stmt = conexion.prepareStatement(sql);
+                         ResultSet rs = stmt.executeQuery()) {
+
+                        while (rs.next()) {
+                            lista.add(mapearAlumno(rs));
+                        }
+
+                        logger.info("Cargados {} alumnos desde {}", lista.size(), tipoBaseDatos);
+                        return lista;
+
+                    } catch (SQLException e) {
+                        logger.error("Error cargando alumnos: {}", e.getMessage());
+                        throw new RuntimeException("Error al cargar alumnos", e);
+                    }
+                });
     }
 
-    public static CompletableFuture<Boolean> nuevoAlumno(Alumno alumno) throws SQLException {
-        TipoBaseDatos tipoConexion = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
-        String consulta = "INSERT INTO alumnos (id, nombre, apellidos, curso, casa, patronus) VALUES (?,?,?,?,?,?)";
+    /**
+     * Inserta un nuevo alumno. El ID se genera automáticamente.
+     */
+    public static CompletableFuture<Boolean> nuevoAlumno(Alumno alumno, TipoBaseDatos base) {
+        String sql = "INSERT INTO alumnos (id, nombre, apellidos, curso, casa, patronus) VALUES (?,?,?,?,?,?)";
 
-        return ConexionFactory.getConnectionAsync(tipoConexion).thenApply(conexion -> {
-            try (conexion;PreparedStatement pstmt = conexion.prepareStatement(consulta)){
-                try{
-                    alumno.setId(generarId(alumno));
-                } catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException(e);
-                }
+        return generarIdAsync(alumno)
+                .thenCompose(idGenerado -> {
+                    alumno.setId(idGenerado);
 
-                pstmt.setString(1, alumno.getId());
-                pstmt.setString(2, alumno.getNombre());
-                pstmt.setString(3, alumno.getApellidos());
-                pstmt.setInt(4, alumno.getCurso());
-                pstmt.setString(5, alumno.getCasa());
-                pstmt.setString(6, alumno.getPatronus());
+                    return ConexionFactory.getConnectionAsync(base)
+                            .thenApply(conexion -> {
+                                try (conexion; PreparedStatement stmt = conexion.prepareStatement(sql)) {
 
-                int rows = pstmt.executeUpdate();
-                return rows > 0;
-            } catch (SQLException e) {
-                logger.error("No he podido crearlo {}",e.getMessage());
-                return false;
-            }
-        });
+                                    stmt.setString(1, alumno.getId());
+                                    stmt.setString(2, alumno.getNombre());
+                                    stmt.setString(3, alumno.getApellidos());
+                                    stmt.setInt(4, alumno.getCurso());
+                                    stmt.setString(5, alumno.getCasa());
+                                    stmt.setString(6, alumno.getPatronus());
+
+                                    int filas = stmt.executeUpdate();
+
+                                    if (filas > 0) {
+                                        logger.info("Alumno {} creado en {}", alumno.getId(), base);
+                                        return true;
+                                    } else {
+                                        logger.warn("No se insertó ningún alumno en {}", base);
+                                        return false;
+                                    }
+
+                                } catch (SQLException e) {
+                                    logger.error("Error insertando alumno: {}", e.getMessage());
+                                    throw new RuntimeException("Error al crear alumno", e);
+                                }
+                            });
+                });
     }
 
-    public static CompletableFuture<Boolean> eliminarAlumno(Alumno alumnoEliminar) {
-        TipoBaseDatos tipoConexion = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumnoEliminar.getCasa());
-        String consulta = "DELETE FROM alumnos WHERE id = ?";
+    /**
+     * Elimina un alumno por su ID.
+     */
+    public static CompletableFuture<Boolean> eliminarAlumno(Alumno alumno, TipoBaseDatos base) {
+        String sql = "DELETE FROM alumnos WHERE id = ?";
 
-        return ConexionFactory.getConnectionAsync(tipoConexion).thenApply(conexion -> {
-            try (conexion;PreparedStatement pstmt = conexion.prepareStatement(consulta)){
-                pstmt.setString(1, alumnoEliminar.getId());
-                int rows = pstmt.executeUpdate();
-                return rows > 0;
-            } catch (SQLException e) {
-                logger.error("No he podido eliminar a alumno {}",e.getMessage());
-                return false;
-            }
-        });
+        return ConexionFactory.getConnectionAsync(base)
+                .thenApply(conexion -> {
+                    try (conexion; PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+                        stmt.setString(1, alumno.getId());
+                        int filas = stmt.executeUpdate();
+
+                        if (filas > 0) {
+                            logger.info("Alumno {} eliminado de {}", alumno.getId(), base);
+                            return true;
+                        } else {
+                            logger.warn("Alumno {} no encontrado en {}", alumno.getId(), base);
+                            return false;
+                        }
+
+                    } catch (SQLException e) {
+                        logger.error("Error eliminando alumno: {}", e.getMessage());
+                        throw new RuntimeException("Error al eliminar alumno", e);
+                    }
+                });
     }
 
-    public static CompletableFuture<Boolean> modificarAlumno(String id, Alumno nuevo) {
-        TipoBaseDatos tipoConexion = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(nuevo.getCasa());
-        String consulta = "UPDATE alumnos SET nombre = ?, apellidos = ?, curso = ?, casa = ?, patronus = ? WHERE id = ?";
+    /**
+     * Modifica los datos de un alumno existente.
+     */
+    public static CompletableFuture<Boolean> modificarAlumno(String id, Alumno nuevo, TipoBaseDatos base) {
+        String sql = "UPDATE alumnos SET nombre = ?, apellidos = ?, curso = ?, casa = ?, patronus = ? WHERE id = ?";
 
-        return ConexionFactory.getConnectionAsync(tipoConexion).thenApply(conexion -> {
-            try (conexion;PreparedStatement pstmt = conexion.prepareStatement(consulta)){
-                pstmt.setString(1, nuevo.getNombre());
-                pstmt.setString(2, nuevo.getApellidos());
-                pstmt.setInt(3, nuevo.getCurso());
-                pstmt.setString(4, nuevo.getCasa());
-                pstmt.setString(5, nuevo.getPatronus());
-                pstmt.setString(6, id);
-                int rows = pstmt.executeUpdate();
-                return rows > 0;
-            } catch (SQLException e) {
-                logger.error("No he podido modificar alumno {}", e.getMessage());
-                return false;
-            }
-        });
+        return ConexionFactory.getConnectionAsync(base)
+                .thenApply(conexion -> {
+                    try (conexion; PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+                        stmt.setString(1, nuevo.getNombre());
+                        stmt.setString(2, nuevo.getApellidos());
+                        stmt.setInt(3, nuevo.getCurso());
+                        stmt.setString(4, nuevo.getCasa());
+                        stmt.setString(5, nuevo.getPatronus());
+                        stmt.setString(6, id);
+
+                        int filas = stmt.executeUpdate();
+
+                        if (filas > 0) {
+                            logger.info("Alumno {} modificado en {}", id, base);
+                            return true;
+                        } else {
+                            logger.warn("Alumno {} no encontrado en {}", id, base);
+                            return false;
+                        }
+
+                    } catch (SQLException e) {
+                        logger.error("Error modificando alumno: {}", e.getMessage());
+                        throw new RuntimeException("Error al modificar alumno", e);
+                    }
+                });
     }
 
+    /*-------------------------------------------*/
+    /*            MÉTODOS PRIVADOS               */
+    /*-------------------------------------------*/
 
+    /**
+     * Convierte una fila de ResultSet a un objeto Alumno.
+     */
+    private static Alumno mapearAlumno(ResultSet rs) throws SQLException {
+        Alumno alumno = new Alumno();
+        alumno.setId(rs.getString("id"));
+        alumno.setNombre(rs.getString("nombre"));
+        alumno.setApellidos(rs.getString("apellidos"));
+        alumno.setCurso(rs.getInt("curso"));
+        alumno.setCasa(rs.getString("casa"));
+        alumno.setPatronus(rs.getString("patronus"));
+        return alumno;
+    }
 
-
-    private static String generarId(Alumno alumno) {
+    /**
+     * Genera un ID único para un alumno (GRY00001, SLY00001, etc).
+     * Sincronizado para evitar IDs duplicados.
+     */
+    private static synchronized CompletableFuture<String> generarIdAsync(Alumno alumno) {
         String casa = alumno.getCasa();
+
+        // Validar casa
+        if (casa == null || casa.length() < 3) {
+            return CompletableFuture.failedFuture(
+                new IllegalArgumentException("Casa inválida: " + casa)
+            );
+        }
+
         String prefijo = casa.substring(0, 3).toUpperCase();
-        String ultimoId;
-        try {
-            ultimoId = getUltimoId(casa);
-        } catch (RuntimeException e) {
-            logger.error("Error generando el ID para la casa {}: {}", casa, e.getMessage());
-            throw new IllegalArgumentException("No se pudo generar el ID para la casa: " + casa, e);
-        }
-        int nuevoNumero = 1;
-        if (ultimoId != null && ultimoId.startsWith(prefijo)) {
-            String numStr = ultimoId.substring(3);
-            try {
-                nuevoNumero = Integer.parseInt(numStr) + 1;
-            } catch (NumberFormatException e) {
-                nuevoNumero = 1;
-            }
-        }
-        String sufijo = String.format("%05d", nuevoNumero);
-        return prefijo + sufijo;
+
+        return getUltimoIdAsync(casa)
+                .thenApply(ultimoId -> {
+                    int nuevoNumero = 1;
+
+                    // Si existe un ID previo, incrementar
+                    if (ultimoId != null && ultimoId.startsWith(prefijo)) {
+                        try {
+                            nuevoNumero = Integer.parseInt(ultimoId.substring(3)) + 1;
+                        } catch (NumberFormatException e) {
+                            logger.warn("ID mal formado '{}', reiniciando en 1", ultimoId);
+                        }
+                    }
+
+                    String nuevoId = prefijo + String.format("%05d", nuevoNumero);
+                    logger.debug("ID generado: {}", nuevoId);
+                    return nuevoId;
+                });
     }
 
-    private static String getUltimoId(String casa) {
-        String prefijo = casa.substring(0, 3).toUpperCase();
-        String ultimoId = null;
-        TipoBaseDatos tipoConexion = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(casa);
-        String consulta = "SELECT id FROM alumnos WHERE id LIKE ? ORDER BY id DESC LIMIT 1";
-
-        try (Connection conexion = ConexionFactory.getConnectionAsync(tipoConexion).join();
-             PreparedStatement pstmt = conexion.prepareStatement(consulta)) {
-            pstmt.setString(1, prefijo + "%");
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    ultimoId = rs.getString("id");
-                }
-            }
-        } catch (java.util.concurrent.CompletionException ce) {
-            logger.error("Error de concurrencia obteniendo el último ID de la casa {}: {}", casa, ce.getMessage());
-            throw new RuntimeException("Error de concurrencia al obtener el último ID de la casa: " + casa, ce);
-        } catch (SQLException se) {
-            logger.error("Error SQL obteniendo el último ID de la casa {}: {}", casa, se.getMessage());
-            throw new RuntimeException("Error SQL al obtener el último ID de la casa: " + casa, se);
-        } catch (Exception e) {
-            logger.error("Error inesperado obteniendo el último ID de la casa {}: {}", casa, e.getMessage());
-            throw new RuntimeException("Error inesperado al obtener el último ID de la casa: " + casa, e);
+    /**
+     * Obtiene el último ID generado para una casa específica.
+     */
+    private static CompletableFuture<String> getUltimoIdAsync(String casa) {
+        // Validar casa
+        if (casa == null || casa.length() < 3) {
+            return CompletableFuture.failedFuture(
+                new IllegalArgumentException("Casa inválida: " + casa)
+            );
         }
-        return ultimoId;
+
+        String prefijo = casa.substring(0, 3).toUpperCase();
+        TipoBaseDatos baseCasa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(casa);
+        String sql = "SELECT id FROM alumnos WHERE id LIKE ? ORDER BY id DESC LIMIT 1";
+
+        return ConexionFactory.getConnectionAsync(baseCasa)
+                .thenApply(conexion -> {
+                    try (conexion; PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+                        stmt.setString(1, prefijo + "%");
+
+                        try (ResultSet rs = stmt.executeQuery()) {
+                            if (rs.next()) {
+                                return rs.getString("id");
+                            }
+                            return null; // No hay IDs previos
+                        }
+
+                    } catch (SQLException e) {
+                        logger.error("Error obteniendo último ID: {}", e.getMessage());
+                        throw new RuntimeException("Error al obtener último ID", e);
+                    }
+                });
     }
 }
