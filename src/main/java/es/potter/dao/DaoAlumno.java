@@ -65,11 +65,44 @@ public class DaoAlumno {
     }
 
     /**
-     * Inserta un nuevo alumno. El ID se genera automáticamente.
+     * Inserta un nuevo alumno. El ID se genera automáticamente si no existe.
      */
     public static CompletableFuture<Boolean> nuevoAlumno(Alumno alumno, TipoBaseDatos base) {
         String sql = "INSERT INTO alumnos (id, nombre, apellidos, curso, casa, patronus) VALUES (?,?,?,?,?,?)";
 
+        // Si el alumno YA tiene ID (sincronización), usarlo directamente
+        if (alumno.getId() != null && !alumno.getId().isEmpty()) {
+            logger.debug("Usando ID existente para sincronización: {}", alumno.getId());
+
+            return ConexionFactory.getConnectionAsync(base)
+                    .thenApply(conexion -> {
+                        try (conexion; PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+                            stmt.setString(1, alumno.getId());
+                            stmt.setString(2, alumno.getNombre());
+                            stmt.setString(3, alumno.getApellidos());
+                            stmt.setInt(4, alumno.getCurso());
+                            stmt.setString(5, alumno.getCasa());
+                            stmt.setString(6, alumno.getPatronus());
+
+                            int filas = stmt.executeUpdate();
+
+                            if (filas > 0) {
+                                logger.info("Alumno {} creado en {}", alumno.getId(), base);
+                                return true;
+                            } else {
+                                logger.warn("No se insertó ningún alumno en {}", base);
+                                return false;
+                            }
+
+                        } catch (SQLException e) {
+                            logger.error("Error insertando alumno: {}", e.getMessage());
+                            throw new RuntimeException("Error al crear alumno", e);
+                        }
+                    });
+        }
+
+        // Si NO tiene ID, generar uno nuevo (primera inserción)
         return generarIdAsync(alumno)
                 .thenCompose(idGenerado -> {
                     alumno.setId(idGenerado);
