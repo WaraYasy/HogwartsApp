@@ -68,6 +68,9 @@ public class Controlador {
     private TableColumn<Alumno, String> colNombre;
 
     @FXML
+    private TableColumn<Alumno, String> colApellidos;
+
+    @FXML
     private TableColumn<Alumno, Integer> colCurso;
 
     @FXML
@@ -84,6 +87,7 @@ public class Controlador {
         // Configurar las columnas de datos con PropertyValueFactory
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
         colCurso.setCellValueFactory(new PropertyValueFactory<>("curso"));
         colCasa.setCellValueFactory(new PropertyValueFactory<>("casa"));
         colPatronus.setCellValueFactory(new PropertyValueFactory<>("patronus"));
@@ -126,13 +130,13 @@ public class Controlador {
         });
 
         // Datos de prueba (puedes eliminar esto después)
-        Alumno alumno1 = new Alumno("Harry", 5, "Gryffindor", "Ciervo");
+        Alumno alumno1 = new Alumno("Harry", "Potter", 5, "Gryffindor", "Ciervo");
         alumno1.setId("GRY00001");
 
-        Alumno alumno2 = new Alumno("Draco", 5, "Slytherin", "Ninguno");
+        Alumno alumno2 = new Alumno("Draco", "Malfoy", 5, "Slytherin", "Ninguno");
         alumno2.setId("SLY00001");
 
-        Alumno alumno3 = new Alumno("Luna", 4, "Ravenclaw", "Liebre");
+        Alumno alumno3 = new Alumno("Luna", "Lovegood", 4, "Ravenclaw", "Liebre");
         alumno3.setId("RAV00001");
 
         tablaAlumnos.getItems().addAll(alumno1, alumno2, alumno3);

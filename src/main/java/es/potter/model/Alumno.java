@@ -12,10 +12,13 @@ package es.potter.model;
 public class Alumno {
     /** Identificador único del alumno con formato de 3 letras + 5 dígitos . Ejemplo: GRY00001 */
     private String id;
-    
+
     /** Nombre del alumno */
     private String nombre;
-    
+
+    /** Apellidos del alumno */
+    private String apellidos;
+
     /** Curso actual del alumno (1-7) */
     private int curso;
     
@@ -32,6 +35,7 @@ public class Alumno {
     public Alumno() {
         this.id = null;
         this.nombre = null;
+        this.apellidos = null;
         this.curso = 0;
         this.casa = null;
         this.patronus = null;
@@ -39,17 +43,19 @@ public class Alumno {
 
     /**
      * Constructor que inicializa un alumno con los datos proporcionados.
-     * 
+     *
      * @param nombre el nombre del alumno
+     * @param apellidos los apellidos del alumno
      * @param curso el curso del alumno (1-7)
      * @param casa la casa de Hogwarts del alumno
      * @param patronus el patronus del alumno
      */
-    public Alumno(String nombre, int curso, String casa, String patronus){
-         this.nombre=nombre;
-         this.curso=curso;
-         this.casa=casa;
-         this.patronus=patronus;
+    public Alumno(String nombre, String apellidos, int curso, String casa, String patronus){
+         this.nombre = nombre;
+         this.apellidos = apellidos;
+         this.curso = curso;
+         this.casa = casa;
+         this.patronus = patronus;
      }
 
     /**
@@ -99,7 +105,7 @@ public class Alumno {
 
     /**
      * Establece el nombre del alumno.
-     * 
+     *
      * @param nombre el nombre del alumno
      * @throws IllegalArgumentException si el nombre es null o está vacío
      */
@@ -112,8 +118,31 @@ public class Alumno {
     }
 
     /**
+     * Obtiene los apellidos del alumno.
+     *
+     * @return los apellidos del alumno
+     */
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    /**
+     * Establece los apellidos del alumno.
+     *
+     * @param apellidos los apellidos del alumno
+     * @throws IllegalArgumentException si los apellidos son null o están vacíos
+     */
+    public void setApellidos(String apellidos) {
+        // Validación de apellidos no nulos o vacíos
+        if (apellidos == null || apellidos.trim().isEmpty()) {
+            throw new IllegalArgumentException("Los apellidos no pueden estar vacíos.");
+        }
+        this.apellidos = apellidos;
+    }
+
+    /**
      * Obtiene el curso del alumno.
-     * 
+     *
      * @return el curso del alumno (1-7)
      */
     public int getCurso() {
