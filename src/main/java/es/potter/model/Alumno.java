@@ -69,9 +69,9 @@ public class Alumno {
 
     /**
      * Establece el ID del alumno. Solo se puede establecer una vez.
-     * El ID debe seguir el formato de 3 letras mayúsculas + 5 dígitos.
-     * 
-     * @param id el ID del alumno con formato XXX##### (ej: GRY00001)
+     * El ID debe seguir el formato de 3 letras mayúsculas + guión + 8 caracteres hexadecimales.
+     *
+     * @param id el ID del alumno con formato XXX-xxxxxxxx (ej: GRY-a4f3b2c1)
      * @throws IllegalStateException si el ID ya está establecido
      * @throws IllegalArgumentException si el ID es null, vacío o no sigue el formato correcto
      */
@@ -86,9 +86,10 @@ public class Alumno {
             throw new IllegalArgumentException("El ID no puede ser nulo o vacío.");
         }
 
-        // Validación del formato: 3 letras mayúsculas seguidas de 5 dígitos
-        if (!id.matches("^[A-Z]{3}\\d{5}$")) {
-            throw new IllegalArgumentException("El ID debe tener el formato: TRESletras + 5dígitos.");
+        // Validación del formato: 3 letras mayúsculas + guión + 8 caracteres hexadecimales
+        // Ejemplo válido: GRY-a4f3b2c1
+        if (!id.matches("^[A-Za-z]{3}-[a-f0-9]{8}$")) {
+            throw new IllegalArgumentException("El ID debe tener el formato: XXX-xxxxxxxx (ej: GRY-a4f3b2c1)");
         }
 
         this.id = id;
