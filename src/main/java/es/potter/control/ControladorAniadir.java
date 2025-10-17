@@ -3,9 +3,10 @@ package es.potter.control;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class ControladorModal {
+public class ControladorAniadir {
 
     @FXML
     private Button btnCancelar;
@@ -14,13 +15,13 @@ public class ControladorModal {
     private Button btnGuardar;
 
     @FXML
+    private ComboBox<?> cmbxCasa;
+
+    @FXML
+    private ComboBox<?> cmbxCurso;
+
+    @FXML
     private TextField txtApellido;
-
-    @FXML
-    private TextField txtCasa;
-
-    @FXML
-    private TextField txtCurso;
 
     @FXML
     private TextField txtNombre;
