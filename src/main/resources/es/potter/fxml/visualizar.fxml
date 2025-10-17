@@ -84,6 +84,7 @@
                   <TableColumn fx:id="checkBox" minWidth="3.0" prefWidth="32.0" />
                   <TableColumn fx:id="colId" minWidth="0.0" prefWidth="39.0" text="ID" />
                   <TableColumn fx:id="colNombre" prefWidth="172.0" text="Nombre" />
+                  <TableColumn fx:id="colApellidos" prefWidth="130.0" text="Apellidos" />
                   <TableColumn fx:id="colCurso" prefWidth="61.0" text="Curso" />
                   <TableColumn fx:id="colCasa" prefWidth="83.0" text="Casa" />
                   <TableColumn fx:id="colPatronus" minWidth="0.0" prefWidth="86.0" text="Patronus" />
@@ -108,7 +109,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField GridPane.rowIndex="1" />
+                  <TextField fx:id="txtBusqueda" onAction="#actionBusqueda" GridPane.rowIndex="1" />
                   <Button fx:id="btnEliminar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEliminar" text="Eliminar" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <GridPane.margin>
                         <Insets left="10.0" />
@@ -136,7 +137,7 @@
                         <Font size="11.0" />
                      </font>
                      <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
+                        <Tooltip text="Recargar tabla" />
                      </tooltip>
                      <GridPane.margin>
                         <Insets left="5.0" />
@@ -148,7 +149,7 @@
                         <Font size="11.0" />
                      </font>
                      <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
+                        <Tooltip text="Archivo" />
                      </tooltip>
                   </Button>
                   <Button fx:id="btnAyuda" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionAyuda" prefHeight="5.0" prefWidth="50.0" text="Ayuda" GridPane.columnIndex="4">
@@ -156,7 +157,7 @@
                         <Font size="11.0" />
                      </font>
                      <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
+                        <Tooltip text="Ayuda" />
                      </tooltip>
                   </Button>
                   <Button fx:id="btnCerrar" alignment="CENTER" mnemonicParsing="false" onAction="#actionCerrar" prefHeight="5.0" prefWidth="50.0" text="Cerrar" textAlignment="CENTER" GridPane.columnIndex="5">
@@ -164,7 +165,7 @@
                         <Font size="11.0" />
                      </font>
                      <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
+                        <Tooltip text="Cerrar ventana" />
                      </tooltip>
                   </Button>
                   <Button fx:id="btnEditar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEditar" prefHeight="5.0" prefWidth="50.0" text="Editar" GridPane.columnIndex="4" GridPane.rowIndex="1">
@@ -172,7 +173,7 @@
                         <Font size="11.0" />
                      </font>
                      <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
+                        <Tooltip text="Editar alumno(s)" />
                      </tooltip>
                   </Button>
                </children>
