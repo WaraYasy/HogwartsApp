@@ -3,11 +3,7 @@ package es.potter.control;
 import es.potter.model.Alumno;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
@@ -18,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Controlador {
-
+    @FXML
+    private TextField idBusqueda;
     // Mapa para almacenar el estado de los checkboxes de cada alumno
     private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
 
@@ -236,5 +233,7 @@ public class Controlador {
 
         return seleccionados;
     }
-
+    @FXML
+    public void actionBusqueda(ActionEvent actionEvent) {
+    }
 }
