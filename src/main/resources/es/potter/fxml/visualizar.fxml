@@ -3,6 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -12,11 +15,10 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.potter.control.Controlador">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="769.0" prefWidth="1440.0" styleClass="root" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.potter.control.Controlador">
    <left>
-      <GridPane prefHeight="381.0" prefWidth="106.0" BorderPane.alignment="CENTER">
+      <GridPane prefHeight="769.0" prefWidth="287.0" styleClass="side-panel" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -29,65 +31,47 @@
             <RowConstraints minHeight="30.0" percentHeight="60.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="btnHogwarts" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionHogwarts" text="HOGWARTS" GridPane.hgrow="ALWAYS">
-               <font>
-                  <Font name="Calibri" size="12.0" />
-               </font>
+            <Button fx:id="btnHogwarts" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionHogwarts" styleClass="house-button" text="Hogwarts" GridPane.hgrow="ALWAYS">
                <tooltip>
                   <Tooltip text="Base de datos central" />
                </tooltip>
             </Button>
-            <Button fx:id="btnSlytherin" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionSlytherin" text="SLYTHERIN" GridPane.rowIndex="1">
-               <font>
-                  <Font name="Calibri" size="12.0" />
-               </font>
-               <tooltip>
-                  <Tooltip text="Base de datos de Slytherin" />
-               </tooltip>
-            </Button>
-            <Button fx:id="btnGryffindor" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionGryffindor" text="GRYFFINDOR" GridPane.rowIndex="2">
-               <font>
-                  <Font name="Calibri" size="12.0" />
-               </font>
+            <Button fx:id="btnGryffindor" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionGryffindor" styleClass="house-button" text="Gryffindor" GridPane.rowIndex="1">
                <tooltip>
                   <Tooltip text="Base de datos Gryffindor" />
                </tooltip>
             </Button>
-            <Button fx:id="btnHufflepuff" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionHufflepuff" text="HUFFLEPUFF" GridPane.rowIndex="3">
-               <font>
-                  <Font name="Calibri" size="12.0" />
-               </font>
+            <Button fx:id="btnSlytherin" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionSlytherin" styleClass="house-button" text="Slytherin" GridPane.rowIndex="2">
                <tooltip>
-                  <Tooltip text="Base de datos Hufflepuff" />
+                  <Tooltip text="Base de datos de Slytherin" />
                </tooltip>
             </Button>
-            <Button fx:id="btnRavenclaw" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionRavenclaw" text="RAVENCLAW" GridPane.rowIndex="4">
-               <font>
-                  <Font name="Calibri" size="12.0" />
-               </font>
+            <Button fx:id="btnRavenclaw" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionRavenclaw" styleClass="house-button" text="Ravenclaw" GridPane.rowIndex="3">
                <tooltip>
                   <Tooltip text="Base de datos de Ravenclaw" />
                </tooltip>
             </Button>
+            <Button fx:id="btnHufflepuff" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionHufflepuff" styleClass="house-button" text="Hufflepuff" GridPane.rowIndex="4">
+               <tooltip>
+                  <Tooltip text="Base de datos Hufflepuff" />
+               </tooltip>
+            </Button>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="5" />
          </children>
-         <opaqueInsets>
-            <Insets left="10.0" />
-         </opaqueInsets>
       </GridPane>
    </left>
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <center>
-            <TableView fx:id="tablaAlumnos" onMouseClicked="#clickElementoTabla" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="tablaAlumnos" onMouseClicked="#clickElementoTabla" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="BOTTOM_LEFT">
               <columns>
-                  <TableColumn fx:id="checkBox" minWidth="3.0" prefWidth="32.0" />
-                  <TableColumn fx:id="colId" minWidth="0.0" prefWidth="39.0" text="ID" />
-                  <TableColumn fx:id="colNombre" prefWidth="75.0" text="Nombre" />
-                  <TableColumn fx:id="colApellidos" prefWidth="90.0" text="Apellidos" />
-                  <TableColumn fx:id="colCurso" prefWidth="50.0" text="Curso" />
-                  <TableColumn fx:id="colCasa" prefWidth="75.0" text="Casa" />
-                  <TableColumn fx:id="colPatronus" minWidth="0.0" prefWidth="80.0" text="Patronus" />
+                  <TableColumn fx:id="checkBox" prefWidth="10.0" />
+                  <TableColumn fx:id="colId" prefWidth="10.0" text="ID" />
+                  <TableColumn fx:id="colNombre" prefWidth="15.0" text="Nombre" />
+                  <TableColumn fx:id="colApellidos" prefWidth="20.0" text="Apellidos" />
+                  <TableColumn fx:id="colCurso" prefWidth="75.0" text="Curso" />
+                  <TableColumn fx:id="colCasa" prefWidth="150.0" text="Casa" />
+                  <TableColumn fx:id="colPatronus" prefWidth="150.0" text="Patronus" />
               </columns>
                <opaqueInsets>
                   <Insets top="10.0" />
@@ -99,83 +83,63 @@
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
                   <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
-                <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="200.0" />
+                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="200.0" />
+                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="200.0" />
+                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="200.0" />
               </columnConstraints>
               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField GridPane.rowIndex="1" />
-                  <Button fx:id="btnEliminar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEliminar" text="Eliminar" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <TextField promptText="Búsqueda" styleClass="search-field" GridPane.rowIndex="1" />
+                  <Button fx:id="btnEliminar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEliminar" styleClass="action-button" text="Eliminar" GridPane.columnIndex="5" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin>
-                     <font>
-                        <Font size="11.0" />
-                     </font>
                      <tooltip>
                         <Tooltip text="Eliminar alumno(s)" />
                      </tooltip>
                   </Button>
-                  <Button fx:id="btnNuevo" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionNuevo" prefHeight="5.0" prefWidth="50.0" text="Nuevo" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                  <Button fx:id="btnNuevo" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionNuevo" styleClass="action-button" text="Nuevo" GridPane.columnIndex="3" GridPane.rowIndex="2">
                      <GridPane.margin>
-                        <Insets left="10.0" /> 
+                        <Insets left="10.0" />
                      </GridPane.margin>
-                     <font>
-                        <Font size="11.0" />
-                     </font>
                      <tooltip>
                         <Tooltip text="Crear un nuevo alumno" />
                      </tooltip>
                   </Button>
-                  <Button fx:id="btnRecargar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionRecargar" prefHeight="5.0" prefWidth="50.0" text="Recargar" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
+                  <Button fx:id="btnRecargar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionRecargar" styleClass="action-button" text="Recargar" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
+                        <Tooltip text="Recargar lista de alumnos" />
                      </tooltip>
                      <GridPane.margin>
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </Button>
-                  <Label text="HogwartsApp" />
-                  <Button fx:id="btnArchivo" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionArchivo" prefHeight="5.0" prefWidth="50.0" text="Archivo" GridPane.columnIndex="3">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
+                  <Label styleClass="app-title" text="HogwartsApp" />
+                  <Button fx:id="btnEditar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEditar" styleClass="action-button" text="Editar" GridPane.columnIndex="4" GridPane.rowIndex="2">
                      <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
+                        <Tooltip text="Editar alumno seleccionado" />
                      </tooltip>
                   </Button>
-                  <Button fx:id="btnAyuda" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionAyuda" prefHeight="5.0" prefWidth="50.0" text="Ayuda" GridPane.columnIndex="4">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                     <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="btnCerrar" alignment="CENTER" mnemonicParsing="false" onAction="#actionCerrar" prefHeight="5.0" prefWidth="50.0" text="Cerrar" textAlignment="CENTER" GridPane.columnIndex="5">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                     <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="btnEditar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEditar" prefHeight="5.0" prefWidth="50.0" text="Editar" GridPane.columnIndex="4" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                     <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
-                     </tooltip>
-                  </Button>
+                  <MenuBar prefHeight="30.0" prefWidth="652.0" styleClass="menu-bar" GridPane.columnIndex="3" GridPane.columnSpan="3">
+                    <menus>
+                      <Menu mnemonicParsing="false" text="Archivo">
+                        <items>
+                          <MenuItem fx:id="btnArchivo" mnemonicParsing="false" onAction="#actionArchivo" text="Archivo" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Ayuda">
+                        <items>
+                          <MenuItem fx:id="btnAyuda" mnemonicParsing="false" onAction="#actionAyuda" text="Ayuda" />
+                        </items>
+                      </Menu>
+                      <Menu fx:id="btnCerrar" mnemonicParsing="false" onAction="#actionCerrar" text="Cerrar conexión" />
+                    </menus>
+                  </MenuBar>
                </children>
                <padding>
                   <Insets bottom="10.0" />

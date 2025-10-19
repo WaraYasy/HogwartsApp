@@ -33,6 +33,13 @@
             <version>6.0.0</version>
         </dependency>
 
+        <!-- FontAwesomeFX para iconos -->
+        <dependency>
+            <groupId>de.jensd</groupId>
+            <artifactId>fontawesomefx-fontawesome</artifactId>
+            <version>4.7.0-9.1.2</version>
+        </dependency>
+
         <!-- SLF4J API -->
         <dependency>
             <groupId>org.slf4j</groupId>

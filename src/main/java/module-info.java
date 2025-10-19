@@ -4,6 +4,7 @@ module es.potter {
     requires java.sql;
 //    requires org.mariadb.jdbc;
     requires org.slf4j;
+    requires de.jensd.fx.glyphs.fontawesome;
 
     opens es.potter to javafx.fxml, javafx.base;
     opens es.potter.control to javafx.fxml, javafx.base;

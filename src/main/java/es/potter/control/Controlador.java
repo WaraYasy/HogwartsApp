@@ -1,10 +1,13 @@
 package es.potter.control;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import es.potter.model.Alumno;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -23,13 +26,13 @@ public class Controlador {
     private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
 
     @FXML
-    private Button btnArchivo;
+    private MenuItem btnArchivo;
 
     @FXML
-    private Button btnAyuda;
+    private MenuItem btnAyuda;
 
     @FXML
-    private Button btnCerrar;
+    private MenuItem btnCerrar;
 
     @FXML
     private Button btnEditar;
@@ -84,6 +87,27 @@ public class Controlador {
 
     @FXML
     public void initialize() {
+        // Configurar iconos para los botones de acción
+        configurarIconos();
+
+        // Configurar la política de redimensionado para que las columnas ocupen el ancho completo
+        tablaAlumnos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // Configurar anchos de columnas para que se adapten bien
+        // Columnas pequeñas con ancho fijo
+        checkBox.setMaxWidth(50);
+        checkBox.setMinWidth(50);
+        colId.setMaxWidth(80);
+        colId.setMinWidth(60);
+        colCurso.setMaxWidth(80);
+        colCurso.setMinWidth(70);
+
+        // Columnas que deben expandirse - sin restricciones de maxWidth
+        colNombre.setMinWidth(100);
+        colApellidos.setMinWidth(120);
+        colCasa.setMinWidth(100);
+        colPatronus.setMinWidth(100);
+
         // Configurar las columnas de datos con PropertyValueFactory
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -222,6 +246,31 @@ public class Controlador {
     @FXML
     void clickElementoTabla(MouseEvent event) {
 
+    }
+
+    /**
+     * Configura los iconos de FontAwesome para los botones
+     */
+    private void configurarIconos() {
+        // Icono de recargar (refresh/sync)
+        FontAwesomeIconView iconRecargar = new FontAwesomeIconView(FontAwesomeIcon.REFRESH);
+        iconRecargar.setSize("16");
+        btnRecargar.setGraphic(iconRecargar);
+
+        // Icono de nuevo (plus)
+        FontAwesomeIconView iconNuevo = new FontAwesomeIconView(FontAwesomeIcon.PLUS);
+        iconNuevo.setSize("16");
+        btnNuevo.setGraphic(iconNuevo);
+
+        // Icono de editar (edit/pencil)
+        FontAwesomeIconView iconEditar = new FontAwesomeIconView(FontAwesomeIcon.EDIT);
+        iconEditar.setSize("16");
+        btnEditar.setGraphic(iconEditar);
+
+        // Icono de eliminar (trash)
+        FontAwesomeIconView iconEliminar = new FontAwesomeIconView(FontAwesomeIcon.TRASH);
+        iconEliminar.setSize("16");
+        btnEliminar.setGraphic(iconEliminar);
     }
 
     /**
