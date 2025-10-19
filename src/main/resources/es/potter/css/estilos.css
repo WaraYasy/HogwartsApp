@@ -169,16 +169,85 @@
 }
 
 /* ============================================
-   TABLA - TableView
+   TABLA
    ============================================ */
+
+/* Fondo general de la tabla */
+.table-view {
+    -fx-background-color: -fx-color-fondo;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+/* Encabezados de columnas - fondo y estilo */
+.table-view .column-header-background {
+    -fx-background-color: -fx-color-destacado;
+}
+
+.table-view .column-header {
+    -fx-background-color: -fx-color-destacado;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
 /* Alinear los encabezados de las columnas a la izquierda */
 .table-view .column-header-background .label {
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 0 0 0 8px;
+    -fx-text-fill: -fx-color-encabezados;
+    -fx-font-weight: 600;
 }
 
-/* Opcional: Alinear también el contenido de las celdas a la izquierda */
+/* Esquinas redondeadas superior izquierda */
+.table-view .column-header-background .filler {
+    -fx-background-color: -fx-color-destacado;
+}
+
+/* Filas de la tabla */
+.table-row-cell {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: transparent;
+    -fx-text-fill: -fx-color-texto;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: derive(-fx-color-fondo, 2%);
+}
+
+/* Hover en filas */
+.table-row-cell:hover {
+    -fx-background-color: -fx-color-destacado;
+}
+
+/* Fila seleccionada */
+.table-row-cell:selected {
+    -fx-background-color: derive(-fx-color-destacado, 10%);
+    -fx-text-fill: -fx-color-encabezados;
+}
+
+/* Celdas de la tabla */
 .table-view .table-cell {
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 0 0 0 8px;
+    -fx-text-fill: -fx-color-texto;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: -fx-color-encabezados;
+}
+
+/* Quitar bordes y barras de desplazamiento predeterminadas */
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:horizontal {
+    -fx-background-color: -fx-color-fondo;
+}
+
+.table-view .virtual-flow .scroll-bar .thumb {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+}
+
+.table-view .virtual-flow .scroll-bar .thumb:hover {
+    -fx-background-color: derive(-fx-color-destacado, 20%);
 }
