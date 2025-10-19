@@ -56,6 +56,60 @@
     -fx-font-weight: 700;
 }
 
+.menu-bar {
+    -fx-background-color: -fx-color-fondo;
+}
+
+.menu-bar .menu .label {
+    -fx-text-fill: -fx-color-texto;
+}
+
+.menu-item {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.menu-item .label {
+    -fx-text-fill: -fx-color-texto;
+}
+
+.context-menu {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.menu-bar .menu:hover,
+.menu-bar .menu:showing {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+}
+
+.menu-item:hover .label,
+.menu-item:focused .label {
+    -fx-background-color: -fx-color-destacado;
+}
+
+/* Estilo especial para el botón "Cerrar conexión" */
+.btn-cerrar {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+    -fx-text-fill: -fx-color-texto-acento;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+}
+
+.btn-cerrar:hover {
+    -fx-background-color: derive(-fx-color-destacado, -10%);
+}
+
+.btn-cerrar:pressed {
+    -fx-background-color: derive(-fx-color-destacado, -20%);
+}
+
 /* ============================================
    BARRA DE HERRAMIENTAS - Búsqueda y botones
    ============================================ */
@@ -64,6 +118,54 @@
     -fx-padding: 15px;
     -fx-border-radius: 4px 4px 0 0;
     -fx-background-radius: 4px 4px 0 0;
+}
+
+.search-field {
+    -fx-background-color: -fx-color-fondo;
+    -fx-text-fill: -fx-color-texto;
+    -fx-prompt-text-fill: -fx-color-texto;
+    -fx-border-color: -fx-color-texto;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 15px;
+    -fx-font-family: "Manrope";
+}
+
+.search-field:focused {
+    -fx-border-color: -fx-color-encabezados;
+}
+
+.action-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-texto-acento;
+    -fx-font-size: 14px;
+    -fx-font-family: "Manrope";
+    -fx-cursor: hand;
+    -fx-padding: 2px 8px;
+}
+
+/* Color de los iconos en los botones de acción */
+.action-button .glyph-icon {
+    -fx-fill: -fx-color-texto-acento;
+}
+
+.action-button:hover {
+    -fx-text-fill: -fx-color-encabezados;
+}
+
+.action-button:hover .glyph-icon {
+    -fx-fill: -fx-color-encabezados;
+}
+
+.action-button:disabled {
+    -fx-text-fill: -fx-color-destacado;
+    -fx-opacity: 0.5;
+}
+
+.action-button:disabled .glyph-icon {
+    -fx-fill: -fx-color-destacado;
 }
 
 /* ============================================

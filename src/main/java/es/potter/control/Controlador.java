@@ -32,7 +32,7 @@ public class Controlador {
     private MenuItem btnAyuda;
 
     @FXML
-    private MenuItem btnCerrar;
+    private Button btnCerrar;
 
     @FXML
     private Button btnEditar;

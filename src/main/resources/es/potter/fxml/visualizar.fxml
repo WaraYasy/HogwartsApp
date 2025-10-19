@@ -14,13 +14,16 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="769.0" prefWidth="1440.0" styleClass="root" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.potter.control.Controlador">
    <left>
-      <GridPane prefHeight="769.0" prefWidth="287.0" styleClass="side-panel" BorderPane.alignment="CENTER">
+      <GridPane prefHeight="622.0" prefWidth="286.0" styleClass="side-panel" BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -61,9 +64,62 @@
       </GridPane>
    </left>
    <center>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <BorderPane>
+         <top>
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
+                     <children>
+                        <Label styleClass="app-title" text="HogwartsApp" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <MenuBar prefHeight="30.0" styleClass="menu-bar">
+                          <menus>
+                            <Menu mnemonicParsing="false" styleClass="menu-item" text="Archivo">
+                              <items>
+                                <MenuItem fx:id="btnArchivo" mnemonicParsing="false" onAction="#actionArchivo" text="Archivo" />
+                              </items>
+                            </Menu>
+                            <Menu mnemonicParsing="false" styleClass="menu-item" text="Ayuda">
+                              <items>
+                                <MenuItem fx:id="btnAyuda" mnemonicParsing="false" onAction="#actionAyuda" text="Ayuda" />
+                              </items>
+                            </Menu>
+                          </menus>
+                        </MenuBar>
+                        <Button fx:id="btnCerrar" mnemonicParsing="false" onAction="#actionCerrar" styleClass="btn-cerrar" text="Cerrar conexión" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="31.0" prefWidth="1104.0" spacing="10.0" styleClass="toolbar">
+                     <children>
+                        <TextField promptText="Búsqueda" styleClass="search-field" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnRecargar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionRecargar" styleClass="action-button" text="Recargar">
+                           <tooltip>
+                              <Tooltip text="Recargar lista de alumnos" />
+                           </tooltip>
+                        </Button>
+                        <Button fx:id="btnEliminar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEliminar" styleClass="action-button" text="Eliminar">
+                           <tooltip>
+                              <Tooltip text="Eliminar alumno(s)" />
+                           </tooltip>
+                        </Button>
+                        <Button fx:id="btnNuevo" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionNuevo" styleClass="action-button" text="Nuevo">
+                           <tooltip>
+                              <Tooltip text="Crear un nuevo alumno" />
+                           </tooltip>
+                        </Button>
+                        <Button fx:id="btnEditar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEditar" styleClass="action-button" text="Editar">
+                           <tooltip>
+                              <Tooltip text="Editar alumno seleccionado" />
+                           </tooltip>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </top>
          <center>
-            <TableView fx:id="tablaAlumnos" onMouseClicked="#clickElementoTabla" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="BOTTOM_LEFT">
+            <TableView fx:id="tablaAlumnos" onMouseClicked="#clickElementoTabla" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
               <columns>
                   <TableColumn fx:id="checkBox" prefWidth="10.0" />
                   <TableColumn fx:id="colId" prefWidth="10.0" text="ID" />
@@ -78,80 +134,6 @@
                </opaqueInsets>
             </TableView>
          </center>
-         <top>
-            <GridPane BorderPane.alignment="CENTER">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
-                  <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
-                <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="200.0" />
-                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="200.0" />
-                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="200.0" />
-                  <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="200.0" />
-              </columnConstraints>
-              <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <TextField promptText="Búsqueda" styleClass="search-field" GridPane.rowIndex="1" />
-                  <Button fx:id="btnEliminar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEliminar" styleClass="action-button" text="Eliminar" GridPane.columnIndex="5" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                     <GridPane.margin>
-                        <Insets left="10.0" />
-                     </GridPane.margin>
-                     <tooltip>
-                        <Tooltip text="Eliminar alumno(s)" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="btnNuevo" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionNuevo" styleClass="action-button" text="Nuevo" GridPane.columnIndex="3" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets left="10.0" />
-                     </GridPane.margin>
-                     <tooltip>
-                        <Tooltip text="Crear un nuevo alumno" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="btnRecargar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionRecargar" styleClass="action-button" text="Recargar" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                     <tooltip>
-                        <Tooltip text="Recargar lista de alumnos" />
-                     </tooltip>
-                     <GridPane.margin>
-                        <Insets left="5.0" />
-                     </GridPane.margin>
-                  </Button>
-                  <Label styleClass="app-title" text="HogwartsApp" />
-                  <Button fx:id="btnEditar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEditar" styleClass="action-button" text="Editar" GridPane.columnIndex="4" GridPane.rowIndex="2">
-                     <tooltip>
-                        <Tooltip text="Editar alumno seleccionado" />
-                     </tooltip>
-                  </Button>
-                  <MenuBar prefHeight="30.0" prefWidth="652.0" styleClass="menu-bar" GridPane.columnIndex="3" GridPane.columnSpan="3">
-                    <menus>
-                      <Menu mnemonicParsing="false" text="Archivo">
-                        <items>
-                          <MenuItem fx:id="btnArchivo" mnemonicParsing="false" onAction="#actionArchivo" text="Archivo" />
-                        </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Ayuda">
-                        <items>
-                          <MenuItem fx:id="btnAyuda" mnemonicParsing="false" onAction="#actionAyuda" text="Ayuda" />
-                        </items>
-                      </Menu>
-                      <Menu fx:id="btnCerrar" mnemonicParsing="false" onAction="#actionCerrar" text="Cerrar conexión" />
-                    </menus>
-                  </MenuBar>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" />
-               </padding>
-            </GridPane>
-         </top>
-         <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </BorderPane.margin>
       </BorderPane>
    </center>
-   <opaqueInsets>
-      <Insets left="10.0" />
-   </opaqueInsets>
 </BorderPane>
