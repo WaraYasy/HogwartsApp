@@ -199,7 +199,28 @@ public class Controlador {
 
     @FXML void actionArchivo(ActionEvent e) {}
     @FXML void actionAyuda(ActionEvent e) {}
-    @FXML void actionEditar(ActionEvent e) {}
+    @FXML void actionEditar(ActionEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/potter/fxml/modalEditar.fxml"));
+            Parent root = loader.load();
+
+            Stage modalStage = new Stage();
+            modalStage.setTitle("Editar alumno");
+            modalStage.setScene(new Scene(root));
+            modalStage.initModality(Modality.APPLICATION_MODAL); // Bloquea la ventana principal
+            modalStage.setResizable(false);
+
+            modalStage.showAndWait();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setTitle("Error al abrir ventana");
+            error.setHeaderText("No se pudo cargar 'modalEditar.fxml'");
+            error.setContentText("Verifica que el archivo está en 'resources/es/potter/fxml/'");
+            error.showAndWait();
+        }
+    }
     @FXML void actionGryffindor(ActionEvent e) {}
     @FXML void actionHogwarts(ActionEvent e) {}
     @FXML void actionHufflepuff(ActionEvent e) {}
