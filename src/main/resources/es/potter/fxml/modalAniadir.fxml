@@ -5,40 +5,44 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CONTROLLER_NAME">
+<AnchorPane fx:controller="CONTROLLER_NAME"
+            prefHeight="400.0" prefWidth="600.0"
+            xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/25">
     <children>
-        <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0">
+        <BorderPane prefHeight="400.0" prefWidth="600.0">
             <center>
-                <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+                <GridPane BorderPane.alignment="CENTER">
                     <columnConstraints>
                         <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="75.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="118.0" minHeight="10.0" percentHeight="20.0" prefHeight="71.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="212.0" minHeight="10.0" percentHeight="20.0" prefHeight="175.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="212.0" minHeight="10.0" percentHeight="20.0" prefHeight="175.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="212.0" minHeight="10.0" percentHeight="20.0" prefHeight="175.0" vgrow="SOMETIMES" />
+                        <RowConstraints percentHeight="20.0" />
+                        <RowConstraints percentHeight="20.0" />
+                        <RowConstraints percentHeight="20.0" />
+                        <RowConstraints percentHeight="20.0" />
+                        <RowConstraints percentHeight="20.0" />
                     </rowConstraints>
                     <children>
-                        <Label text="Nombre">
+                        <Label text="%nombre">
                             <GridPane.margin>
                                 <Insets left="20.0" />
                             </GridPane.margin>
                         </Label>
-                        <Label text="Apellido" GridPane.rowIndex="1">
+                        <Label text="%apellido" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets left="20.0" />
                             </GridPane.margin>
                         </Label>
-                        <Label text="Curso" GridPane.rowIndex="2">
+                        <Label text="%curso" GridPane.rowIndex="2">
                             <GridPane.margin>
                                 <Insets left="20.0" />
                             </GridPane.margin>
@@ -53,23 +57,23 @@
                                 <Insets right="30.0" />
                             </GridPane.margin>
                         </TextField>
-                        <Label layoutX="102.0" layoutY="177.0" text="Casa" GridPane.rowIndex="3">
+                        <Label text="%casa" GridPane.rowIndex="3">
                             <GridPane.margin>
                                 <Insets left="20.0" />
                             </GridPane.margin>
                         </Label>
-                        <Label layoutX="105.0" layoutY="247.0" text="Patronus" GridPane.rowIndex="4">
+                        <Label text="%patronus" GridPane.rowIndex="4">
                             <GridPane.margin>
                                 <Insets left="20.0" />
                             </GridPane.margin>
                         </Label>
-                        <TextField fx:id="txtPatronus" layoutX="204.0" layoutY="243.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <TextField fx:id="txtPatronus" GridPane.columnIndex="1" GridPane.rowIndex="4">
                             <GridPane.margin>
                                 <Insets right="30.0" />
                             </GridPane.margin>
                         </TextField>
-                        <ComboBox fx:id="cmbxCasa" prefWidth="150.0" promptText="Selecciona una casa" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <ComboBox fx:id="cmbxCurso" layoutX="146.0" layoutY="215.0" prefWidth="150.0" promptText="Selecciona un curso" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="cmbxCasa" prefWidth="150.0" promptText="%promptCasa" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="cmbxCurso" prefWidth="150.0" promptText="%promptCurso" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                     </children>
                     <padding>
                         <Insets left="20.0" />
@@ -82,44 +86,41 @@
             <bottom>
                 <GridPane BorderPane.alignment="CENTER">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+                        <ColumnConstraints percentWidth="60.0" />
+                        <ColumnConstraints percentWidth="20.0" />
+                        <ColumnConstraints percentWidth="20.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints prefHeight="30.0" />
                     </rowConstraints>
                     <children>
-                        <Button fx:id="btnCancelar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionCancelar" text="Cancelar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                            <opaqueInsets>
-                                <Insets left="10.0" />
-                            </opaqueInsets>
+                        <Button fx:id="btnCancelar" text="%cancelar" onAction="#actionCancelar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                            <tooltip>
+                                <Tooltip text="%tooltipCancelar" />
+                            </tooltip>
                             <GridPane.margin>
                                 <Insets left="10.0" right="10.0" />
                             </GridPane.margin>
                         </Button>
-                        <Button fx:id="btnCancelar1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionCancelar" text="Guardar" GridPane.columnIndex="2">
-                            <opaqueInsets>
-                                <Insets left="10.0" />
-                            </opaqueInsets>
+                        <Button fx:id="btnCancelar1" text="%guardar" onAction="#actionCancelar" GridPane.columnIndex="2">
+                            <tooltip>
+                                <Tooltip text="%tooltipGuardar" />
+                            </tooltip>
                             <GridPane.margin>
                                 <Insets left="10.0" right="10.0" />
                             </GridPane.margin>
                         </Button>
                     </children>
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
-                    <BorderPane.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                    </BorderPane.margin>
                     <padding>
                         <Insets top="10.0" />
                     </padding>
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                    </BorderPane.margin>
                 </GridPane>
             </bottom>
             <top>
-                <Label text="Nuevo alumno" BorderPane.alignment="CENTER_LEFT">
+                <Label text="%nuevoAlumno" BorderPane.alignment="CENTER_LEFT">
                     <BorderPane.margin>
                         <Insets left="20.0" top="20.0" />
                     </BorderPane.margin>

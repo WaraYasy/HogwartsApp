@@ -5,13 +5,14 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CONTROLLER_NAME">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CONTROLLER_NAME">
     <children>
         <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0">
             <center>
@@ -90,6 +91,9 @@
                             <GridPane.margin>
                                 <Insets left="10.0" right="10.0" />
                             </GridPane.margin>
+                     <tooltip>
+                        <Tooltip text="Cancelar cambios" />
+                     </tooltip>
                         </Button>
                         <Button fx:id="btnCancelar1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionCancelar" text="Guardar" GridPane.columnIndex="2">
                             <opaqueInsets>
@@ -98,6 +102,9 @@
                             <GridPane.margin>
                                 <Insets left="10.0" right="10.0" />
                             </GridPane.margin>
+                     <tooltip>
+                        <Tooltip text="Guardar cambios" />
+                     </tooltip>
                         </Button>
                     </children>
                     <opaqueInsets>
@@ -111,13 +118,6 @@
                     </padding>
                 </GridPane>
             </bottom>
-            <top>
-                <Label text="Nuevo alumno" BorderPane.alignment="CENTER_LEFT">
-                    <BorderPane.margin>
-                        <Insets left="20.0" top="20.0" />
-                    </BorderPane.margin>
-                </Label>
-            </top>
         </BorderPane>
     </children>
 </AnchorPane>
