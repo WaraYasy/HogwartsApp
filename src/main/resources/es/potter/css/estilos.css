@@ -8,6 +8,33 @@
     -fx-color-texto-acento: #BEBEBE;
 }
 
+/* ============================================
+   ESTILOS ESPECÍFICOS POR CASA
+   ============================================ */
+
+/* Gryffindor */
+.gryffindor {
+    -fx-color-acento: #740001;
+    -fx-color-texto-acento: #FF9FB0;
+}
+
+/* Slytherin */
+.slytherin {
+    -fx-color-acento: #183F3E;
+    -fx-color-texto-acento: #7EABAA;
+}
+
+/* Ravenclaw */
+.ravenclaw {
+    -fx-color-acento: #242D56;
+    -fx-color-texto-acento: #8D96BE;
+}
+
+/* Hufflepuff */
+.hufflepuff {
+    -fx-color-acento: #D29238;
+    -fx-color-texto-acento: #4F2E00;
+}
 .root {
     -fx-background-color: -fx-color-fondo;
     -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
@@ -250,4 +277,70 @@
 
 .table-view .virtual-flow .scroll-bar .thumb:hover {
     -fx-background-color: derive(-fx-color-destacado, 20%);
+}
+
+/* ============================================
+   CHECKBOX - Estilo personalizado
+   ============================================ */
+.check-box {
+    -fx-text-fill: -fx-color-texto;
+}
+
+.check-box .box {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: -fx-color-texto;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.check-box:selected .box {
+    -fx-background-color: -fx-color-acento;
+    -fx-border-color: -fx-color-acento;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: -fx-color-encabezados;
+}
+
+/* ============================================
+   SCROLLBAR - Barra de desplazamiento
+   ============================================ */
+.scroll-bar {
+    -fx-background-color: -fx-color-fondo;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: derive(-fx-color-destacado, 10%);
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* ============================================
+   LABEL - Etiquetas generales
+   ============================================ */
+.label {
+    -fx-text-fill: -fx-color-texto;
+    -fx-font-family: "Manrope";
+}
+
+/* ============================================
+   TOOLTIPS
+   ============================================ */
+.tooltip {
+    -fx-background-color: -fx-color-destacado;
+    -fx-text-fill: -fx-color-texto;
+    -fx-font-size: 12px;
+    -fx-font-family: "Manrope";
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 8px;
 }
