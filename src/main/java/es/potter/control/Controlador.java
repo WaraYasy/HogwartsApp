@@ -1,6 +1,9 @@
 package es.potter.control;
 
+import es.potter.database.ConexionFactory;
+import es.potter.database.TipoBaseDatos;
 import es.potter.model.Alumno;
+import es.potter.servicio.ServicioHogwarts;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -315,11 +318,56 @@ public class Controlador {
     }
 
     //ACCIÓN DE LAS CASAS
-    @FXML void actionGryffindor(ActionEvent e) {}
-    @FXML void actionHogwarts(ActionEvent e) {}
-    @FXML void actionHufflepuff(ActionEvent e) {}
-    @FXML void actionRavenclaw(ActionEvent e) {}
-    @FXML void actionSlytherin(ActionEvent e) {}
+    // ==================== ACCIÓN DE LAS CASAS ====================
+    @FXML
+    void actionGryffindor(ActionEvent e) {
+        cargarAlumnosPorCasa(TipoBaseDatos.GRYFFINDOR);
+    }
+
+    @FXML
+    void actionSlytherin(ActionEvent e) {
+        cargarAlumnosPorCasa(TipoBaseDatos.SLYTHERIN);
+    }
+
+    @FXML
+    void actionRavenclaw(ActionEvent e) {
+        cargarAlumnosPorCasa(TipoBaseDatos.RAVENCLAW);
+    }
+
+    @FXML
+    void actionHufflepuff(ActionEvent e) {
+        cargarAlumnosPorCasa(TipoBaseDatos.HUFFLEPUFF);
+    }
+
+    @FXML
+    void actionHogwarts(ActionEvent e) {
+        cargarAlumnosPorCasa(TipoBaseDatos.MARIADB);
+    }
+
+    /**
+     * Método general para cargar alumnos de la base de datos de una casa o principal.
+     * Ejecuta la conexión de forma asíncrona y actualiza la tabla.
+     *
+     * @param tipoBase el tipo de base de datos (casa o principal)
+     */
+    private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase) {
+        listaAlumnos.clear(); // Limpiar tabla
+
+        ServicioHogwarts.cargarAlumnosDesde(tipoBase)
+                .thenAccept(alumnos -> Platform.runLater(() -> listaAlumnos.setAll(alumnos)))
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error al cargar alumnos");
+                        alert.setHeaderText("No se pudieron cargar los alumnos de " + tipoBase);
+                        alert.setContentText(ex.getMessage());
+                        alert.showAndWait();
+                    });
+                    return null;
+                });
+    }
+
 
     //ACCIONES SIN FUNCIONALIDAD
     @FXML void clickElementoTabla(MouseEvent e) {}
