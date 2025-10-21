@@ -31,6 +31,8 @@ public class Controlador {
     // Mapa para almacenar el estado de los checkboxes de cada alumno
     private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
 
+    private Alumno alumnoCreado;
+
     @FXML
     private Button btnArchivo, btnAyuda, btnCerrar, btnEditar, btnEliminar, btnGryffindor,
             btnHogwarts, btnHufflepuff, btnNuevo, btnRavenclaw, btnRecargar, btnSlytherin;
@@ -270,7 +272,8 @@ public class Controlador {
     }
 
 
-    @FXML void actionEditar(ActionEvent e) {
+    @FXML
+    void actionEditar(ActionEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/potter/fxml/modalEditar.fxml"));
             Parent root = loader.load();
