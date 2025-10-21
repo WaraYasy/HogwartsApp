@@ -5,7 +5,6 @@ module es.potter {
     requires org.mariadb.jdbc;
     requires org.slf4j;
 
-    opens es.potter to javafx.fxml, javafx.base;
-
+    opens es.potter to javafx.fxml;
     exports es.potter;
 }
