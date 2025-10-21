@@ -63,6 +63,9 @@ public class Controlador {
     // Filtro para la búsqueda
     private FilteredList<Alumno> filteredList;
 
+    //Menú botón archivo
+    private ContextMenu menuArchivo;
+
     @FXML
     public void initialize() {
         // Configurar columnas
@@ -178,7 +181,7 @@ public class Controlador {
         return seleccionados;
     }
 
-    //CONFIRMACIÓN AL CERRAR
+    //ACCIÓN BOTONES
     @FXML
     void actionCerrar(ActionEvent e) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -196,9 +199,43 @@ public class Controlador {
             Platform.exit();
         }
     }
+    @FXML void actionRecargar(ActionEvent e) {}
+    @FXML
+    void actionArchivo(ActionEvent e) {
+        // Si el menú no existe aún, lo creamos solo una vez
+        if (menuArchivo == null) {
+            menuArchivo = new ContextMenu();
 
-    @FXML void actionArchivo(ActionEvent e) {}
-    @FXML void actionAyuda(ActionEvent e) {}
+            // Crear la opción "Cerrar pestaña"
+            MenuItem cerrarItem = new MenuItem("Cerrar pestaña");
+            cerrarItem.setOnAction(event -> actionCerrar(event));
+
+            // Puedes agregar más opciones si lo deseas
+            // MenuItem guardarItem = new MenuItem("Guardar");
+            // guardarItem.setOnAction(event -> guardarCambios());
+
+            menuArchivo.getItems().addAll(cerrarItem);
+        }
+
+        // Si el menú ya está visible, lo cerramos
+        if (menuArchivo.isShowing()) {
+            menuArchivo.hide();
+        } else {
+            // Mostrar el menú justo debajo del botón
+            menuArchivo.show(btnArchivo,
+                    btnArchivo.localToScreen(0, btnArchivo.getHeight()).getX(),
+                    btnArchivo.localToScreen(0, btnArchivo.getHeight()).getY());
+        }
+    }
+
+
+    @FXML void actionAyuda(ActionEvent e) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Ayuda");
+        alert.setHeaderText(null);
+        alert.setContentText("Aplicación diseñada por Equipo Potter");
+        alert.showAndWait();
+    }
     @FXML void actionEditar(ActionEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/potter/fxml/modalEditar.fxml"));
@@ -221,9 +258,7 @@ public class Controlador {
             error.showAndWait();
         }
     }
-    @FXML void actionGryffindor(ActionEvent e) {}
-    @FXML void actionHogwarts(ActionEvent e) {}
-    @FXML void actionHufflepuff(ActionEvent e) {}
+
     @FXML
     void actionNuevo(ActionEvent event) {
         try {
@@ -248,10 +283,14 @@ public class Controlador {
         }
     }
 
-
+    //ACCIÓN DE LAS CASAS
+    @FXML void actionGryffindor(ActionEvent e) {}
+    @FXML void actionHogwarts(ActionEvent e) {}
+    @FXML void actionHufflepuff(ActionEvent e) {}
     @FXML void actionRavenclaw(ActionEvent e) {}
-    @FXML void actionRecargar(ActionEvent e) {}
     @FXML void actionSlytherin(ActionEvent e) {}
+
+    //ACCIONES SIN FUNCIONALIDAD
     @FXML void clickElementoTabla(MouseEvent e) {}
     @FXML void actionBusqueda(ActionEvent e) {}
 }
