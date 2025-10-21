@@ -66,6 +66,8 @@ public class Controlador {
     //Menú botón archivo
     private ContextMenu menuArchivo;
 
+    private ContextMenu menuAyuda;
+
     @FXML
     public void initialize() {
         // Configurar columnas
@@ -228,14 +230,43 @@ public class Controlador {
         }
     }
 
+    @FXML
+    void actionAyuda(ActionEvent e) {
+        // Si el menú no existe aún, lo creamos solo una vez
+        if (menuAyuda == null) {
+            menuAyuda = new ContextMenu();
 
-    @FXML void actionAyuda(ActionEvent e) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Ayuda");
-        alert.setHeaderText(null);
-        alert.setContentText("Aplicación diseñada por Equipo Potter");
-        alert.showAndWait();
+            // Opción "Sobre mí"
+            MenuItem sobreMiItem = new MenuItem("Sobre mí");
+            sobreMiItem.setOnAction(event -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Sobre mí");
+                alert.setHeaderText("Equipo Potter");
+                alert.setContentText("""
+                    Aplicación desarrollada por el Equipo Potter.
+                    
+                    • Curso: DM2
+                    • Año: 2025
+                    """);
+                alert.showAndWait();
+            });
+
+            // Añadimos la única opción al menú
+            menuAyuda.getItems().add(sobreMiItem);
+        }
+
+        // Si el menú ya está visible, lo cerramos
+        if (menuAyuda.isShowing()) {
+            menuAyuda.hide();
+        } else {
+            // Mostrar el menú justo debajo del botón
+            menuAyuda.show(btnAyuda,
+                    btnAyuda.localToScreen(0, btnAyuda.getHeight()).getX(),
+                    btnAyuda.localToScreen(0, btnAyuda.getHeight()).getY());
+        }
     }
+
+
     @FXML void actionEditar(ActionEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/potter/fxml/modalEditar.fxml"));
