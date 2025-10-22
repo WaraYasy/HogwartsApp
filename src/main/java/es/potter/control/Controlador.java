@@ -30,6 +30,9 @@ public class Controlador {
     private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
     private Map<String, String> alumnosEliminados = new HashMap<>();
 
+    /** Tipo de base de datos actual */
+    private TipoBaseDatos baseDatosActual = TipoBaseDatos.MARIADB;
+
     @FXML
     private Button btnArchivo, btnAyuda, btnCerrar, btnEditar, btnEliminar, btnGryffindor,
             btnHogwarts, btnHufflepuff, btnNuevo, btnRavenclaw, btnRecargar, btnSlytherin;
@@ -112,24 +115,17 @@ public class Controlador {
             }
         });
 
-        // Datos de ejemplo
-        Alumno alumno1 = new Alumno("Harry", "Potter", 5, "Gryffindor", "Ciervo");
-        alumno1.setId("GRY00001");
-        Alumno alumno2 = new Alumno("Draco", "Malfoy", 5, "Slytherin", "Ninguno");
-        alumno2.setId("SLY00001");
-        Alumno alumno3 = new Alumno("Luna", "Lovegood", 4, "Ravenclaw", "Liebre");
-        alumno3.setId("RAV00001");
-
-        listaAlumnos.addAll(alumno1, alumno2, alumno3);
-
+        // Configurar filtrado de tabla
         filteredList = new FilteredList<>(listaAlumnos, p -> true);
         tablaAlumnos.setItems(filteredList);
-
         txtBusqueda.textProperty().addListener((obs, oldValue, newValue) -> filtrarTabla(newValue));
 
         // Inicializar botones deshabilitados
         btnEditar.setDisable(true);
         btnEliminar.setDisable(true);
+
+        // Cargar datos iniciales desde la base de datos master
+        cargarAlumnosPorCasa(baseDatosActual);
     }
 
     private void filtrarTabla(String texto) {
@@ -382,9 +378,18 @@ public class Controlador {
     void actionHogwarts(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.MARIADB); }
 
     private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase) {
+        baseDatosActual = tipoBase;
         listaAlumnos.clear();
         ServicioHogwarts.cargarAlumnosDesde(tipoBase)
-                .thenAccept(alumnos -> Platform.runLater(() -> listaAlumnos.setAll(alumnos)))
+                .thenAccept(alumnos -> Platform.runLater(() -> {
+                    listaAlumnos.setAll(alumnos);
+                    // Limpiar checkboxes seleccionados después de cargar
+                    checkBoxMap.clear();
+                    if (checkBox.getGraphic() instanceof CheckBox seleccionarTodosCheckBox) {
+                        seleccionarTodosCheckBox.setSelected(false);
+                    }
+                    actualizarEstadoBotones();
+                }))
                 .exceptionally(ex -> {
                     ex.printStackTrace();
                     Platform.runLater(() -> {
