@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class Controlador {
+public class ControladorPrincipal {
 
     private ObservableList<Alumno> listaAlumnos = FXCollections.observableArrayList();
     private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
@@ -327,12 +327,12 @@ public class Controlador {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/es/potter/fxml/modalEditar.fxml"),
+                    getClass().getResource("/es/potter/fxml/modalEditarAlumno.fxml"),
                     bundle
             );
             Parent root = loader.load();
 
-            ControladorEditar controladorEditar = loader.getController();
+            ControladorEditarAlumno controladorEditar = loader.getController();
             controladorEditar.setAlumno(alumnoSeleccionado);
 
             Stage modalStage = new Stage();
@@ -361,12 +361,12 @@ public class Controlador {
     void actionNuevo(ActionEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/es/potter/fxml/modalAniadir.fxml"),
+                    getClass().getResource("/es/potter/fxml/modalNuevoAlumno.fxml"),
                     bundle
             );
             Parent root = loader.load();
 
-            ControladorAniadir controladorAniadir = loader.getController();
+            ControladorNuevoAlumno controladorAniadir = loader.getController();
             controladorAniadir.setParentData(
                     listaAlumnos,
                     checkBoxMap,

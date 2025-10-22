@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class ControladorAniadir {
+public class ControladorNuevoAlumno {
 
     @FXML private Button btnCancelar;
     @FXML private Button btnGuardar;
