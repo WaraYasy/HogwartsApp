@@ -56,15 +56,15 @@ jobs:
       - name: Copy artifacts (Unix)
         if: runner.os != 'Windows'
         run: |
-          cp target/hogwartsApp-1.0-SNAPSHOT.jar instalador-temp/input/
-          cp -r target/libs/* instalador-temp/input/
+          cp target/hogwartsApp-1.0-SNAPSHOT.jar instalador-temp/input/hogwartsApp.jar
+          cp target/libs/* instalador-temp/input/
 
       - name: Copy artifacts (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Copy-Item target/hogwartsApp-1.0-SNAPSHOT.jar instalador-temp/input/
-          Copy-Item -Recurse target/libs/* instalador-temp/input/
+          Copy-Item target/hogwartsApp-1.0-SNAPSHOT.jar instalador-temp/input/hogwartsApp.jar
+          Copy-Item target/libs/* instalador-temp/input/
 
       - name: Build installer with jpackage
         shell: bash
@@ -72,7 +72,7 @@ jobs:
           jpackage \
             --input instalador-temp/input \
             --name "HogwartsApp" \
-            --main-jar hogwartsApp-1.0-SNAPSHOT.jar \
+            --main-jar hogwartsApp.jar \
             --main-class es.potter.Lanzador \
             --type ${{ matrix.installer-type }} \
             --app-version "1.0" \
