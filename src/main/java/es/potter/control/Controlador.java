@@ -349,6 +349,14 @@ public class Controlador {
             );
             Parent root = loader.load();
 
+            ControladorAniadir controladorAniadir = loader.getController();
+            controladorAniadir.setParentData(
+                    listaAlumnos,
+                    checkBoxMap,
+                    this::actualizarEstadoBotones,
+                    () -> tablaAlumnos.refresh()
+            );
+
             Stage modalStage = new Stage();
             modalStage.setTitle(bundle.getString("nuevoAlumno"));
             modalStage.setScene(new Scene(root));

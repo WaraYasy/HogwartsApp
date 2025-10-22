@@ -30,6 +30,7 @@ public class ControladorAniadir {
     private ObservableList<Alumno> listaAlumnosPrincipal;
     private Map<Alumno, CheckBox> checkBoxMapPrincipal;
     private Runnable actualizarBotonesCallback;
+    private Runnable refrescarTablaCallback;
 
     @FXML
     public void initialize() {
@@ -42,10 +43,12 @@ public class ControladorAniadir {
     // Método para pasar referencias del controlador principal
     public void setParentData(ObservableList<Alumno> listaAlumnos,
                               Map<Alumno, CheckBox> checkBoxMap,
-                              Runnable actualizarBotones) {
+                              Runnable actualizarBotones,
+                              Runnable refrescarTabla) {
         this.listaAlumnosPrincipal = listaAlumnos;
         this.checkBoxMapPrincipal = checkBoxMap;
         this.actualizarBotonesCallback = actualizarBotones;
+        this.refrescarTablaCallback = refrescarTabla;
     }
 
     @FXML
@@ -89,6 +92,9 @@ public class ControladorAniadir {
 
                         // Actualizar botones
                         if (actualizarBotonesCallback != null) actualizarBotonesCallback.run();
+
+                        // Refrescar tabla para mostrar el nuevo alumno
+                        if (refrescarTablaCallback != null) refrescarTablaCallback.run();
 
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle(bundle.getString("alumnoGuardado"));
