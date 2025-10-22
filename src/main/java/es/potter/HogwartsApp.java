@@ -11,7 +11,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-
+/**
+ * Clase principal de la aplicación JavaFX.
+ * Se encarga de inicializar y mostrar la ventana principal con su FXML y CSS.
+ *
+ * @author Telmo
+ */
 public class HogwartsApp extends Application {
 
     /**
@@ -26,28 +31,47 @@ public class HogwartsApp extends Application {
 
     public void start(Stage primaryStage) throws Exception {
 
-        // Configurar idioma y resource bundle
-        //Locale locale = Locale.forLanguageTag("en");
-        Locale locale = Locale.forLanguageTag("es");
+        try {
 
-        logger.debug("Configurando idioma: {}", locale.getLanguage());
-        ResourceBundle bundle = ResourceBundle.getBundle("es.potter.mensajes", locale);
-        logger.debug("Resource bundle cargado para locale: {}", locale);
+            // Configurar idioma y resource bundle
+            //Locale locale = Locale.forLanguageTag("en");
+            Locale locale = Locale.forLanguageTag("es");
 
-        // Cargar archivo FXML con la definición de la interfaz
-        logger.debug("Cargando archivo FXML: fxml/tableView.fxml");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/es/potter/fxml/visualizar.fxml"));
-        scene = new Scene(fxmlLoader.load());
-        logger.info("Archivo FXML cargado exitosamente");
+            logger.debug("Configurando idioma: {}", locale.getLanguage());
+            ResourceBundle bundle = ResourceBundle.getBundle("es.potter.mensajes", locale);
+            logger.debug("Resource bundle cargado para locale: {}", locale);
 
+            // Cargar archivo FXML con la definición de la interfaz
+            logger.debug("Cargando archivo FXML: fxml/visualizar.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/es/potter/fxml/visualizar.fxml"), bundle);
+            scene = new Scene(fxmlLoader.load());
+            logger.info("Archivo FXML cargado exitosamente");
 
-        // Configurar el stage
-        primaryStage.setTitle("HogwartsApp");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            // Comprobar que el archivo CSS existe; si no, mostrar advertencia en consola
+/*
+            var archivoCSS = getClass().getResource("/css/estilo.css");
+            if (archivoCSS != null) {
+                scene.getStylesheets().add(archivoCSS.toExternalForm());
+            } else {
+                System.out.println("No se ha podido cargar el CSS.");
+            }
+*/
+
+            // Configurar el stage
+            primaryStage.setTitle("HogwartsApp");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+        } catch (Exception e) {
+            logger.error("Error al iniciar la aplicación", e);
+            System.err.println("No se ha podido abrir la ventana.");
+            e.printStackTrace();
+            throw e;
+        }
     }
+
     public static void main(String[] args) {
-        logger.info("=== INICIO DE PEOPLE VIEW APP ===");
+        logger.info("=== INICIO DE HOGWARTS APP ===");
         launch(args);
     }
 }
