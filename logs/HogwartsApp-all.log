@@ -55,3 +55,66 @@
 2025-10-22 10:34:20.508 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Ravenclaw (db.oracle) (jdbc:oracle:thin:@//100.104.4.128:1521/hogwarts)
 2025-10-22 10:34:20.640 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Ravenclaw (db.oracle)
 2025-10-22 10:34:20.647 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 7 alumnos desde Ravenclaw (db.oracle)
+2025-10-22 10:36:53.359 [main] INFO  es.potter.HogwartsApp - === INICIO DE HOGWARTS APP ===
+2025-10-22 10:36:54.021 [JavaFX Application Thread] DEBUG es.potter.HogwartsApp - Configurando idioma: es
+2025-10-22 10:36:54.023 [JavaFX Application Thread] DEBUG es.potter.HogwartsApp - Resource bundle cargado para locale: es
+2025-10-22 10:36:54.023 [JavaFX Application Thread] DEBUG es.potter.HogwartsApp - Cargando archivo FXML: fxml/visualizar.fxml
+2025-10-22 10:36:54.286 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.util.Propiedades - Archivo configuration.properties cargado correctamente
+2025-10-22 10:36:54.286 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: MARIADB (db.mariadb) (jdbc:mariadb://100.104.4.128:3306/hogwarts)
+2025-10-22 10:36:54.289 [JavaFX Application Thread] INFO  es.potter.HogwartsApp - Archivo FXML cargado exitosamente
+2025-10-22 10:36:54.499 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: MARIADB (db.mariadb)
+2025-10-22 10:36:54.516 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 24 alumnos desde MARIADB (db.mariadb)
+2025-10-22 10:37:30.436 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Slytherin (db.hsqldb) (jdbc:hsqldb:hsql://100.104.4.128:9001/hogwarts)
+2025-10-22 10:37:30.616 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Slytherin (db.hsqldb)
+2025-10-22 10:37:30.646 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 7 alumnos desde Slytherin (db.hsqldb)
+2025-10-22 10:37:46.470 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: MARIADB (db.mariadb) (jdbc:mariadb://100.104.4.128:3306/hogwarts)
+2025-10-22 10:37:46.522 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: MARIADB (db.mariadb)
+2025-10-22 10:37:46.533 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 24 alumnos desde MARIADB (db.mariadb)
+2025-10-22 10:38:10.651 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Slytherin (db.hsqldb) (jdbc:hsqldb:hsql://100.104.4.128:9001/hogwarts)
+2025-10-22 10:38:10.813 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Slytherin (db.hsqldb)
+2025-10-22 10:38:10.853 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 7 alumnos desde Slytherin (db.hsqldb)
+2025-10-22 10:38:11.536 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Gryffindor (db.derby) (jdbc:derby://100.104.4.128:1527/derby_data/hogwarts;create=true)
+2025-10-22 10:38:11.624 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Gryffindor (db.derby)
+2025-10-22 10:38:11.649 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 19 alumnos desde Gryffindor (db.derby)
+2025-10-22 10:38:12.355 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Hufflepuff (db.h2) (jdbc:h2:tcp://100.104.4.128:9092/hogwarts)
+2025-10-22 10:38:12.485 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Hufflepuff (db.h2)
+2025-10-22 10:38:12.504 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 7 alumnos desde Hufflepuff (db.h2)
+2025-10-22 10:38:12.984 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Ravenclaw (db.oracle) (jdbc:oracle:thin:@//100.104.4.128:1521/hogwarts)
+2025-10-22 10:38:13.437 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Ravenclaw (db.oracle)
+2025-10-22 10:38:13.537 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 7 alumnos desde Ravenclaw (db.oracle)
+2025-10-22 10:38:14.951 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Gryffindor (db.derby) (jdbc:derby://100.104.4.128:1527/derby_data/hogwarts;create=true)
+2025-10-22 10:38:14.982 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Gryffindor (db.derby)
+2025-10-22 10:38:15.009 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 19 alumnos desde Gryffindor (db.derby)
+2025-10-22 10:38:15.721 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: MARIADB (db.mariadb) (jdbc:mariadb://100.104.4.128:3306/hogwarts)
+2025-10-22 10:38:15.762 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: MARIADB (db.mariadb)
+2025-10-22 10:38:15.774 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 24 alumnos desde MARIADB (db.mariadb)
+2025-10-22 10:43:14.969 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.util.Propiedades - Archivo configuration.properties cargado correctamente
+2025-10-22 10:43:14.970 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: H2 (db.h2) (jdbc:h2:tcp://100.104.4.128:9092/hogwarts)
+2025-10-22 10:43:15.242 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: H2 (db.h2)
+2025-10-22 10:43:15.309 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: HSQLDB (db.hsqldb) (jdbc:hsqldb:hsql://100.104.4.128:9001/hogwarts)
+2025-10-22 10:43:15.447 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: HSQLDB (db.hsqldb)
+2025-10-22 10:43:15.469 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: ORACLE (db.oracle) (jdbc:oracle:thin:@//100.104.4.128:1521/hogwarts)
+2025-10-22 10:43:15.847 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: ORACLE (db.oracle)
+2025-10-22 10:43:15.906 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: APACHE_DERBY (db.derby) (jdbc:derby://100.104.4.128:1527/derby_data/hogwarts;create=true)
+2025-10-22 10:43:15.964 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: APACHE_DERBY (db.derby)
+2025-10-22 10:43:16.003 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: MARIADB (db.mariadb) (jdbc:mariadb://100.104.4.128:3306/hogwarts)
+2025-10-22 10:43:16.072 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: MARIADB (db.mariadb)
+2025-10-22 10:43:16.084 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: SQLITE (db.sqlite) (jdbc:sqlite:src/main/resources/es/potter/db/hogwarts.db)
+2025-10-22 10:43:16.415 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: SQLITE (db.sqlite)
+2025-10-22 10:43:16.416 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Gryffindor (db.derby) (jdbc:derby://100.104.4.128:1527/derby_data/hogwarts;create=true)
+2025-10-22 10:43:16.440 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Gryffindor (db.derby)
+2025-10-22 10:43:16.470 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Slytherin (db.hsqldb) (jdbc:hsqldb:hsql://100.104.4.128:9001/hogwarts)
+2025-10-22 10:43:16.592 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Slytherin (db.hsqldb)
+2025-10-22 10:43:16.614 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Ravenclaw (db.oracle) (jdbc:oracle:thin:@//100.104.4.128:1521/hogwarts)
+2025-10-22 10:43:16.714 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Ravenclaw (db.oracle)
+2025-10-22 10:43:16.732 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: Hufflepuff (db.h2) (jdbc:h2:tcp://100.104.4.128:9092/hogwarts)
+2025-10-22 10:43:16.772 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.database.ConexionFactory - Conexión establecida exitosamente: Hufflepuff (db.h2)
+2025-10-22 11:00:15.689 [main] INFO  es.potter.HogwartsApp - === INICIO DE HOGWARTS APP ===
+2025-10-22 11:00:16.475 [JavaFX Application Thread] DEBUG es.potter.HogwartsApp - Configurando idioma: es
+2025-10-22 11:00:16.477 [JavaFX Application Thread] DEBUG es.potter.HogwartsApp - Resource bundle cargado para locale: es
+2025-10-22 11:00:16.477 [JavaFX Application Thread] DEBUG es.potter.HogwartsApp - Cargando archivo FXML: fxml/visualizar.fxml
+2025-10-22 11:00:16.752 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.util.Propiedades - Archivo configuration.properties cargado correctamente
+2025-10-22 11:00:16.752 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conectando a: MARIADB (db.mariadb) (jdbc:mariadb://100.104.4.128:3306/hogwarts)
+2025-10-22 11:00:16.755 [JavaFX Application Thread] INFO  es.potter.HogwartsApp - Archivo FXML cargado exitosamente
+2025-10-22 11:00:17.172 [ForkJoinPool.commonPool-worker-1] DEBUG es.potter.database.ConexionFactory - Conexión establecida exitosamente: MARIADB (db.mariadb)
+2025-10-22 11:00:17.196 [ForkJoinPool.commonPool-worker-1] INFO  es.potter.dao.DaoAlumno - Cargados 24 alumnos desde MARIADB (db.mariadb)

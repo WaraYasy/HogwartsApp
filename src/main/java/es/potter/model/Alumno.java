@@ -10,7 +10,7 @@ package es.potter.model;
  * @since 2025-10-10
  */
 public class Alumno {
-    /** Identificador único del alumno con formato de 3 letras + 5 dígitos . Ejemplo: GRY00001 */
+    /** Identificador único del alumno con formato de 3 letras mayúsculas + guión + 8 caracteres hexadecimales.*/
     private String id;
 
     /** Nombre del alumno */

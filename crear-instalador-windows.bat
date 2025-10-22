@@ -1,3 +1,4 @@
+
 @echo off
 REM ============================================
 REM Script para crear INSTALADOR en Windows
@@ -36,18 +37,18 @@ if exist instalador-temp rmdir /s /q instalador-temp
 if exist instalador-output rmdir /s /q instalador-output
 mkdir instalador-temp\input
 
-REM Copiar JAR y librerias
-copy target\hogwartsApp-1.0-SNAPSHOT.jar instalador-temp\input\
-xcopy /E /I target\libs instalador-temp\input\libs
+REM Copiar JAR principal y todas las librerias al mismo directorio
+copy target\hogwartsApp-1.0-SNAPSHOT.jar instalador-temp\input\hogwartsApp.jar
+xcopy /Y target\libs\* instalador-temp\input\
 
 echo.
 echo [3/4] Generando instalador .exe...
 echo Esto puede tardar varios minutos...
 
 jpackage ^
-  --input instalador-temp\input\libs ^
+  --input instalador-temp\input ^
   --name "HogwartsApp" ^
-  --main-jar hogwartsApp-1.0-SNAPSHOT.jar ^
+  --main-jar hogwartsApp.jar ^
   --main-class es.potter.Lanzador ^
   --type exe ^
   --app-version "1.0" ^

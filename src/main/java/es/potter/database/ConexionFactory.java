@@ -35,7 +35,7 @@ public class ConexionFactory {
                 
                 logger.debug("Conectando a: {} ({})", tipo, url);
                 Connection conn = DriverManager.getConnection(url, user, password);
-                logger.info("Conexión establecida exitosamente: {}", tipo);
+                logger.debug("Conexión establecida exitosamente: {}", tipo);
                 return conn;
             } catch (Exception e) {
                 logger.error("Error al conectar con la base de datos {}", tipo, e);
