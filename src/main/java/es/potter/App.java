@@ -5,6 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 /**
  * Clase principal de la aplicación JavaFX.
  * Se encarga de inicializar y mostrar la ventana principal con su FXML y CSS.
@@ -26,6 +29,9 @@ public class App {
             // Cargar el archivo FXML
             FXMLLoader loaded = new FXMLLoader(getClass().getResource("/fxml/visualizar.fxml"));
             Scene scene = new Scene(loaded.load());
+
+            Locale locale = new Locale("en"); // o new Locale("en"), etc.
+            ResourceBundle bundle = ResourceBundle.getBundle("mensajes", locale);
 
             // Comprobar que el archivo CSS existe; si no, mostrar advertencia en consola
             var archivoCSS = getClass().getResource("/css/estilo.css");
