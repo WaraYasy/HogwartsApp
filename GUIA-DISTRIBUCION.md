@@ -1,4 +1,4 @@
-# Guía de Distribución - HogwartsApp
+c# Guía de Distribución - HogwartsApp
 
 ## Resumen: Cómo entregar la aplicación al cliente
 
