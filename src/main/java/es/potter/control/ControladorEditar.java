@@ -34,7 +34,7 @@ public class ControladorEditar {
     private TextField txtPatronus;
 
     private final ResourceBundle bundle = ResourceBundle.getBundle(
-            "es.potter.resourcebundle.mensajes", Locale.getDefault()
+            "es.potter.mensajes", Locale.getDefault()
     );
 
     @FXML
@@ -75,15 +75,25 @@ public class ControladorEditar {
             return;
         }
 
-        Alumno alumno = new Alumno(nombre, apellido, curso, alumnoActual.getCasa(), patronus);
+        Alumno alumnoEditado = new Alumno(nombre, apellido, curso, alumnoActual.getCasa(), patronus);
+        alumnoEditado.setId(alumnoActual.getId());
 
-        ServicioHogwarts.modificarAlumno(alumnoActual.getId(), alumno)
+        ServicioHogwarts.modificarAlumno(alumnoActual.getId(), alumnoEditado)
                 .thenAccept(exito -> Platform.runLater(() -> {
                     if (exito) {
+                        // Actualizar la lista observable directamente si es accesible
+                        alumnoActual.setNombre(nombre);
+                        alumnoActual.setApellidos(apellido);
+                        alumnoActual.setCurso(curso);
+                        alumnoActual.setPatronus(patronus);
+
+                        // Mostrar mensaje de éxito
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle(bundle.getString("alumnoModificado"));
                         alert.setHeaderText(bundle.getString("alumnoModificadoHeader"));
                         alert.showAndWait();
+
+                        // Cerrar modal
                         Stage stage = (Stage) btnGuardar.getScene().getWindow();
                         stage.close();
                     } else {

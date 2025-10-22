@@ -54,7 +54,7 @@ public class ServicioHogwarts {
         return DaoAlumno.cargarAlumnos(tipo);
     }
 
-
+    
     // ==================== CRUD ====================
 
     /**

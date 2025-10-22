@@ -1,5 +1,6 @@
 package es.potter.control;
 
+import es.potter.dao.DaoAlumno;
 import es.potter.database.TipoBaseDatos;
 import es.potter.model.Alumno;
 import es.potter.servicio.ServicioHogwarts;
@@ -21,11 +22,16 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class Controlador {
 
     private ObservableList<Alumno> listaAlumnos = FXCollections.observableArrayList();
     private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
+    private Map<String, String> alumnosEliminados = new HashMap<>();
+
+    /** Tipo de base de datos actual */
+    private TipoBaseDatos baseDatosActual = TipoBaseDatos.MARIADB;
 
     @FXML
     private Button btnArchivo, btnAyuda, btnCerrar, btnEditar, btnEliminar, btnGryffindor,
@@ -58,12 +64,15 @@ public class Controlador {
     @FXML
     private TextField txtBusqueda;
 
+    private ResourceBundle bundle;
     private FilteredList<Alumno> filteredList;
     private ContextMenu menuArchivo;
     private ContextMenu menuAyuda;
 
     @FXML
     public void initialize() {
+        bundle = ResourceBundle.getBundle("es.potter.mensajes", Locale.getDefault());
+
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
@@ -90,6 +99,9 @@ public class Controlador {
                             Alumno alumno = getTableRow().getItem();
                             checkBoxMap.put(alumno, checkBox);
                             setGraphic(checkBox);
+
+                            // Listener por fila para actualizar botones
+                            checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> actualizarEstadoBotones());
                         }
                     }
                 };
@@ -103,20 +115,17 @@ public class Controlador {
             }
         });
 
-        // Datos de ejemplo
-        Alumno alumno1 = new Alumno("Harry", "Potter", 5, "Gryffindor", "Ciervo");
-        alumno1.setId("GRY00001");
-        Alumno alumno2 = new Alumno("Draco", "Malfoy", 5, "Slytherin", "Ninguno");
-        alumno2.setId("SLY00001");
-        Alumno alumno3 = new Alumno("Luna", "Lovegood", 4, "Ravenclaw", "Liebre");
-        alumno3.setId("RAV00001");
-
-        listaAlumnos.addAll(alumno1, alumno2, alumno3);
-
+        // Configurar filtrado de tabla
         filteredList = new FilteredList<>(listaAlumnos, p -> true);
         tablaAlumnos.setItems(filteredList);
-
         txtBusqueda.textProperty().addListener((obs, oldValue, newValue) -> filtrarTabla(newValue));
+
+        // Inicializar botones deshabilitados
+        btnEditar.setDisable(true);
+        btnEliminar.setDisable(true);
+
+        // Cargar datos iniciales desde la base de datos master
+        cargarAlumnosPorCasa(baseDatosActual);
     }
 
     private void filtrarTabla(String texto) {
@@ -133,21 +142,30 @@ public class Controlador {
         }
     }
 
+    private void actualizarEstadoBotones() {
+        long seleccionados = checkBoxMap.values().stream().filter(CheckBox::isSelected).count();
+        btnEditar.setDisable(seleccionados != 1);
+        btnEliminar.setDisable(seleccionados == 0);
+    }
+
     @FXML
     void actionEliminar(ActionEvent event) {
         List<Alumno> alumnosSeleccionados = obtenerAlumnosSeleccionados();
+        if (alumnosSeleccionados.isEmpty()) return;
 
-        if (alumnosSeleccionados.isEmpty()) {
-            System.out.println("No hay alumnos seleccionados");
-            return;
+        // Guardar los eliminados en el Map temporal
+        for (Alumno alumno : alumnosSeleccionados) {
+            alumnosEliminados.put(alumno.getId(), alumno.getCasa());
         }
 
+        // Eliminar de la lista y del map de checkboxes
         listaAlumnos.removeAll(alumnosSeleccionados);
         for (Alumno alumno : alumnosSeleccionados) checkBoxMap.remove(alumno);
 
-        for (CheckBox cb : checkBoxMap.values()) cb.setSelected(false);
-        if (checkBox.getGraphic() instanceof CheckBox seleccionarTodosCheckBox)
-            seleccionarTodosCheckBox.setSelected(false);
+        // Deseleccionar todos los checkboxes y refrescar la tabla
+        checkBoxMap.values().forEach(cb -> cb.setSelected(false));
+        tablaAlumnos.refresh(); // <--- forzar refresco visual
+        actualizarEstadoBotones();
     }
 
     private List<Alumno> obtenerAlumnosSeleccionados() {
@@ -178,7 +196,69 @@ public class Controlador {
         }
     }
 
-    @FXML void actionRecargar(ActionEvent e) {}
+    @FXML
+    void actionRecargar() {
+        if (listaAlumnos.isEmpty() && alumnosEliminados.isEmpty()) return;
+
+        List<CompletableFuture<Boolean>> operaciones = new ArrayList<>();
+
+        // Procesar eliminados
+        for (Map.Entry<String, String> entry : alumnosEliminados.entrySet()) {
+            String id = entry.getKey();
+            String casaAlumno = entry.getValue();
+            Alumno dummy = new Alumno();
+            dummy.setId(id);
+
+            CompletableFuture<Boolean> op = DaoAlumno.eliminarAlumno(dummy, TipoBaseDatos.MARIADB)
+                    .thenCompose(ok -> DaoAlumno.eliminarAlumno(dummy, TipoBaseDatos.SQLITE))
+                    .thenCompose(ok -> {
+                        try {
+                            TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(casaAlumno);
+                            return DaoAlumno.eliminarAlumno(dummy, casa);
+                        } catch (IllegalArgumentException e) {
+                            return CompletableFuture.completedFuture(true);
+                        }
+                    });
+
+            operaciones.add(op);
+        }
+        alumnosEliminados.clear();
+
+        // Procesar alumnos existentes/nuevos
+        for (Alumno alumno : listaAlumnos) {
+            TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
+
+            CompletableFuture<Boolean> futuraOp = DaoAlumno.modificarAlumno(alumno.getId(), alumno, TipoBaseDatos.MARIADB)
+                    .exceptionally(ex -> false)
+                    .thenCompose(exito -> {
+                        if (!exito) return DaoAlumno.nuevoAlumno(alumno, TipoBaseDatos.MARIADB);
+                        return CompletableFuture.completedFuture(true);
+                    })
+                    .thenCompose(ok -> DaoAlumno.modificarAlumno(alumno.getId(), alumno, casa)
+                            .exceptionally(ex -> false)
+                            .thenCompose(exitoCasa -> {
+                                if (!exitoCasa) return DaoAlumno.nuevoAlumno(alumno, casa);
+                                return CompletableFuture.completedFuture(true);
+                            }))
+                    .thenCompose(ok -> DaoAlumno.modificarAlumno(alumno.getId(), alumno, TipoBaseDatos.SQLITE)
+                            .exceptionally(ex -> false)
+                            .thenCompose(exitoSqlite -> {
+                                if (!exitoSqlite) return DaoAlumno.nuevoAlumno(alumno, TipoBaseDatos.SQLITE);
+                                return CompletableFuture.completedFuture(true);
+                            }));
+
+            operaciones.add(futuraOp);
+        }
+
+        CompletableFuture.allOf(operaciones.toArray(new CompletableFuture[0]))
+                .thenRun(() -> Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Recargar");
+                    alert.setHeaderText("Sincronización completada");
+                    alert.setContentText("Todos los cambios se han guardado en MariaDB, SQLite y las bases de las casas correspondientes.");
+                    alert.showAndWait();
+                }));
+    }
 
     @FXML
     void actionArchivo(ActionEvent e) {
@@ -189,13 +269,10 @@ public class Controlador {
             menuArchivo.getItems().add(cerrarItem);
         }
 
-        if (menuArchivo.isShowing()) {
-            menuArchivo.hide();
-        } else {
-            menuArchivo.show(btnArchivo,
-                    btnArchivo.localToScreen(0, btnArchivo.getHeight()).getX(),
-                    btnArchivo.localToScreen(0, btnArchivo.getHeight()).getY());
-        }
+        if (menuArchivo.isShowing()) menuArchivo.hide();
+        else menuArchivo.show(btnArchivo,
+                btnArchivo.localToScreen(0, btnArchivo.getHeight()).getX(),
+                btnArchivo.localToScreen(0, btnArchivo.getHeight()).getY());
     }
 
     @FXML
@@ -208,11 +285,11 @@ public class Controlador {
                 alert.setTitle("Sobre mí");
                 alert.setHeaderText("Equipo Potter");
                 alert.setContentText("""
-                    Aplicación desarrollada por el Equipo Potter.
-                    
-                    • Curso: DM2
-                    • Año: 2025
-                    """);
+                        Aplicación desarrollada por el Equipo Potter.
+                        
+                        • Curso: DM2
+                        • Año: 2025
+                        """);
                 alert.showAndWait();
             });
             menuAyuda.getItems().add(sobreMiItem);
@@ -226,21 +303,12 @@ public class Controlador {
 
     @FXML
     void actionEditar(ActionEvent e) {
+        List<Alumno> seleccionados = obtenerAlumnosSeleccionados();
+        if (seleccionados.size() != 1) return;
+
+        Alumno alumnoSeleccionado = seleccionados.get(0);
+
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
-            );
-
-            Alumno alumnoSeleccionado = tablaAlumnos.getSelectionModel().getSelectedItem();
-            if (alumnoSeleccionado == null) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle(bundle.getString("sinSeleccion"));
-                alert.setHeaderText(bundle.getString("mensajeSeleccion"));
-                alert.setContentText(bundle.getString("seleccionaAlumno"));
-                alert.showAndWait();
-                return;
-            }
-
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/es/potter/fxml/modalEditar.fxml"),
                     bundle
@@ -257,11 +325,13 @@ public class Controlador {
             modalStage.setResizable(false);
             modalStage.showAndWait();
 
+            // Deseleccionar todos los checkboxes y refrescar la tabla
+            checkBoxMap.values().forEach(cb -> cb.setSelected(false));
+            tablaAlumnos.refresh(); // <--- importante para que se vea
+            actualizarEstadoBotones();
+
         } catch (IOException ex) {
             ex.printStackTrace();
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
-            );
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle(bundle.getString("error"));
             error.setHeaderText(bundle.getString("ficheroNoCargado"));
@@ -273,10 +343,6 @@ public class Controlador {
     @FXML
     void actionNuevo(ActionEvent e) {
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
-            );
-
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/es/potter/fxml/modalAniadir.fxml"),
                     bundle
@@ -292,9 +358,6 @@ public class Controlador {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
-            );
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle(bundle.getString("error"));
             error.setHeaderText(bundle.getString("ficheroNoCargado"));
@@ -302,9 +365,6 @@ public class Controlador {
             error.showAndWait();
         }
     }
-
-
-
 
     @FXML
     void actionGryffindor(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.GRYFFINDOR); }
@@ -318,9 +378,18 @@ public class Controlador {
     void actionHogwarts(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.MARIADB); }
 
     private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase) {
+        baseDatosActual = tipoBase;
         listaAlumnos.clear();
         ServicioHogwarts.cargarAlumnosDesde(tipoBase)
-                .thenAccept(alumnos -> Platform.runLater(() -> listaAlumnos.setAll(alumnos)))
+                .thenAccept(alumnos -> Platform.runLater(() -> {
+                    listaAlumnos.setAll(alumnos);
+                    // Limpiar checkboxes seleccionados después de cargar
+                    checkBoxMap.clear();
+                    if (checkBox.getGraphic() instanceof CheckBox seleccionarTodosCheckBox) {
+                        seleccionarTodosCheckBox.setSelected(false);
+                    }
+                    actualizarEstadoBotones();
+                }))
                 .exceptionally(ex -> {
                     ex.printStackTrace();
                     Platform.runLater(() -> {
