@@ -137,7 +137,7 @@
                                 <Font size="11.0" />
                             </font>
                             <tooltip>
-                                <Tooltip text="Crear un nuevo alumno" />
+                                <Tooltip text="Recargar base de datos" />
                             </tooltip>
                             <GridPane.margin>
                                 <Insets left="5.0" />
@@ -149,7 +149,7 @@
                                 <Font size="11.0" />
                             </font>
                             <tooltip>
-                                <Tooltip text="Crear un nuevo alumno" />
+                                <Tooltip text="Opciones del archivo" />
                             </tooltip>
                         </Button>
                         <Button fx:id="btnAyuda" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionAyuda" prefHeight="5.0" prefWidth="50.0" text="Ayuda" GridPane.columnIndex="4">
@@ -157,7 +157,7 @@
                                 <Font size="11.0" />
                             </font>
                             <tooltip>
-                                <Tooltip text="Crear un nuevo alumno" />
+                                <Tooltip text="Sobre mi" />
                             </tooltip>
                         </Button>
                         <Button fx:id="btnCerrar" alignment="CENTER" mnemonicParsing="false" onAction="#actionCerrar" prefHeight="5.0" prefWidth="50.0" text="Cerrar" textAlignment="CENTER" GridPane.columnIndex="5">
@@ -165,7 +165,7 @@
                                 <Font size="11.0" />
                             </font>
                             <tooltip>
-                                <Tooltip text="Crear un nuevo alumno" />
+                                <Tooltip text="Cerrar pestaña" />
                             </tooltip>
                         </Button>
                         <Button fx:id="btnEditar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEditar" prefHeight="5.0" prefWidth="50.0" text="Editar" GridPane.columnIndex="4" GridPane.rowIndex="1">
@@ -173,7 +173,7 @@
                                 <Font size="11.0" />
                             </font>
                             <tooltip>
-                                <Tooltip text="Crear un nuevo alumno" />
+                                <Tooltip text="Editar alumno" />
                             </tooltip>
                         </Button>
                     </children>
