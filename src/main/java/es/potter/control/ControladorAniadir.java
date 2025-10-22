@@ -1,11 +1,15 @@
 package es.potter.control;
 
-import javafx.event.ActionEvent;
+import es.potter.model.Alumno;
+import es.potter.servicio.ServicioHogwarts;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class ControladorAniadir {
 
@@ -16,10 +20,10 @@ public class ControladorAniadir {
     private Button btnGuardar;
 
     @FXML
-    private ComboBox<?> cmbxCasa;
+    private ComboBox<Integer> cmbxCurso;
 
     @FXML
-    private ComboBox<?> cmbxCurso;
+    private ComboBox<String> cmbxCasa;
 
     @FXML
     private TextField txtApellido;
@@ -30,56 +34,60 @@ public class ControladorAniadir {
     @FXML
     private TextField txtPatronus;
 
+    private final ResourceBundle bundle = ResourceBundle.getBundle(
+            "es.potter.resourcebundle.mensajes", Locale.getDefault()
+    );
+
     @FXML
-    void actionCancelar(ActionEvent event) {
-        // Obtener la ventana actual a partir del botón
-        Stage stage = (Stage) btnCancelar.getScene().getWindow();
-        stage.close(); // Cierra la ventana
+    public void initialize() {
+        // Inicializar cursos del 1 al 7
+        cmbxCurso.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7));
+
+        // Inicializar casas
+        cmbxCasa.setItems(FXCollections.observableArrayList(
+                "Gryffindor", "Slytherin", "Hufflepuff", "Ravenclaw"
+        ));
     }
 
+    @FXML
+    void actionCancelar() {
+        Stage stage = (Stage) btnCancelar.getScene().getWindow();
+        stage.close();
+    }
 
     @FXML
-    void actionGuardar(ActionEvent event) {
-        // 1️⃣ Obtener datos del formulario
+    void actionGuardar() {
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();
         String patronus = txtPatronus.getText().trim();
-        String curso = cmbxCurso.getValue() != null ? cmbxCurso.getValue().toString() : "";
-        String casa = cmbxCasa.getValue() != null ? cmbxCasa.getValue().toString() : "";
+        Integer curso = cmbxCurso.getValue();
+        String casa = cmbxCasa.getValue();
 
-        if (nombre.isEmpty() || apellido.isEmpty() || curso.isEmpty() || casa.isEmpty()) {
-            // Mostrar alerta si faltan datos
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
-            alert.setTitle("Campos incompletos");
-            alert.setHeaderText("Debe completar todos los campos");
+        if (nombre.isEmpty() || apellido.isEmpty() || patronus.isEmpty() || curso == null || casa == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle(bundle.getString("camposIncompletos"));
+            alert.setHeaderText(bundle.getString("debeCompletarCampos"));
             alert.showAndWait();
             return;
         }
 
-        // 2️⃣ Crear objeto Alumno
-        es.potter.model.Alumno alumno = new es.potter.model.Alumno(nombre, apellido, Integer.parseInt(curso), casa, patronus);
+        Alumno alumno = new Alumno(nombre, apellido, curso, casa, patronus);
 
-        // 3️⃣ Guardar en MariaDB (MASTER) y SQLite (SLAVE) usando ServicioHogwarts
-        es.potter.servicio.ServicioHogwarts.nuevoAlumno(alumno)
-                .thenAccept(exito -> {
-                    javafx.application.Platform.runLater(() -> {
-                        if (exito) {
-                            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-                            alert.setTitle("Alumno guardado");
-                            alert.setHeaderText("El alumno se guardó correctamente en MariaDB y SQLite");
-                            alert.showAndWait();
-
-                            // Cerrar ventana
-                            Stage stage = (Stage) btnGuardar.getScene().getWindow();
-                            stage.close();
-                        } else {
-                            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("No se pudo guardar el alumno en todas las bases de datos");
-                            alert.showAndWait();
-                        }
-                    });
-                });
+        ServicioHogwarts.nuevoAlumno(alumno)
+                .thenAccept(exito -> Platform.runLater(() -> {
+                    if (exito) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle(bundle.getString("alumnoGuardado"));
+                        alert.setHeaderText(bundle.getString("alumnoGuardadoHeader"));
+                        alert.showAndWait();
+                        Stage stage = (Stage) btnGuardar.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle(bundle.getString("error"));
+                        alert.setHeaderText(bundle.getString("alumnoNoGuardado"));
+                        alert.showAndWait();
+                    }
+                }));
     }
-
 }

@@ -1,6 +1,5 @@
 package es.potter.control;
 
-import es.potter.database.ConexionFactory;
 import es.potter.database.TipoBaseDatos;
 import es.potter.model.Alumno;
 import es.potter.servicio.ServicioHogwarts;
@@ -25,13 +24,8 @@ import java.util.*;
 
 public class Controlador {
 
-    // Lista observable para la tabla
     private ObservableList<Alumno> listaAlumnos = FXCollections.observableArrayList();
-
-    // Mapa para almacenar el estado de los checkboxes de cada alumno
     private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
-
-    private Alumno alumnoCreado;
 
     @FXML
     private Button btnArchivo, btnAyuda, btnCerrar, btnEditar, btnEliminar, btnGryffindor,
@@ -46,7 +40,6 @@ public class Controlador {
     @FXML
     private TableColumn<Alumno, String> colNombre;
 
-    // 👇 NUEVA COLUMNA
     @FXML
     private TableColumn<Alumno, String> colApellidos;
 
@@ -65,30 +58,23 @@ public class Controlador {
     @FXML
     private TextField txtBusqueda;
 
-    // Filtro para la búsqueda
     private FilteredList<Alumno> filteredList;
-
-    //Menú botón archivo
     private ContextMenu menuArchivo;
-
     private ContextMenu menuAyuda;
 
     @FXML
     public void initialize() {
-        // Configurar columnas
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos")); // 👈 NUEVA LÍNEA
+        colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
         colCurso.setCellValueFactory(new PropertyValueFactory<>("curso"));
         colCasa.setCellValueFactory(new PropertyValueFactory<>("casa"));
         colPatronus.setCellValueFactory(new PropertyValueFactory<>("patronus"));
 
-        // Crear checkbox de encabezado
         CheckBox seleccionarTodosCheckBox = new CheckBox();
         checkBox.setGraphic(seleccionarTodosCheckBox);
 
-        // Configurar la columna de checkboxes
-        checkBox.setCellFactory(new Callback<TableColumn<Alumno, Void>, TableCell<Alumno, Void>>() {
+        checkBox.setCellFactory(new Callback<>() {
             @Override
             public TableCell<Alumno, Void> call(TableColumn<Alumno, Void> param) {
                 return new TableCell<>() {
@@ -110,7 +96,6 @@ public class Controlador {
             }
         });
 
-        // Evento para "Seleccionar todos"
         seleccionarTodosCheckBox.setOnAction(event -> {
             boolean seleccionado = seleccionarTodosCheckBox.isSelected();
             for (CheckBox cb : checkBoxMap.values()) {
@@ -118,7 +103,7 @@ public class Controlador {
             }
         });
 
-        // Datos de prueba
+        // Datos de ejemplo
         Alumno alumno1 = new Alumno("Harry", "Potter", 5, "Gryffindor", "Ciervo");
         alumno1.setId("GRY00001");
         Alumno alumno2 = new Alumno("Draco", "Malfoy", 5, "Slytherin", "Ninguno");
@@ -128,15 +113,12 @@ public class Controlador {
 
         listaAlumnos.addAll(alumno1, alumno2, alumno3);
 
-        // Configurar lista filtrada
         filteredList = new FilteredList<>(listaAlumnos, p -> true);
         tablaAlumnos.setItems(filteredList);
 
-        // Escuchar cambios en el TextField para búsqueda en tiempo real
         txtBusqueda.textProperty().addListener((obs, oldValue, newValue) -> filtrarTabla(newValue));
     }
 
-    /** Filtro de búsqueda */
     private void filtrarTabla(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             filteredList.setPredicate(a -> true);
@@ -144,9 +126,9 @@ public class Controlador {
             String filtro = texto.toLowerCase();
             filteredList.setPredicate(a ->
                     a.getNombre().toLowerCase().contains(filtro) ||
-                    a.getApellidos().toLowerCase().contains(filtro) ||
-                    a.getCasa().toLowerCase().contains(filtro) ||
-                    a.getId().toLowerCase().contains(filtro)
+                            a.getApellidos().toLowerCase().contains(filtro) ||
+                            a.getCasa().toLowerCase().contains(filtro) ||
+                            a.getId().toLowerCase().contains(filtro)
             );
         }
     }
@@ -160,24 +142,14 @@ public class Controlador {
             return;
         }
 
-        System.out.println("Eliminando " + alumnosSeleccionados.size() + " alumno(s)");
-
         listaAlumnos.removeAll(alumnosSeleccionados);
+        for (Alumno alumno : alumnosSeleccionados) checkBoxMap.remove(alumno);
 
-        for (Alumno alumno : alumnosSeleccionados) {
-            checkBoxMap.remove(alumno);
-        }
-
-        for (CheckBox cb : checkBoxMap.values()) {
-            cb.setSelected(false);
-        }
-
-        if (checkBox.getGraphic() instanceof CheckBox seleccionarTodosCheckBox) {
+        for (CheckBox cb : checkBoxMap.values()) cb.setSelected(false);
+        if (checkBox.getGraphic() instanceof CheckBox seleccionarTodosCheckBox)
             seleccionarTodosCheckBox.setSelected(false);
-        }
     }
 
-    /** Obtener alumnos seleccionados */
     private List<Alumno> obtenerAlumnosSeleccionados() {
         List<Alumno> seleccionados = new ArrayList<>();
         for (Map.Entry<Alumno, CheckBox> entry : checkBoxMap.entrySet()) {
@@ -188,7 +160,6 @@ public class Controlador {
         return seleccionados;
     }
 
-    //ACCIÓN BOTONES
     @FXML
     void actionCerrar(ActionEvent e) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -206,29 +177,21 @@ public class Controlador {
             Platform.exit();
         }
     }
+
     @FXML void actionRecargar(ActionEvent e) {}
+
     @FXML
     void actionArchivo(ActionEvent e) {
-        // Si el menú no existe aún, lo creamos solo una vez
         if (menuArchivo == null) {
             menuArchivo = new ContextMenu();
-
-            // Crear la opción "Cerrar pestaña"
             MenuItem cerrarItem = new MenuItem("Cerrar pestaña");
             cerrarItem.setOnAction(event -> actionCerrar(event));
-
-            // Puedes agregar más opciones si lo deseas
-            // MenuItem guardarItem = new MenuItem("Guardar");
-            // guardarItem.setOnAction(event -> guardarCambios());
-
-            menuArchivo.getItems().addAll(cerrarItem);
+            menuArchivo.getItems().add(cerrarItem);
         }
 
-        // Si el menú ya está visible, lo cerramos
         if (menuArchivo.isShowing()) {
             menuArchivo.hide();
         } else {
-            // Mostrar el menú justo debajo del botón
             menuArchivo.show(btnArchivo,
                     btnArchivo.localToScreen(0, btnArchivo.getHeight()).getX(),
                     btnArchivo.localToScreen(0, btnArchivo.getHeight()).getY());
@@ -237,11 +200,8 @@ public class Controlador {
 
     @FXML
     void actionAyuda(ActionEvent e) {
-        // Si el menú no existe aún, lo creamos solo una vez
         if (menuAyuda == null) {
             menuAyuda = new ContextMenu();
-
-            // Opción "Sobre mí"
             MenuItem sobreMiItem = new MenuItem("Sobre mí");
             sobreMiItem.setOnAction(event -> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -255,107 +215,110 @@ public class Controlador {
                     """);
                 alert.showAndWait();
             });
-
-            // Añadimos la única opción al menú
             menuAyuda.getItems().add(sobreMiItem);
         }
 
-        // Si el menú ya está visible, lo cerramos
-        if (menuAyuda.isShowing()) {
-            menuAyuda.hide();
-        } else {
-            // Mostrar el menú justo debajo del botón
-            menuAyuda.show(btnAyuda,
-                    btnAyuda.localToScreen(0, btnAyuda.getHeight()).getX(),
-                    btnAyuda.localToScreen(0, btnAyuda.getHeight()).getY());
-        }
+        if (menuAyuda.isShowing()) menuAyuda.hide();
+        else menuAyuda.show(btnAyuda,
+                btnAyuda.localToScreen(0, btnAyuda.getHeight()).getX(),
+                btnAyuda.localToScreen(0, btnAyuda.getHeight()).getY());
     }
-
 
     @FXML
     void actionEditar(ActionEvent e) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/potter/fxml/modalEditar.fxml"));
+            ResourceBundle bundle = ResourceBundle.getBundle(
+                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
+            );
+
+            Alumno alumnoSeleccionado = tablaAlumnos.getSelectionModel().getSelectedItem();
+            if (alumnoSeleccionado == null) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle(bundle.getString("sinSeleccion"));
+                alert.setHeaderText(bundle.getString("mensajeSeleccion"));
+                alert.setContentText(bundle.getString("seleccionaAlumno"));
+                alert.showAndWait();
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/es/potter/fxml/modalEditar.fxml"),
+                    bundle
+            );
             Parent root = loader.load();
 
-            Stage modalStage = new Stage();
-            modalStage.setTitle("Editar alumno");
-            modalStage.setScene(new Scene(root));
-            modalStage.initModality(Modality.APPLICATION_MODAL); // Bloquea la ventana principal
-            modalStage.setResizable(false);
+            ControladorEditar controladorEditar = loader.getController();
+            controladorEditar.setAlumno(alumnoSeleccionado);
 
+            Stage modalStage = new Stage();
+            modalStage.setTitle(bundle.getString("editarAlumno"));
+            modalStage.setScene(new Scene(root));
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+            modalStage.setResizable(false);
             modalStage.showAndWait();
 
         } catch (IOException ex) {
             ex.printStackTrace();
+            ResourceBundle bundle = ResourceBundle.getBundle(
+                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
+            );
             Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Error al abrir ventana");
-            error.setHeaderText("No se pudo cargar 'modalEditar.fxml'");
-            error.setContentText("Verifica que el archivo está en 'resources/es/potter/fxml/'");
+            error.setTitle(bundle.getString("error"));
+            error.setHeaderText(bundle.getString("ficheroNoCargado"));
+            error.setContentText(bundle.getString("verificaRuta"));
             error.showAndWait();
         }
     }
 
     @FXML
-    void actionNuevo(ActionEvent event) {
+    void actionNuevo(ActionEvent e) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/potter/fxml/modalAniadir.fxml"));
+            ResourceBundle bundle = ResourceBundle.getBundle(
+                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
+            );
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/es/potter/fxml/modalAniadir.fxml"),
+                    bundle
+            );
             Parent root = loader.load();
 
             Stage modalStage = new Stage();
-            modalStage.setTitle("Añadir nuevo alumno");
+            modalStage.setTitle(bundle.getString("nuevoAlumno"));
             modalStage.setScene(new Scene(root));
-            modalStage.initModality(Modality.APPLICATION_MODAL); // Bloquea la ventana principal
+            modalStage.initModality(Modality.APPLICATION_MODAL);
             modalStage.setResizable(false);
-
             modalStage.showAndWait();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            ResourceBundle bundle = ResourceBundle.getBundle(
+                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
+            );
             Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Error al abrir ventana");
-            error.setHeaderText("No se pudo cargar 'modalAniadir.fxml'");
-            error.setContentText("Verifica que el archivo está en 'resources/es/potter/fxml/'");
+            error.setTitle(bundle.getString("error"));
+            error.setHeaderText(bundle.getString("ficheroNoCargado"));
+            error.setContentText(bundle.getString("verificaRuta"));
             error.showAndWait();
         }
     }
 
-    //ACCIÓN DE LAS CASAS
-    // ==================== ACCIÓN DE LAS CASAS ====================
-    @FXML
-    void actionGryffindor(ActionEvent e) {
-        cargarAlumnosPorCasa(TipoBaseDatos.GRYFFINDOR);
-    }
+
+
 
     @FXML
-    void actionSlytherin(ActionEvent e) {
-        cargarAlumnosPorCasa(TipoBaseDatos.SLYTHERIN);
-    }
-
+    void actionGryffindor(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.GRYFFINDOR); }
     @FXML
-    void actionRavenclaw(ActionEvent e) {
-        cargarAlumnosPorCasa(TipoBaseDatos.RAVENCLAW);
-    }
-
+    void actionSlytherin(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.SLYTHERIN); }
     @FXML
-    void actionHufflepuff(ActionEvent e) {
-        cargarAlumnosPorCasa(TipoBaseDatos.HUFFLEPUFF);
-    }
-
+    void actionRavenclaw(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.RAVENCLAW); }
     @FXML
-    void actionHogwarts(ActionEvent e) {
-        cargarAlumnosPorCasa(TipoBaseDatos.MARIADB);
-    }
+    void actionHufflepuff(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.HUFFLEPUFF); }
+    @FXML
+    void actionHogwarts(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.MARIADB); }
 
-    /**
-     * Método general para cargar alumnos de la base de datos de una casa o principal.
-     * Ejecuta la conexión de forma asíncrona y actualiza la tabla.
-     *
-     * @param tipoBase el tipo de base de datos (casa o principal)
-     */
     private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase) {
-        listaAlumnos.clear(); // Limpiar tabla
-
+        listaAlumnos.clear();
         ServicioHogwarts.cargarAlumnosDesde(tipoBase)
                 .thenAccept(alumnos -> Platform.runLater(() -> listaAlumnos.setAll(alumnos)))
                 .exceptionally(ex -> {
@@ -371,8 +334,6 @@ public class Controlador {
                 });
     }
 
-
-    //ACCIONES SIN FUNCIONALIDAD
     @FXML void clickElementoTabla(MouseEvent e) {}
     @FXML void actionBusqueda(ActionEvent e) {}
 }

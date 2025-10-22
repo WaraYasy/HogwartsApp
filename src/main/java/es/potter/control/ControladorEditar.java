@@ -1,14 +1,15 @@
 package es.potter.control;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import es.potter.model.Alumno;
 import es.potter.servicio.ServicioHogwarts;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class ControladorEditar {
 
@@ -32,26 +33,34 @@ public class ControladorEditar {
     @FXML
     private TextField txtPatronus;
 
+    private final ResourceBundle bundle = ResourceBundle.getBundle(
+            "es.potter.resourcebundle.mensajes", Locale.getDefault()
+    );
+
     @FXML
-    void actionCancelar(ActionEvent event) {
+    public void initialize() {
+        // Inicializar cursos del 1 al 7
+        cmbxCurso.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7));
+    }
+
+    @FXML
+    void actionCancelar() {
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
 
-    // Método para pasar el alumno que se va a editar
+    // Cargar datos del alumno que se va a editar
     public void setAlumno(Alumno alumno) {
         this.alumnoActual = alumno;
         txtNombre.setText(alumno.getNombre());
         txtApellido.setText(alumno.getApellidos());
         txtPatronus.setText(alumno.getPatronus());
-        cmbxCurso.setValue(alumno.getCurso()); // ya es Integer
-        // Si tienes combo de casas editable:
-        // cmbxCasa.setValue(alumno.getCasa());
+        cmbxCurso.setValue(alumno.getCurso());
     }
 
     @FXML
-    void actionGuardar(ActionEvent event) {
-        if (alumnoActual == null) return; // seguridad
+    void actionGuardar() {
+        if (alumnoActual == null) return;
 
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();
@@ -60,39 +69,29 @@ public class ControladorEditar {
 
         if (nombre.isEmpty() || apellido.isEmpty() || patronus.isEmpty() || curso == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Campos incompletos");
-            alert.setHeaderText("Debe completar todos los campos");
+            alert.setTitle(bundle.getString("camposIncompletos"));
+            alert.setHeaderText(bundle.getString("debeCompletarCampos"));
             alert.showAndWait();
             return;
         }
 
-        String idAlumno = alumnoActual.getId();
+        Alumno alumno = new Alumno(nombre, apellido, curso, alumnoActual.getCasa(), patronus);
 
-        Alumno alumno = new Alumno(
-                nombre,
-                apellido,
-                curso,
-                alumnoActual.getCasa(), // usar la casa actual
-                patronus
-        );
-
-        ServicioHogwarts.modificarAlumno(idAlumno, alumno)
-                .thenAccept(exito -> {
-                    javafx.application.Platform.runLater(() -> {
-                        if (exito) {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                            alert.setTitle("Alumno modificado");
-                            alert.setHeaderText("El alumno se actualizó correctamente en Hogwarts");
-                            alert.showAndWait();
-                            Stage stage = (Stage) btnCancelar.getScene().getWindow();
-                            stage.close();
-                        } else {
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("No se pudo modificar el alumno en todas las bases de datos");
-                            alert.showAndWait();
-                        }
-                    });
-                });
+        ServicioHogwarts.modificarAlumno(alumnoActual.getId(), alumno)
+                .thenAccept(exito -> Platform.runLater(() -> {
+                    if (exito) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle(bundle.getString("alumnoModificado"));
+                        alert.setHeaderText(bundle.getString("alumnoModificadoHeader"));
+                        alert.showAndWait();
+                        Stage stage = (Stage) btnGuardar.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle(bundle.getString("error"));
+                        alert.setHeaderText(bundle.getString("alumnoNoModificado"));
+                        alert.showAndWait();
+                    }
+                }));
     }
 }
