@@ -12,6 +12,8 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.potter.control.Controlador">
@@ -79,20 +81,25 @@
     <center>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <center>
-                <TableView fx:id="tablaAlumnos" onMouseClicked="#clickElementoTabla" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <columns>
-                        <TableColumn fx:id="checkBox" minWidth="3.0" prefWidth="32.0" />
-                        <TableColumn fx:id="colId" minWidth="0.0" prefWidth="39.0" text="ID" />
-                        <TableColumn fx:id="colNombre" prefWidth="172.0" text="%nombre" />
-                        <TableColumn fx:id="colApellidos" prefWidth="172.0" text="%apellido" />
-                        <TableColumn fx:id="colCurso" prefWidth="61.0" text="%curso" />
-                        <TableColumn fx:id="colCasa" prefWidth="83.0" text="%casa" />
-                        <TableColumn fx:id="colPatronus" minWidth="0.0" prefWidth="86.0" text="%patronus" />
-                    </columns>
-                    <opaqueInsets>
-                        <Insets top="10.0" />
-                    </opaqueInsets>
-                </TableView>
+                <StackPane>
+                    <children>
+                        <TableView fx:id="tablaAlumnos" onMouseClicked="#clickElementoTabla" prefHeight="200.0" prefWidth="200.0">
+                            <columns>
+                                <TableColumn fx:id="checkBox" minWidth="3.0" prefWidth="32.0" />
+                                <TableColumn fx:id="colId" minWidth="0.0" prefWidth="39.0" text="ID" />
+                                <TableColumn fx:id="colNombre" prefWidth="172.0" text="%nombre" />
+                                <TableColumn fx:id="colApellidos" prefWidth="172.0" text="%apellido" />
+                                <TableColumn fx:id="colCurso" prefWidth="61.0" text="%curso" />
+                                <TableColumn fx:id="colCasa" prefWidth="83.0" text="%casa" />
+                                <TableColumn fx:id="colPatronus" minWidth="0.0" prefWidth="86.0" text="%patronus" />
+                            </columns>
+                            <opaqueInsets>
+                                <Insets top="10.0" />
+                            </opaqueInsets>
+                        </TableView>
+                        <ProgressIndicator fx:id="progressIndicator" prefHeight="60.0" prefWidth="60.0" visible="false" />
+                    </children>
+                </StackPane>
             </center>
             <top>
                 <GridPane BorderPane.alignment="CENTER">

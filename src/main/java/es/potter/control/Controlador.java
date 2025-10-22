@@ -64,6 +64,9 @@ public class Controlador {
     @FXML
     private TextField txtBusqueda;
 
+    @FXML
+    private javafx.scene.control.ProgressIndicator progressIndicator;
+
     private ResourceBundle bundle;
     private FilteredList<Alumno> filteredList;
     private ContextMenu menuArchivo;
@@ -119,6 +122,9 @@ public class Controlador {
         filteredList = new FilteredList<>(listaAlumnos, p -> true);
         tablaAlumnos.setItems(filteredList);
         txtBusqueda.textProperty().addListener((obs, oldValue, newValue) -> filtrarTabla(newValue));
+
+        // Quitar mensaje "Tabla sin contenido"
+        tablaAlumnos.setPlaceholder(new javafx.scene.control.Label(""));
 
         // Inicializar botones deshabilitados
         btnEditar.setDisable(true);
@@ -388,6 +394,10 @@ public class Controlador {
     private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase) {
         baseDatosActual = tipoBase;
         listaAlumnos.clear();
+
+        // Mostrar indicador de progreso
+        progressIndicator.setVisible(true);
+
         ServicioHogwarts.cargarAlumnosDesde(tipoBase)
                 .thenAccept(alumnos -> Platform.runLater(() -> {
                     listaAlumnos.setAll(alumnos);
@@ -397,10 +407,16 @@ public class Controlador {
                         seleccionarTodosCheckBox.setSelected(false);
                     }
                     actualizarEstadoBotones();
+
+                    // Ocultar indicador de progreso
+                    progressIndicator.setVisible(false);
                 }))
                 .exceptionally(ex -> {
                     ex.printStackTrace();
                     Platform.runLater(() -> {
+                        // Ocultar indicador de progreso en caso de error
+                        progressIndicator.setVisible(false);
+
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error al cargar alumnos");
                         alert.setHeaderText("No se pudieron cargar los alumnos de " + tipoBase);
