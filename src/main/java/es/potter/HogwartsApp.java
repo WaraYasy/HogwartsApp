@@ -42,8 +42,8 @@ public class HogwartsApp extends Application {
             logger.debug("Resource bundle cargado para locale: {}", locale);
 
             // Cargar archivo FXML con la definición de la interfaz
-            logger.debug("Cargando archivo FXML: fxml/visualizar.fxml");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/es/potter/fxml/visualizar.fxml"), bundle);
+            logger.debug("Cargando archivo FXML: fxml/ventanaPrincipal.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/es/potter/fxml/ventanaPrincipal.fxml"), bundle);
             scene = new Scene(fxmlLoader.load());
             logger.info("Archivo FXML cargado exitosamente");
 
