@@ -61,11 +61,11 @@ public class ControladorAniadir {
     void actionGuardar() {
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();
-        String patronus = txtPatronus.getText().trim();
+        String patronus = txtPatronus.getText().trim().isEmpty() ? null : txtPatronus.getText().trim();
         Integer curso = cmbxCurso.getValue();
         String casa = cmbxCasa.getValue();
 
-        if (nombre.isEmpty() || apellido.isEmpty() || patronus.isEmpty() || curso == null || casa == null) {
+        if (nombre.isEmpty() || apellido.isEmpty() || curso == null || casa == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle(bundle.getString("camposIncompletos"));
             alert.setHeaderText(bundle.getString("debeCompletarCampos"));
