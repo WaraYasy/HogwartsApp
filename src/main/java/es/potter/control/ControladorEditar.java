@@ -34,7 +34,7 @@ public class ControladorEditar {
     private TextField txtPatronus;
 
     private final ResourceBundle bundle = ResourceBundle.getBundle(
-            "es.potter.resourcebundle.mensajes", Locale.getDefault()
+            "es.potter.mensajes", Locale.getDefault()
     );
 
     @FXML

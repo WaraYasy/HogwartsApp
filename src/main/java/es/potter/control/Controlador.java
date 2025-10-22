@@ -58,12 +58,18 @@ public class Controlador {
     @FXML
     private TextField txtBusqueda;
 
+    /** Resource bundle para internacionalización */
+    private ResourceBundle bundle;
+
     private FilteredList<Alumno> filteredList;
     private ContextMenu menuArchivo;
     private ContextMenu menuAyuda;
 
     @FXML
     public void initialize() {
+        // Inicializar ResourceBundle
+        bundle = ResourceBundle.getBundle("es.potter.mensajes", Locale.getDefault());
+
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
@@ -227,10 +233,6 @@ public class Controlador {
     @FXML
     void actionEditar(ActionEvent e) {
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
-            );
-
             Alumno alumnoSeleccionado = tablaAlumnos.getSelectionModel().getSelectedItem();
             if (alumnoSeleccionado == null) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -259,9 +261,6 @@ public class Controlador {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
-            );
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle(bundle.getString("error"));
             error.setHeaderText(bundle.getString("ficheroNoCargado"));
@@ -273,9 +272,6 @@ public class Controlador {
     @FXML
     void actionNuevo(ActionEvent e) {
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
-            );
 
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/es/potter/fxml/modalAniadir.fxml"),
@@ -292,9 +288,7 @@ public class Controlador {
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            ResourceBundle bundle = ResourceBundle.getBundle(
-                    "es.potter.resourcebundle.mensajes", Locale.getDefault()
-            );
+
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle(bundle.getString("error"));
             error.setHeaderText(bundle.getString("ficheroNoCargado"));

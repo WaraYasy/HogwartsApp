@@ -6,24 +6,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Lanzador extends Application {
+public class Lanzador{
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        // Cargar el archivo FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/potter/fxml/visualizar.fxml"));
-        Parent root = loader.load();
-
-        // Configurar la escena
-        Scene scene = new Scene(root);
-
-        // Configurar el stage
-        primaryStage.setTitle("HogwartsApp");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
+    /**
+     * Punto de entrada principal de la aplicación.
+     * Registra el evento de lanzamiento y delega la ejecución a la clase
+     * principal de JavaFX {@link HogwartsApp}.
+     *
+     * <p>Este método actúa como un proxy que permite añadir logging y
+     * potencialmente otras operaciones de inicialización antes de
+     * lanzar la interfaz gráfica.</p>
+     *
+     * @param args Argumentos de línea de comandos que se pasan a la aplicación JavaFX
+     */
     public static void main(String[] args) {
-        launch(args);
+        HogwartsApp.main(args);
     }
 }
