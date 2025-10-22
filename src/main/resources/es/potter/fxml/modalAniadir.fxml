@@ -12,118 +12,74 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0"
-            xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/25">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.potter.control.ControladorAniadir">
     <children>
         <BorderPane prefHeight="400.0" prefWidth="600.0">
             <center>
                 <GridPane BorderPane.alignment="CENTER">
                     <columnConstraints>
-                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="75.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" percentWidth="20.0" prefWidth="100.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="75.0" prefWidth="100.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints percentHeight="20.0" />
-                        <RowConstraints percentHeight="20.0" />
-                        <RowConstraints percentHeight="20.0" />
-                        <RowConstraints percentHeight="20.0" />
-                        <RowConstraints percentHeight="20.0" />
+                        <RowConstraints percentHeight="20.0"/>
+                        <RowConstraints percentHeight="20.0"/>
+                        <RowConstraints percentHeight="20.0"/>
+                        <RowConstraints percentHeight="20.0"/>
+                        <RowConstraints percentHeight="20.0"/>
                     </rowConstraints>
                     <children>
-                        <Label text="%nombre">
-                            <GridPane.margin>
-                                <Insets left="20.0" />
-                            </GridPane.margin>
+                        <Label text="%nombre" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                            <GridPane.margin><Insets left="20.0"/></GridPane.margin>
                         </Label>
-                        <Label text="%apellido" GridPane.rowIndex="1">
-                            <GridPane.margin>
-                                <Insets left="20.0" />
-                            </GridPane.margin>
+                        <Label text="%apellido" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                            <GridPane.margin><Insets left="20.0"/></GridPane.margin>
                         </Label>
-                        <Label text="%curso" GridPane.rowIndex="2">
-                            <GridPane.margin>
-                                <Insets left="20.0" />
-                            </GridPane.margin>
+                        <Label text="%curso" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                            <GridPane.margin><Insets left="20.0"/></GridPane.margin>
                         </Label>
-                        <TextField fx:id="txtNombre" GridPane.columnIndex="1">
-                            <GridPane.margin>
-                                <Insets right="30.0" />
-                            </GridPane.margin>
-                        </TextField>
-                        <TextField fx:id="txtApellido" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <GridPane.margin>
-                                <Insets right="30.0" />
-                            </GridPane.margin>
-                        </TextField>
-                        <Label text="%casa" GridPane.rowIndex="3">
-                            <GridPane.margin>
-                                <Insets left="20.0" />
-                            </GridPane.margin>
+                        <Label text="%casa" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                            <GridPane.margin><Insets left="20.0"/></GridPane.margin>
                         </Label>
-                        <Label text="%patronus" GridPane.rowIndex="4">
-                            <GridPane.margin>
-                                <Insets left="20.0" />
-                            </GridPane.margin>
+                        <Label text="%patronus" GridPane.rowIndex="4" GridPane.columnIndex="0">
+                            <GridPane.margin><Insets left="20.0"/></GridPane.margin>
                         </Label>
-                        <TextField fx:id="txtPatronus" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                            <GridPane.margin>
-                                <Insets right="30.0" />
-                            </GridPane.margin>
-                        </TextField>
-                        <ComboBox fx:id="cmbxCasa" prefWidth="150.0" promptText="%promptCasa" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <ComboBox fx:id="cmbxCurso" prefWidth="150.0" promptText="%promptCurso" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <TextField fx:id="txtApellido" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <ComboBox fx:id="cmbxCurso" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="%promptCurso"/>
+                        <ComboBox fx:id="cmbxCasa" GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="%promptCasa"/>
+                        <TextField fx:id="txtPatronus" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
                     </children>
-                    <padding>
-                        <Insets left="20.0" />
-                    </padding>
-                    <BorderPane.margin>
-                        <Insets left="20.0" top="20.0" />
-                    </BorderPane.margin>
+                    <padding><Insets left="20.0" right="20.0" top="20.0" bottom="20.0"/></padding>
                 </GridPane>
             </center>
+
             <bottom>
                 <GridPane BorderPane.alignment="CENTER">
                     <columnConstraints>
-                        <ColumnConstraints percentWidth="60.0" />
-                        <ColumnConstraints percentWidth="20.0" />
-                        <ColumnConstraints percentWidth="20.0" />
+                        <ColumnConstraints percentWidth="60.0"/>
+                        <ColumnConstraints percentWidth="20.0"/>
+                        <ColumnConstraints percentWidth="20.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints prefHeight="30.0" />
+                        <RowConstraints prefHeight="30.0"/>
                     </rowConstraints>
                     <children>
-                        <Button fx:id="btnCancelar" text="%cancelar" onAction="#actionCancelar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                            <tooltip>
-                                <Tooltip text="%tooltipCancelar" />
-                            </tooltip>
-                            <GridPane.margin>
-                                <Insets left="10.0" right="10.0" />
-                            </GridPane.margin>
+                        <Button fx:id="btnCancelar" text="%cancelar" onAction="#actionCancelar" GridPane.columnIndex="1">
+                            <tooltip><Tooltip text="%tooltipCancelar"/></tooltip>
                         </Button>
-                        <Button fx:id="btnCancelar1" text="%guardar" onAction="#actionCancelar" GridPane.columnIndex="2">
-                            <tooltip>
-                                <Tooltip text="%tooltipGuardar" />
-                            </tooltip>
-                            <GridPane.margin>
-                                <Insets left="10.0" right="10.0" />
-                            </GridPane.margin>
+                        <Button fx:id="btnGuardar" text="%guardar" onAction="#actionGuardar" GridPane.columnIndex="2">
+                            <tooltip><Tooltip text="%tooltipGuardar"/></tooltip>
                         </Button>
                     </children>
-                    <padding>
-                        <Insets top="10.0" />
-                    </padding>
-                    <BorderPane.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                    </BorderPane.margin>
                 </GridPane>
             </bottom>
+
             <top>
                 <Label text="%nuevoAlumno" BorderPane.alignment="CENTER_LEFT">
-                    <BorderPane.margin>
-                        <Insets left="20.0" top="20.0" />
-                    </BorderPane.margin>
+                    <BorderPane.margin><Insets left="20.0" top="20.0"/></BorderPane.margin>
                 </Label>
             </top>
         </BorderPane>
