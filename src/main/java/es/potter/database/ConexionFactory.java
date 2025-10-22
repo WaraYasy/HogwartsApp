@@ -32,7 +32,7 @@ public class ConexionFactory {
                 String url = Propiedades.getValor(tipo.getPrefijo() + ".url");
                 String user = Propiedades.getValor(tipo.getPrefijo() + ".user");
                 String password = Propiedades.getValor(tipo.getPrefijo() + ".password");
-                
+
                 logger.debug("Conectando a: {} ({})", tipo, url);
                 Connection conn = DriverManager.getConnection(url, user, password);
                 logger.info("Conexión establecida exitosamente: {}", tipo);
@@ -74,8 +74,8 @@ public class ConexionFactory {
      */
     public static CompletableFuture<Boolean> testConnectionAsync(TipoBaseDatos tipo) {
         return getConnectionAsync(tipo)
-                .thenCompose(conn -> 
-                    closeConnectionAsync(conn).thenApply(v -> true)
+                .thenCompose(conn ->
+                        closeConnectionAsync(conn).thenApply(v -> true)
                 )
                 .exceptionally(ex -> {
                     logger.error("Test de conexión falló para {}", tipo, ex);
