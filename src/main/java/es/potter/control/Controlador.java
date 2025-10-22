@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -83,6 +84,14 @@ public class Controlador {
         colCasa.setCellValueFactory(new PropertyValueFactory<>("casa"));
         colPatronus.setCellValueFactory(new PropertyValueFactory<>("patronus"));
 
+        // Habilitar ordenamiento en todas las columnas
+        colId.setSortable(true);
+        colNombre.setSortable(true);
+        colApellidos.setSortable(true);
+        colCurso.setSortable(true);
+        colCasa.setSortable(true);
+        colPatronus.setSortable(true);
+
         CheckBox seleccionarTodosCheckBox = new CheckBox();
         checkBox.setGraphic(seleccionarTodosCheckBox);
 
@@ -118,9 +127,11 @@ public class Controlador {
             }
         });
 
-        // Configurar filtrado de tabla
+        // Configurar filtrado y ordenamiento de tabla
         filteredList = new FilteredList<>(listaAlumnos, p -> true);
-        tablaAlumnos.setItems(filteredList);
+        SortedList<Alumno> sortedList = new SortedList<>(filteredList);
+        sortedList.comparatorProperty().bind(tablaAlumnos.comparatorProperty());
+        tablaAlumnos.setItems(sortedList);
         txtBusqueda.textProperty().addListener((obs, oldValue, newValue) -> filtrarTabla(newValue));
 
         // Quitar mensaje "Tabla sin contenido"
