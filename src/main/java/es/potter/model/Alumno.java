@@ -10,13 +10,17 @@ package es.potter.model;
  * @since 2025-10-10
  */
 public class Alumno {
-    /** Identificador único del alumno con formato de 3 letras + 5 dígitos . Ejemplo: GRY00001 */
+
+    /**
+     * Identificador único del alumno con formato de 3 letras + 5 dígitos.
+     * Ejemplo: GRY00001
+     * */
     private String id;
 
-    /** Nombre del alumno */
+    /** Nombre del alumno, no puede estar vacío */
     private String nombre;
 
-    /** Apellidos del alumno */
+    /** Apellidos del alumno, no pueden estar vacíos */
     private String apellidos;
     
     /** Curso actual del alumno (1-7) */
@@ -25,12 +29,14 @@ public class Alumno {
     /** Casa de Hogwarts a la que pertenece el alumno */
     private String casa;
     
-    /** Patronus del alumno */
+    /** Patronus del alumno, puede ser null o cadena no vacía si se proporciona */
     private String patronus;
 
     /**
      * Constructor por defecto que inicializa un alumno vacío.
      * Establece todos los valores a null o 0 según corresponda.
+     *
+     * @author Wara
      */
     public Alumno() {
         this.id = null;
@@ -49,6 +55,8 @@ public class Alumno {
      * @param curso el curso del alumno (1-7)
      * @param casa la casa de Hogwarts del alumno
      * @param patronus el patronus del alumno
+     *
+     * @author Wara
      */
     public Alumno(String nombre, String apellidos, int curso, String casa, String patronus){
         setNombre(nombre);
@@ -62,6 +70,8 @@ public class Alumno {
      * Obtiene el identificador del alumno.
      * 
      * @return el ID del alumno
+     *
+     * @author Wara
      */
     public String getId() {
         return id;
@@ -69,11 +79,13 @@ public class Alumno {
 
     /**
      * Establece el ID del alumno. Solo se puede establecer una vez.
-     * El ID debe seguir el formato de 3 letras mayúsculas + guión + 8 caracteres hexadecimales.
+     * El ID debe seguir el formato de 3 letras mayúsculas + guion + 8 caracteres hexadecimales.
      *
      * @param id el ID del alumno con formato XXX-xxxxxxxx (ej: GRY-a4f3b2c1)
      * @throws IllegalStateException si el ID ya está establecido
      * @throws IllegalArgumentException si el ID es null, vacío o no sigue el formato correcto
+     *
+     * @author Wara
      */
     public void setId(String id) {
         // Verifica si el ID ya ha sido asignado
@@ -86,7 +98,7 @@ public class Alumno {
             throw new IllegalArgumentException("El ID no puede ser nulo o vacío.");
         }
 
-        // Validación del formato: 3 letras mayúsculas + guión + 8 caracteres hexadecimales
+        // Validación del formato: 3 letras mayúsculas + guion + 8 caracteres hexadecimales
         // Ejemplo válido: GRY-a4f3b2c1
         if (!id.matches("^[A-Za-z]{3}-[a-f0-9]{8}$")) {
             throw new IllegalArgumentException("El ID debe tener el formato: XXX-xxxxxxxx (ej: GRY-a4f3b2c1)");
@@ -99,6 +111,8 @@ public class Alumno {
      * Obtiene el nombre del alumno.
      * 
      * @return el nombre del alumno
+     *
+     * @author Wara
      */
     public String getNombre() {
         return nombre;
@@ -109,6 +123,8 @@ public class Alumno {
      * 
      * @param nombre el nombre del alumno
      * @throws IllegalArgumentException si el nombre es null o está vacío
+     *
+     * @author Wara
      */
     public void setNombre(String nombre) {
         // Validación del nombre no nulo o vacío
@@ -122,6 +138,8 @@ public class Alumno {
      * Obtiene los apellidos del alumno.
      *
      * @return los apellidos del alumno
+     *
+     * @author Wara
      */
     public String getApellidos() {
         return apellidos;
@@ -132,6 +150,8 @@ public class Alumno {
      *
      * @param apellidos los apellidos del alumno
      * @throws IllegalArgumentException si el campo apellidos es null o está vacío
+     *
+     * @author Wara
      */
     public void setApellidos(String apellidos) {
         // Validación del apellidos no nulo o vacío
@@ -140,10 +160,13 @@ public class Alumno {
         }
         this.apellidos = apellidos;
     }
+
     /**
      * Obtiene el curso del alumno.
      * 
      * @return el curso del alumno (1-7)
+     *
+     * @author Wara
      */
     public int getCurso() {
         return curso;
@@ -154,6 +177,8 @@ public class Alumno {
      * 
      * @param curso el curso del alumno (debe estar entre 1 y 7)
      * @throws IllegalArgumentException si el curso no está entre 1 y 7
+     *
+     * @author Wara
      */
     public void setCurso(int curso) {
         // Validación del curso entre 1 y 7
@@ -167,6 +192,8 @@ public class Alumno {
      * Obtiene la casa de Hogwarts del alumno.
      * 
      * @return la casa del alumno
+     *
+     * @author Wara
      */
     public String getCasa() {
         return casa;
@@ -178,6 +205,8 @@ public class Alumno {
      * 
      * @param casa la casa del alumno
      * @throws IllegalArgumentException si la casa es null o no es válida
+     *
+     * @author Wara
      */
     public void setCasa(String casa) {
         // Validación de la casa no nula y válida
@@ -199,6 +228,8 @@ public class Alumno {
      * Obtiene el patronus del alumno.
      * 
      * @return el patronus del alumno
+     *
+     * @author Wara
      */
     public String getPatronus() {
         return patronus;
@@ -209,6 +240,8 @@ public class Alumno {
      * 
      * @param patronus el patronus del alumno (puede ser null)
      * @throws IllegalArgumentException si el patronus está vacío pero no es null
+     *
+     * @author Wara
      */
     public void setPatronus(String patronus) {
         // Validación del patronus no vacío si se proporciona
@@ -218,6 +251,13 @@ public class Alumno {
         this.patronus = patronus;
     }
 
+    /**
+     * Representación textual con nombre, casa y curso.
+     *
+     * @return String descriptivo del alumno
+     *
+     * @author Marco
+     */
     public String toString(){
         return "Alumno "+this.nombre+". Casa: "+this.casa+"\n Curso: "+this.curso;
     }
