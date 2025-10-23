@@ -8,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,11 +17,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.IOException;
@@ -31,55 +31,107 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Controlador principal de la aplicación HogwartsApp.
+ * Gestiona la interacción con la tabla de alumnos, botones y cargas de datos
+ * desde las diferentes bases de datos (casas).
+ * Proporciona funcionalidades CRUD (crear, leer, actualizar, eliminar)
+ * y opciones de sincronización, filtrado y ayuda.
+ *
+ * @author Marco
+ * @version 1.0
+ * @since 2025-10-23
+ */
 public class ControladorPrincipal {
 
-    private ObservableList<Alumno> listaAlumnos = FXCollections.observableArrayList();
-    private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
+    /** Lista observable con todos los alumnos cargados actualmente */
+    private final ObservableList<Alumno> listaAlumnos = FXCollections.observableArrayList();
 
-    /** Tipo de base de datos actual */
+    /** Mapa que relaciona cada alumno con su CheckBox correspondiente */
+    private final Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
+
+    /** Tipo de base de datos actual seleccionada */
     private TipoBaseDatos baseDatosActual = TipoBaseDatos.MARIADB;
 
+    /** Botones principales para la gestión de alumnos en la interfaz: editar, eliminar y nuevo. */
     @FXML
-    private Button btnCerrar, btnEditar, btnEliminar, btnGryffindor,
-            btnHogwarts, btnHufflepuff, btnNuevo, btnRavenclaw, btnRecargar, btnSlytherin;
+    private Button btnEditar, btnEliminar, btnNuevo;
 
+    /** Columnas con checkboxes para seleccionar múltiples alumnos en la tabla. */
     @FXML
     private TableColumn<Alumno, Void> checkBox;
 
+    /** Columna que muestra el ID del alumno. */
     @FXML
     private TableColumn<Alumno, String> colId;
 
+    /** Columna que muestra el nombre del alumno. */
     @FXML
     private TableColumn<Alumno, String> colNombre;
 
+    /** Columna que muestra los apellidos del alumno. */
     @FXML
     private TableColumn<Alumno, String> colApellidos;
 
+    /** Columna que muestra el curso del alumno (número entero). */
     @FXML
     private TableColumn<Alumno, Integer> colCurso;
 
+    /** Columna que muestra la casa asignada al alumno. */
     @FXML
     private TableColumn<Alumno, String> colCasa;
 
+    /** Columna que muestra el patronus del alumno. */
     @FXML
     private TableColumn<Alumno, String> colPatronus;
 
+    /** Tabla que muestra la lista completa de alumnos. */
     @FXML
     private TableView<Alumno> tablaAlumnos;
 
+    /** Campo de texto para ingresar filtros o búsquedas sobre la tabla */
     @FXML
     private TextField txtBusqueda;
 
+    /** Indicador visual de progreso para operaciones asíncronas (carga, sincronización...). */
     @FXML
-    private javafx.scene.control.ProgressIndicator progressIndicator;
+    private ProgressIndicator progressIndicator;
 
+    /** Bundle del sistema de internacionalización */
     private ResourceBundle bundle;
+
+    /** Lista filtrada utilizada para búsquedas en tabla */
     private FilteredList<Alumno> filteredList;
 
+    /** Logger SLF4J para la clase ControladorPrincipal */
+    private static final Logger logger = LoggerFactory.getLogger(ControladorPrincipal.class);
+
+    /**
+     * Inicializa todos los elementos visuales, listeners y bindings en la interfaz.
+     * Se ejecuta automáticamente al cargar la vista principal.
+     *
+     * @author Marco
+     */
     @FXML
     public void initialize() {
         bundle = ResourceBundle.getBundle("es.potter.mensajes", Locale.getDefault());
 
+        configurarColumnas();
+        configurarSeleccionMultiple();
+        configurarFiltrado();
+        configurarAnchosColumnas();
+        inicializarBotones();
+
+        // Cargar datos iniciales desde la base de datos master
+        cargarAlumnosPorCasa(baseDatosActual);
+    }
+
+    /**
+     * Configura el mapeo de propiedades con las columnas de la tabla.
+     *
+     * @author Marco
+     */
+    private void configurarColumnas() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
@@ -94,7 +146,14 @@ public class ControladorPrincipal {
         colCurso.setSortable(true);
         colCasa.setSortable(true);
         colPatronus.setSortable(true);
+    }
 
+    /**
+     * Configura la columnas de selección múltiple y los checkboxes individuales.
+     *
+     * @author Marco
+     */
+    private void configurarSeleccionMultiple() {
         CheckBox seleccionarTodosCheckBox = new CheckBox();
         checkBox.setGraphic(seleccionarTodosCheckBox);
 
@@ -129,7 +188,14 @@ public class ControladorPrincipal {
                 cb.setSelected(seleccionado);
             }
         });
+    }
 
+    /**
+     * Configura el comportamiento de búsqueda y filtrado en la tabla.
+     *
+     * @author Marco
+     */
+    private void configurarFiltrado() {
         // Configurar filtrado y ordenamiento de tabla
         filteredList = new FilteredList<>(listaAlumnos, p -> true);
         SortedList<Alumno> sortedList = new SortedList<>(filteredList);
@@ -138,8 +204,15 @@ public class ControladorPrincipal {
         txtBusqueda.textProperty().addListener((obs, oldValue, newValue) -> filtrarTabla(newValue));
 
         // Quitar mensaje "Tabla sin contenido"
-        tablaAlumnos.setPlaceholder(new javafx.scene.control.Label(""));
+        tablaAlumnos.setPlaceholder(new Label(""));
+    }
 
+    /**
+     * Define los anchos proporcionales de las columnas respecto al tamaño de la tabla.
+     *
+     * @author Marco
+     */
+    private void configurarAnchosColumnas() {
         // Configurar anchos de columnas proporcionales
         tablaAlumnos.widthProperty().addListener((obs, oldWidth, newWidth) -> {
             double tableWidth = newWidth.doubleValue();
@@ -152,15 +225,26 @@ public class ControladorPrincipal {
             colCasa.setPrefWidth(tableWidth * 0.107);       // 83/774 = 10.7%
             colPatronus.setPrefWidth(tableWidth * 0.111);   // 86/774 = 11.1%
         });
+    }
 
+    /**
+     * Inicializa los botones con los estados por defecto (deshabilitados)
+     *
+     * @author Marco
+     */
+    private void inicializarBotones() {
         // Inicializar botones deshabilitados
         btnEditar.setDisable(true);
         btnEliminar.setDisable(true);
-
-        // Cargar datos iniciales desde la base de datos master
-        cargarAlumnosPorCasa(baseDatosActual);
     }
 
+    /**
+     * Filtra el contenido de la tabla en función del texto introducido en el campo de búsqueda.
+     *
+     * @param texto Texto de búsqueda introducido por el usuario.
+     *
+     * @author Marco
+     */
     private void filtrarTabla(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             filteredList.setPredicate(a -> true);
@@ -168,21 +252,38 @@ public class ControladorPrincipal {
             String filtro = texto.toLowerCase();
             filteredList.setPredicate(a ->
                     a.getNombre().toLowerCase().contains(filtro) ||
-                            a.getApellidos().toLowerCase().contains(filtro) ||
-                            a.getCasa().toLowerCase().contains(filtro) ||
-                            a.getId().toLowerCase().contains(filtro)
+                    a.getApellidos().toLowerCase().contains(filtro) ||
+                    a.getCasa().toLowerCase().contains(filtro) ||
+                    a.getId().toLowerCase().contains(filtro)
             );
         }
     }
 
+    /**
+     * Actualiza el estado (habilitado/deshabilitado) de los botones
+     * según los alumnos seleccionados.
+     *
+     * @author Marco
+     */
     private void actualizarEstadoBotones() {
         long seleccionados = checkBoxMap.values().stream().filter(CheckBox::isSelected).count();
         btnEditar.setDisable(seleccionados != 1);
         btnEliminar.setDisable(seleccionados == 0);
     }
 
+    /**
+     * Elimina los alumnos seleccionados tras mostrar un mensaje de confirmación.
+     * Este metodo:
+     * 1. Muestra una alerta al usuario para confirmar la eliminación.
+     * 2. Ejecuta las eliminaciones de forma asíncrona utilizando CompletableFuture.
+     * 3. Actualiza la interfaz (tabla y botones) en el hilo de JavaFX una vez finalizado el proceso.
+     * Se eliminan los alumnos de todas las bases de datos (master y slaves).
+     * Si ocurre un error, se muestra una alerta de tipo ERROR.
+     *
+     * @author Wara
+     */
     @FXML
-    void actionEliminar(ActionEvent event) {
+    void actionEliminar() {
         List<Alumno> alumnosSeleccionados = obtenerAlumnosSeleccionados();
         if (alumnosSeleccionados.isEmpty()) return;
 
@@ -228,34 +329,28 @@ public class ControladorPrincipal {
                     checkBoxMap.values().forEach(cb -> cb.setSelected(false));
                     tablaAlumnos.refresh();
                     actualizarEstadoBotones();
-
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Eliminación exitosa");
-                    alert.setHeaderText("Alumnos eliminados");
-                    alert.setContentText(alumnosSeleccionados.size() + " alumno(s) eliminado(s) correctamente.");
-                    alert.showAndWait();
+                    mandarAlertas(Alert.AlertType.INFORMATION,  bundle.getString("eliminacionExitosa"), bundle.getString("alumnosEliminados"), alumnosSeleccionados.size() + " " + bundle.getString("contenidoEliminadoCorrectamente"));
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Eliminación parcial");
-                    alert.setHeaderText("Algunos alumnos no se pudieron eliminar");
-                    alert.setContentText("Revisa los logs para más detalles.");
-                    alert.showAndWait();
+                    mandarAlertas(Alert.AlertType.WARNING, bundle.getString("eliminacionParcial"), bundle.getString("noSePuedenEliminar"), bundle.getString("contenidoRevisarLogs"));
                 }
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
                     progressIndicator.setVisible(false);
 
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Error al eliminar alumnos");
-                    alert.setContentText("No se pudieron eliminar: " + ex.getMessage());
-                    alert.showAndWait();
+                    mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("errorEliminarAlumno"), bundle.getString("contenidoNoSePuedeEliminar") + " " + ex.getMessage());
                 });
                 return null;
             });
     }
 
+    /**
+     * Obtiene los alumnos actualmente seleccionados en la tabla.
+     *
+     * @return Lista de alumnos seleccionados
+     *
+     * @author Marco
+     */
     private List<Alumno> obtenerAlumnosSeleccionados() {
         List<Alumno> seleccionados = new ArrayList<>();
         for (Map.Entry<Alumno, CheckBox> entry : checkBoxMap.entrySet()) {
@@ -266,8 +361,13 @@ public class ControladorPrincipal {
         return seleccionados;
     }
 
+    /**
+     * Cierra la aplicación con confirmación del usuario.
+     *
+     * @author Marco
+     */
     @FXML
-    void actionCerrar(ActionEvent e) {
+    void actionCerrar() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar salida");
         alert.setHeaderText("¿Desea cerrar la aplicación?");
@@ -284,6 +384,14 @@ public class ControladorPrincipal {
         }
     }
 
+    /**
+     * Sincroniza las bases de datos "slave" con la base de datos "master" a través de un proceso asíncrono.
+     * Si el proceso de sincronización tiene éxito, se muestra un mensaje informativo y se recargan los alumnos
+     * de la base de datos actualmente seleccionada.
+     * Si ocurre un error, se muestra una alerta con el mensaje de error detallado.
+     *
+     * @author Marco
+     */
     @FXML
     void actionRecargar() {
         // Mostrar alerta de confirmación antes de sincronizar
@@ -311,47 +419,34 @@ public class ControladorPrincipal {
                 progressIndicator.setVisible(false);
 
                 if (exito) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Sincronización");
-                    alert.setHeaderText("Sincronización completada");
-                    alert.setContentText("Todas las bases de datos han sido sincronizadas exitosamente desde Master.");
-                    alert.showAndWait();
+                    mandarAlertas(Alert.AlertType.INFORMATION, bundle.getString("sincronizacion"), bundle.getString("sincronizacionCompletada"),bundle.getString("contenidoSincronizacion"));
 
                     // Recargar vista actual
                     cargarAlumnosPorCasa(baseDatosActual);
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Sincronización");
-                    alert.setHeaderText("Sincronización parcial");
-                    alert.setContentText("Algunas bases de datos no pudieron sincronizarse. Revisa los logs.");
-                    alert.showAndWait();
+                    mandarAlertas(Alert.AlertType.WARNING, bundle.getString("sincronizacion"), bundle.getString("sincronizacionParcial"), bundle.getString("contenidoSincronizacionParcial"));
                 }
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
                     progressIndicator.setVisible(false);
 
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Error en sincronización");
-                    alert.setContentText("No se pudo sincronizar: " + ex.getMessage());
-                    alert.showAndWait();
+                    mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("errorSincronizacion"), bundle.getString("contenidoErrorSincronizar") + " " + ex.getMessage());
                 });
                 return null;
             });
     }
 
+    /**
+     * Muestra una ventana modal con información sobre los desarrolladores de la aplicación HogwartsApp
+     * y un enlace a la guía rápida en línea.
+     * Utiliza un componente {@link javafx.scene.control.Hyperlink Hyperlink} para abrir una URL externa
+     * en el navegador predeterminado.
+     *
+     * @author Marco
+     */
     @FXML
-    void actionArchivo(ActionEvent e) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Archivo");
-        alert.setHeaderText("Opciones de archivo");
-        alert.setContentText("Funcionalidad de archivo disponible aquí.");
-        alert.showAndWait();
-    }
-
-    @FXML
-    void actionAyuda(ActionEvent e) {
+    void actionAyuda() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Sobre HogwartsApp");
         alert.setHeaderText("HogwartsApp");
@@ -369,7 +464,7 @@ public class ControladorPrincipal {
                     new URI("https://drive.google.com/file/d/1NNKw8lqIA9fLnGyaAIynb3-7H5PA6mqZ/view?usp=sharing")
                 );
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.error("Error al abrir el enlace de la Guía Rápida en el navegador", ex);
             }
         });
         content.getChildren().add(link);
@@ -378,12 +473,21 @@ public class ControladorPrincipal {
         alert.showAndWait();
     }
 
+    /**
+     * Abre una ventana modal que permite editar la información de un único alumno seleccionado.
+     * Si hay más de un alumno marcado o ninguno, no hace nada.
+     * Carga el archivo FXML correspondiente al editor, inicializa su controlador
+     * y muestra el diálogo de manera modal.
+     * Al cerrarse, actualiza la tabla principal y reestablece los checkboxes.
+     *
+     * @author Marco
+     */
     @FXML
-    void actionEditar(ActionEvent e) {
+    void actionEditar() {
         List<Alumno> seleccionados = obtenerAlumnosSeleccionados();
         if (seleccionados.size() != 1) return;
 
-        Alumno alumnoSeleccionado = seleccionados.get(0);
+        Alumno alumnoSeleccionado = seleccionados.getFirst();
 
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -409,17 +513,22 @@ public class ControladorPrincipal {
             actualizarEstadoBotones();
 
         } catch (IOException ex) {
-            ex.printStackTrace();
-            Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle(bundle.getString("error"));
-            error.setHeaderText(bundle.getString("ficheroNoCargado"));
-            error.setContentText(bundle.getString("verificaRuta"));
-            error.showAndWait();
+            logger.error("Error al cargar modal para editar alumno con ID {}", alumnoSeleccionado.getId(), ex);
+            mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("ficheroNoCargado"), bundle.getString("verificaRuta"));
         }
     }
 
+    /**
+     * Abre una ventana modal para registrar un nuevo alumno en la base de datos.
+     * Carga el formulario definido en el archivo FXML "modalNuevoAlumno.fxml",
+     * configura el controlador hijo con los datos compartidos
+     * y muestra la ventana de manera modal sobre la principal.
+     * Una vez cerrada la ventana, actualiza la tabla principal para reflejar los cambios.
+     *
+     * @author Marco
+     */
     @FXML
-    void actionNuevo(ActionEvent e) {
+    void actionNuevo() {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/es/potter/fxml/modalNuevoAlumno.fxml"),
@@ -444,26 +553,18 @@ public class ControladorPrincipal {
             modalStage.showAndWait();
 
         } catch (IOException ex) {
-            ex.printStackTrace();
-            Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle(bundle.getString("error"));
-            error.setHeaderText(bundle.getString("ficheroNoCargado"));
-            error.setContentText(bundle.getString("verificaRuta"));
-            error.showAndWait();
+            logger.error("Error al cargar modal para nuevo alumno", ex);
+            mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("ficheroNoCargado"), bundle.getString("verificaRuta"));
         }
     }
 
-    @FXML
-    void actionGryffindor(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.GRYFFINDOR); }
-    @FXML
-    void actionSlytherin(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.SLYTHERIN); }
-    @FXML
-    void actionRavenclaw(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.RAVENCLAW); }
-    @FXML
-    void actionHufflepuff(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.HUFFLEPUFF); }
-    @FXML
-    void actionHogwarts(ActionEvent e) { cargarAlumnosPorCasa(TipoBaseDatos.MARIADB); }
-
+    /**
+     * Carga y muestra los alumnos según la casa o base de datos indicada.
+     *
+     * @param tipoBase Tipo de base de datos a cargar (MariaDB, Gryffindor...)
+     *
+     * @author Marco
+     */
     private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase) {
         baseDatosActual = tipoBase;
         listaAlumnos.clear();
@@ -485,21 +586,88 @@ public class ControladorPrincipal {
                     progressIndicator.setVisible(false);
                 }))
                 .exceptionally(ex -> {
-                    ex.printStackTrace();
+                    logger.error("Error cargando alumnos de la base de datos {}: {}", tipoBase, ex.getMessage());
                     Platform.runLater(() -> {
                         // Ocultar indicador de progreso en caso de error
                         progressIndicator.setVisible(false);
 
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error al cargar alumnos");
-                        alert.setHeaderText("No se pudieron cargar los alumnos de " + tipoBase);
-                        alert.setContentText(ex.getMessage());
-                        alert.showAndWait();
+                        mandarAlertas(Alert.AlertType.ERROR, bundle.getString("errorCargarAlumnos"), bundle.getString("noPuedeCargarAlumnos") + " " + tipoBase, ex.getMessage());
                     });
                     return null;
                 });
     }
 
-    @FXML void clickElementoTabla(MouseEvent e) {}
-    @FXML void actionBusqueda(ActionEvent e) {}
+    /**
+     * Muestra una alerta JavaFX con los datos proporcionados.
+     *
+     * @param tipo Tipo de alerta (INFO, WARNING, ERROR...)
+     * @param titulo Título de la alerta
+     * @param mensajeTitulo Encabezado del mensaje
+     * @param mensaje Contenido del mensaje
+     *
+     * @author Erlantz
+     */
+    private void mandarAlertas(Alert.AlertType tipo, String titulo, String mensajeTitulo, String mensaje) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(mensajeTitulo);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+
+    /**
+     * Carga los alumnos de la casa Gryffindor.
+     *
+     * @author Marco
+     */
+    @FXML
+    void actionGryffindor() { cargarAlumnosPorCasa(TipoBaseDatos.GRYFFINDOR); }
+
+    /**
+     * Carga los alumnos de la casa Slytherin.
+     *
+     * @author Marco
+     */
+    @FXML
+    void actionSlytherin() { cargarAlumnosPorCasa(TipoBaseDatos.SLYTHERIN); }
+
+    /**
+     * Carga los alumnos de la casa Ravenclaw.
+     *
+     * @author Marco
+     */
+    @FXML
+    void actionRavenclaw() { cargarAlumnosPorCasa(TipoBaseDatos.RAVENCLAW); }
+
+    /**
+     * Carga los alumnos de la casa Hufflepuff.
+     *
+     * @author Marco
+     */
+    @FXML
+    void actionHufflepuff() { cargarAlumnosPorCasa(TipoBaseDatos.HUFFLEPUFF); }
+
+    /**
+     * Carga todos los alumnos de Hogwarts (base de datos principal).
+     *
+     * @author Marco
+     */
+    @FXML
+    void actionHogwarts() { cargarAlumnosPorCasa(TipoBaseDatos.MARIADB); }
+
+    /**
+     * Evento para detectar clic en un elemento de la tabla.
+     * Actualmente sin implementación.
+     *
+     * @author Marco
+     */
+    @FXML void clickElementoTabla() {}
+
+    /**
+     * Evento disparado al realizar una acción de búsqueda.
+     * Actualmente sin implementación.
+     *
+     * @author Marco
+     */
+    @FXML void actionBusqueda() {}
 }
