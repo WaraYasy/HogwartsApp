@@ -1,9 +1,9 @@
 
 
-# TÍTULO DEL PROYECTO O REPOSITORIO
+# Aplicacion de Base de Datos de la Casa Hogwarts
 
 ## 📖 Descripción del repositorio
-Este proyecto es una aplicación Java diseñada para la gestión de el Colegio de Hogwarts. Utiliza **JavaFX** para la interfaz de usuario, una base de datos para la gestión de información.
+Este proyecto es una aplicación Java diseñada para la gestión de las Bases de Datos del Colegio de Hogwarts. Utiliza **JavaFX** para la interfaz de usuario, una base de datos para la gestión de información.
 
 ## 📂 Estructura del Proyecto
 
@@ -123,12 +123,6 @@ Archivos de traducción de la interfaz y mensajes del sistema.
 ## ⚙️ Requisitos de la aplicación
 - ☕ **JDK 24**
 - 🎭 **JavaFX 24**
-- 🗄️ **Oracle**
-- 🗄️ **MariaDB**
-- 🗄️ **H2**
-- 🗄️ **SQLite**
-- 🗄️ **HSQLDB**
-- 🗄️ **ApacheDerby**
 
 ## 🚀 Instalación y Ejecución
 1. Abrir el enlace proporcionado para la conexion remota
