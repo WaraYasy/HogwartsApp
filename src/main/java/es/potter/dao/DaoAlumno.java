@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture;
  * Los métodos retornan CompletableFuture para operaciones no bloqueantes.
  * Se recomienda manejar las excepciones verificadas con logging adecuado.
  *
- * @author Wara Pacheco
+ * @author Wara
  * @version 3.0
  */
 public class DaoAlumno {
