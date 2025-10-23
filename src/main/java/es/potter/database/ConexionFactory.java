@@ -97,9 +97,10 @@ public class ConexionFactory {
      *
      * @author Wara
      */
+
     public static CompletableFuture<Boolean> testConnectionAsync(TipoBaseDatos tipo) {
         return getConnectionAsync(tipo)
-                .thenCompose(conn -> 
+                .thenCompose(conn ->
                     closeConnectionAsync(conn).thenApply(v -> true)
                 )
                 .exceptionally(ex -> {
