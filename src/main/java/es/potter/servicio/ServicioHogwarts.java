@@ -15,19 +15,22 @@ import java.util.stream.Collectors;
 
 /**
  * Servicio de alumnos con arquitectura Master-Slave.
- *
  * ARQUITECTURA:
  * - MariaDB = MASTER (fuente de verdad única)
  * - Casas (Gryffindor, Slytherin, Ravenclaw, Hufflepuff) = SLAVES
  * - SQLite = SLAVE (backup local completo)
- *
  * GARANTÍAS:
  * - Consistencia: Todas las operaciones se completan en las 3 bases o ninguna
  * - Persistencia: Los datos se mantienen en MASTER + 2 SLAVES
- * - Recuperación: Método de sincronización desde MASTER
+ * - Recuperación: Metodo de sincronización desde MASTER
+ *
+ * @author Marco, Wara
+ * @version 1.0
+ * @since 2025-10-23
  */
 public class ServicioHogwarts {
 
+    /** Logger SLF4J para la clase ServicioHogwarts */
     private static final Logger logger = LoggerFactory.getLogger(ServicioHogwarts.class);
 
     // Casas de Hogwarts (SLAVES)
@@ -41,14 +44,23 @@ public class ServicioHogwarts {
 
     // ==================== CARGAR ====================
     /**
-     * Carga todos los alumnos desde MASTER (MariaDB).
+     * Carga todos los alumnos desde la base de datos MASTER (MariaDB).
+     *
+     * @return CompletableFuture con la lista observable de alumnos cargada desde MariaDB.
+     *
+     * @author Marco
      */
     public static CompletableFuture<ObservableList<Alumno>> cargarAlumnos() {
         return DaoAlumno.cargarAlumnos(TipoBaseDatos.MARIADB);
     }
 
     /**
-     * Carga alumnos desde una base específica.
+     * Carga todos los alumnos desde una base de datos específica.
+     *
+     * @param tipo Tipo de base de datos desde la que se cargan los alumnos.
+     * @return CompletableFuture con la lista observable de alumnos.
+     *
+     * @author Marco
      */
     public static CompletableFuture<ObservableList<Alumno>> cargarAlumnosDesde(TipoBaseDatos tipo) {
         return DaoAlumno.cargarAlumnos(tipo);
@@ -60,6 +72,11 @@ public class ServicioHogwarts {
     /**
      * Crea un alumno en 3 bases: MASTER + Casa + SQLite.
      * Solo retorna true si se guarda en TODAS.
+     *
+     * @param alumno Alumno a crear
+     * @return CompletableFuture que indica true si se guardó correctamente en todas las bases.
+     *
+     * @author Marco
      */
     public static CompletableFuture<Boolean> nuevoAlumno(Alumno alumno) {
         logger.info("Creando alumno '{}' en sistema Master-Slave", alumno.getNombre());
@@ -79,6 +96,11 @@ public class ServicioHogwarts {
     /**
      * Elimina un alumno de 3 bases: MASTER + Casa + SQLite.
      * Solo retorna true si se elimina de TODAS.
+     *
+     * @param alumno Alumno a eliminar.
+     * @return CompletableFuture que indica true si se eliminó correctamente en todas las bases.
+     *
+     * @author Marco
      */
     public static CompletableFuture<Boolean> eliminarAlumno(Alumno alumno) {
         logger.info("Eliminando alumno '{}' del sistema Master-Slave", alumno.getNombre());
@@ -96,8 +118,13 @@ public class ServicioHogwarts {
     }
 
     /**
-     * Modifica un alumno en 3 bases: MASTER + Casa + SQLite.
-     * Solo retorna true si se modifica en TODAS.
+     * Modifica un alumno en las tres bases: MASTER + Casa + SQLite.
+     *
+     * @param id Identificador del alumno a modificar.
+     * @param alumno Datos nuevos del alumno.
+     * @return CompletableFuture que indica true si la modificación fue exitosa en todas las bases.
+     *
+     * @author Marco
      */
     public static CompletableFuture<Boolean> modificarAlumno(String id, Alumno alumno) {
         logger.info("Modificando alumno '{}' en sistema Master-Slave", alumno.getNombre());
@@ -115,8 +142,12 @@ public class ServicioHogwarts {
     }
 
     /**
-     * Guarda o actualiza un alumno (UPSERT).
-     * Intenta modificar, si falla entonces crea.
+     * Guarda o actualiza un alumno. Si el alumno no existe, lo crea.
+     *
+     * @param alumno Alumno a guardar o actualizar.
+     * @return CompletableFuture que indica true si la operación se realizó correctamente.
+     *
+     * @author Wara
      */
     public static CompletableFuture<Boolean> guardarOActualizarAlumno(Alumno alumno) {
         logger.debug("Guardando/actualizando alumno: {}", alumno.getId());
@@ -142,12 +173,13 @@ public class ServicioHogwarts {
 
     /**
      * Sincroniza una lista de cambios en lote al sistema Master-Slave.
-     * - Procesa eliminaciones
-     * - Procesa creaciones/modificaciones (upsert)
+     * Procesa eliminaciones y actualizaciones/creaciones.
      *
      * @param alumnos Lista actual de alumnos a guardar/actualizar
      * @param alumnosEliminados Lista de alumnos a eliminar
      * @return CompletableFuture que retorna true si todas las operaciones fueron exitosas
+     *
+     * @author Wara
      */
     public static CompletableFuture<Boolean> sincronizarCambiosEnLote(
             List<Alumno> alumnos,
@@ -178,17 +210,17 @@ public class ServicioHogwarts {
                 boolean todasExitosas = exitosas == operaciones.size();
 
                 if (todasExitosas) {
-                    logger.info("Sincronizacion en lote completada: {}/{} operaciones exitosas",
+                    logger.info("Sincronización en lote completada: {}/{} operaciones exitosas",
                                exitosas, operaciones.size());
                 } else {
-                    logger.warn("Sincronizacion en lote parcial: {}/{} operaciones exitosas",
+                    logger.warn("Sincronización en lote parcial: {}/{} operaciones exitosas",
                                exitosas, operaciones.size());
                 }
 
                 return todasExitosas;
             })
             .exceptionally(ex -> {
-                logger.error("Error en sincronizacion en lote: {}", ex.getMessage());
+                logger.error("Error en sincronización en lote: {}", ex.getMessage());
                 return false;
             });
     }
@@ -196,9 +228,12 @@ public class ServicioHogwarts {
     // ==================== SINCRONIZACIÓN ====================
 
     /**
-     * Sincroniza todas las bases desde MASTER.
-     * - Cada casa recibe solo sus alumnos
-     * - SQLite recibe todos los alumnos
+     * Sincroniza todas las bases de datos desde MASTER.
+     * Cada casa recibe solo sus alumnos; SQLite recibe todos.
+     *
+     * @return CompletableFuture indicando si todas las sincronizaciones fueron exitosas.
+     *
+     * @author Marco
      */
     public static CompletableFuture<Boolean> sincronizarDesdeMaster() {
         logger.info("🔄 Iniciando sincronización completa desde MASTER...");
@@ -241,9 +276,12 @@ public class ServicioHogwarts {
     }
 
     /**
-     * Sincroniza una base específica desde MASTER.
-     * - Si es casa: solo sus alumnos
-     * - Si es SQLite: todos los alumnos
+     * Sincroniza una base específica desde el MASTER.
+     *
+     * @param tipo Tipo de base de datos a sincronizar.
+     * @return CompletableFuture que indica true si la sincronización fue exitosa.
+     *
+     * @author Marco
      */
     public static CompletableFuture<Boolean> sincronizarBaseDesdeMaster(TipoBaseDatos tipo) {
         logger.info("🔄 Sincronizando {} desde MASTER...", tipo);
@@ -277,7 +315,12 @@ public class ServicioHogwarts {
     // ==================== MÉTODOS PRIVADOS ====================
 
     /**
-     * Copia un alumno a su casa y SQLite.
+     * Copia un alumno a su casa correspondiente y a SQLite.
+     *
+     * @param alumno alumno a copiar.
+     * @return CompletableFuture que indica true si se copió correctamente en ambas bases.
+     *
+     * @author Marco
      */
     private static CompletableFuture<Boolean> copiarASlaves(Alumno alumno) {
         TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
@@ -299,7 +342,12 @@ public class ServicioHogwarts {
     }
 
     /**
-     * Elimina un alumno de su casa y SQLite.
+     * Elimina un alumno de su casa y de SQLite.
+     *
+     * @param alumno alumno que se debe eliminar.
+     * @return CompletableFuture con true si se eliminó correctamente en ambas bases.
+     *
+     * @author Marco
      */
     private static CompletableFuture<Boolean> eliminarDeSlaves(Alumno alumno) {
         TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
@@ -321,7 +369,13 @@ public class ServicioHogwarts {
     }
 
     /**
-     * Modifica un alumno en su casa y SQLite.
+     * Modifica los datos de un alumno en su casa y en SQLite.
+     *
+     * @param id identificador del alumno.
+     * @param alumno datos nuevos del alumno.
+     * @return CompletableFuture con true si la modificación fue exitosa en ambas bases.
+     *
+     * @author Marco
      */
     private static CompletableFuture<Boolean> modificarEnSlaves(String id, Alumno alumno) {
         TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
@@ -343,8 +397,13 @@ public class ServicioHogwarts {
     }
 
     /**
-     * Sincroniza un slave con datos del master.
-     * Inserta solo los alumnos que faltan.
+     * Sincroniza un slave con los datos del MASTER, insertando los alumnos faltantes.
+     *
+     * @param alumnosMaster lista de alumnos en MASTER.
+     * @param slave base de datos slave a sincronizar.
+     * @return CompletableFuture con true si la sincronización fue completa.
+     *
+     * @author Marco
      */
     private static CompletableFuture<Boolean> sincronizarSlave(List<Alumno> alumnosMaster, TipoBaseDatos slave) {
         logger.debug("Sincronizando {} con {} alumnos del MASTER", slave, alumnosMaster.size());
@@ -394,7 +453,13 @@ public class ServicioHogwarts {
     }
 
     /**
-     * Filtra alumnos por casa.
+     * Filtra los alumnos por nombre de casa.
+     *
+     * @param alumnos lista de alumnos a filtrar.
+     * @param casa nombre de la casa.
+     * @return lista filtrada de alumnos de la casa especificada.
+     *
+     * @author Marco
      */
     private static List<Alumno> filtrarPorCasa(List<Alumno> alumnos, String casa) {
         return alumnos.stream()
