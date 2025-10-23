@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * - Persistencia: Los datos se mantienen en MASTER + 2 SLAVES
  * - Recuperación: Metodo de sincronización desde MASTER
  *
- * @author Marco, Wara
+ * @author Marco
  * @version 1.0
  * @since 2025-10-23
  */
@@ -139,90 +139,6 @@ public class ServicioHogwarts {
                     logger.info("✅ Modificado en MASTER, sincronizando slaves...");
                     return modificarEnSlaves(id, alumno);
                 });
-    }
-
-    /**
-     * Guarda o actualiza un alumno. Si el alumno no existe, lo crea.
-     *
-     * @param alumno Alumno a guardar o actualizar.
-     * @return CompletableFuture que indica true si la operación se realizó correctamente.
-     *
-     * @author Wara
-     */
-    public static CompletableFuture<Boolean> guardarOActualizarAlumno(Alumno alumno) {
-        logger.debug("Guardando/actualizando alumno: {}", alumno.getId());
-
-        // Primero intenta modificar en MASTER
-        return DaoAlumno.modificarAlumno(alumno.getId(), alumno, TipoBaseDatos.MARIADB)
-            .exceptionally(ex -> {
-                logger.debug("Alumno {} no existe en MASTER, creando...", alumno.getId());
-                return false;
-            })
-            .thenCompose(exito -> {
-                if (exito) {
-                    // Ya existía, sincronizar a slaves
-                    logger.debug("Alumno {} modificado, sincronizando slaves...", alumno.getId());
-                    return modificarEnSlaves(alumno.getId(), alumno);
-                } else {
-                    // No existía, crear en todas las bases
-                    logger.debug("Creando alumno {} en todas las bases", alumno.getId());
-                    return nuevoAlumno(alumno);
-                }
-            });
-    }
-
-    /**
-     * Sincroniza una lista de cambios en lote al sistema Master-Slave.
-     * Procesa eliminaciones y actualizaciones/creaciones.
-     *
-     * @param alumnos Lista actual de alumnos a guardar/actualizar
-     * @param alumnosEliminados Lista de alumnos a eliminar
-     * @return CompletableFuture que retorna true si todas las operaciones fueron exitosas
-     *
-     * @author Wara
-     */
-    public static CompletableFuture<Boolean> sincronizarCambiosEnLote(
-            List<Alumno> alumnos,
-            List<Alumno> alumnosEliminados
-    ) {
-        logger.info("Sincronizando cambios en lote: {} alumnos, {} eliminaciones",
-                    alumnos.size(), alumnosEliminados.size());
-
-        List<CompletableFuture<Boolean>> operaciones = new ArrayList<>();
-
-        //  Procesar eliminaciones
-        for (Alumno alumno : alumnosEliminados) {
-            operaciones.add(eliminarAlumno(alumno));
-        }
-
-        // Procesar alumnos (upsert: modificar o crear)
-        for (Alumno alumno : alumnos) {
-            operaciones.add(guardarOActualizarAlumno(alumno));
-        }
-
-        // Esperar a que todas terminen
-        return CompletableFuture.allOf(operaciones.toArray(new CompletableFuture[0]))
-            .thenApply(v -> {
-                long exitosas = operaciones.stream()
-                    .filter(CompletableFuture::join)
-                    .count();
-
-                boolean todasExitosas = exitosas == operaciones.size();
-
-                if (todasExitosas) {
-                    logger.info("Sincronización en lote completada: {}/{} operaciones exitosas",
-                               exitosas, operaciones.size());
-                } else {
-                    logger.warn("Sincronización en lote parcial: {}/{} operaciones exitosas",
-                               exitosas, operaciones.size());
-                }
-
-                return todasExitosas;
-            })
-            .exceptionally(ex -> {
-                logger.error("Error en sincronización en lote: {}", ex.getMessage());
-                return false;
-            });
     }
 
     // ==================== SINCRONIZACIÓN ====================
