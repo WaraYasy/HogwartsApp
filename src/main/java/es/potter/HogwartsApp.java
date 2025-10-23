@@ -3,6 +3,7 @@ package es.potter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,12 @@ public class HogwartsApp extends Application {
             // Cargar archivo FXML con la definición de la interfaz
             logger.debug("Cargando archivo FXML: fxml/ventanaPrincipal.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/es/potter/fxml/ventanaPrincipal.fxml"), bundle);
+
+            // Configurar icono de la aplicación
+            Image icon = new Image(
+                    HogwartsApp.class.getResource("/es/potter/img/icono.png").toExternalForm()
+            );
+            primaryStage.getIcons().add(icon);
 
             Scene scene = new Scene(fxmlLoader.load());
             logger.info("Archivo FXML cargado exitosamente");
