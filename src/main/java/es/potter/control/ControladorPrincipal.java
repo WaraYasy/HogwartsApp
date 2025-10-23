@@ -140,6 +140,19 @@ public class ControladorPrincipal {
         // Quitar mensaje "Tabla sin contenido"
         tablaAlumnos.setPlaceholder(new javafx.scene.control.Label(""));
 
+        // Configurar anchos de columnas proporcionales
+        tablaAlumnos.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            double tableWidth = newWidth.doubleValue();
+            // Proporciones basadas en los anchos originales (774px total)
+            checkBox.setPrefWidth(tableWidth * 0.065);      // 50/774 = 6.5%
+            colId.setPrefWidth(tableWidth * 0.194);         // 150/774 = 19.4%
+            colNombre.setPrefWidth(tableWidth * 0.222);     // 172/774 = 22.2%
+            colApellidos.setPrefWidth(tableWidth * 0.222);  // 172/774 = 22.2%
+            colCurso.setPrefWidth(tableWidth * 0.079);      // 61/774 = 7.9%
+            colCasa.setPrefWidth(tableWidth * 0.107);       // 83/774 = 10.7%
+            colPatronus.setPrefWidth(tableWidth * 0.111);   // 86/774 = 11.1%
+        });
+
         // Inicializar botones deshabilitados
         btnEditar.setDisable(true);
         btnEliminar.setDisable(true);
