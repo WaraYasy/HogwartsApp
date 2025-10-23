@@ -125,7 +125,7 @@ Archivos de traducción de la interfaz y mensajes del sistema.
 - 🎭 **JavaFX 24**
 
 ## 🚀 Instalación y Ejecución
-1. Abrir el enlace proporcionado para la conexion remota
+1. Abrir el enlace proporcionado para la conexion remota en Tailscale
 
     ### Conexión remota mediante Tailscale
 
