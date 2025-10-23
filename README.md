@@ -160,6 +160,6 @@ Archivos de traducción de la interfaz y mensajes del sistema.
 - 👤 **Marco Muro**
 - 👤 **Nizam Abdel-Ghaffar**
 - 👤 **Salca Baschir**
-- 👤 **Wara Yasy**
+- 👤 **Wara Pacheco**
 - 👤 **Arantxa Main**
 - 👤 **Telmo Castillo**
