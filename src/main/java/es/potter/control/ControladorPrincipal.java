@@ -35,7 +35,7 @@ public class ControladorPrincipal {
     private TipoBaseDatos baseDatosActual = TipoBaseDatos.MARIADB;
 
     @FXML
-    private Button btnArchivo, btnAyuda, btnCerrar, btnEditar, btnEliminar, btnGryffindor,
+    private Button btnCerrar, btnEditar, btnEliminar, btnGryffindor,
             btnHogwarts, btnHufflepuff, btnNuevo, btnRavenclaw, btnRecargar, btnSlytherin;
 
     @FXML
@@ -70,8 +70,6 @@ public class ControladorPrincipal {
 
     private ResourceBundle bundle;
     private FilteredList<Alumno> filteredList;
-    private ContextMenu menuArchivo;
-    private ContextMenu menuAyuda;
 
     @FXML
     public void initialize() {
@@ -279,43 +277,25 @@ public class ControladorPrincipal {
 
     @FXML
     void actionArchivo(ActionEvent e) {
-        if (menuArchivo == null) {
-            menuArchivo = new ContextMenu();
-            MenuItem cerrarItem = new MenuItem("Cerrar pestaña");
-            cerrarItem.setOnAction(event -> actionCerrar(event));
-            menuArchivo.getItems().add(cerrarItem);
-        }
-
-        if (menuArchivo.isShowing()) menuArchivo.hide();
-        else menuArchivo.show(btnArchivo,
-                btnArchivo.localToScreen(0, btnArchivo.getHeight()).getX(),
-                btnArchivo.localToScreen(0, btnArchivo.getHeight()).getY());
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Archivo");
+        alert.setHeaderText("Opciones de archivo");
+        alert.setContentText("Funcionalidad de archivo disponible aquí.");
+        alert.showAndWait();
     }
 
     @FXML
     void actionAyuda(ActionEvent e) {
-        if (menuAyuda == null) {
-            menuAyuda = new ContextMenu();
-            MenuItem sobreMiItem = new MenuItem("Sobre mí");
-            sobreMiItem.setOnAction(event -> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Sobre mí");
-                alert.setHeaderText("Equipo Potter");
-                alert.setContentText("""
-                        Aplicación desarrollada por el Equipo Potter.
-                        
-                        • Curso: DM2
-                        • Año: 2025
-                        """);
-                alert.showAndWait();
-            });
-            menuAyuda.getItems().add(sobreMiItem);
-        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Sobre HogwartsApp");
+        alert.setHeaderText("Equipo Potter");
+        alert.setContentText("""
+                Aplicación desarrollada por el Equipo Potter.
 
-        if (menuAyuda.isShowing()) menuAyuda.hide();
-        else menuAyuda.show(btnAyuda,
-                btnAyuda.localToScreen(0, btnAyuda.getHeight()).getX(),
-                btnAyuda.localToScreen(0, btnAyuda.getHeight()).getY());
+                • Curso: DM2
+                • Año: 2025
+                """);
+        alert.showAndWait();
     }
 
     @FXML

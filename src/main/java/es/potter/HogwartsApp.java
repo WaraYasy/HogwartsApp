@@ -48,14 +48,12 @@ public class HogwartsApp extends Application {
             logger.info("Archivo FXML cargado exitosamente");
 
             // Comprobar que el archivo CSS existe; si no, mostrar advertencia en consola
-/*
-            var archivoCSS = getClass().getResource("/css/estilo.css");
+            var archivoCSS = getClass().getResource("/es/potter/css/estilo.css");
             if (archivoCSS != null) {
                 scene.getStylesheets().add(archivoCSS.toExternalForm());
             } else {
                 System.out.println("No se ha podido cargar el CSS.");
             }
-*/
 
             // Configurar el stage
             primaryStage.setTitle("HogwartsApp");
