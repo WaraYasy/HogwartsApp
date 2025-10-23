@@ -114,6 +114,85 @@ public class ServicioHogwarts {
                 });
     }
 
+    /**
+     * Guarda o actualiza un alumno (UPSERT).
+     * Intenta modificar, si falla entonces crea.
+     */
+    public static CompletableFuture<Boolean> guardarOActualizarAlumno(Alumno alumno) {
+        logger.debug("Guardando/actualizando alumno: {}", alumno.getId());
+
+        // Primero intenta modificar en MASTER
+        return DaoAlumno.modificarAlumno(alumno.getId(), alumno, TipoBaseDatos.MARIADB)
+            .exceptionally(ex -> {
+                logger.debug("Alumno {} no existe en MASTER, creando...", alumno.getId());
+                return false;
+            })
+            .thenCompose(exito -> {
+                if (exito) {
+                    // Ya existía, sincronizar a slaves
+                    logger.debug("Alumno {} modificado, sincronizando slaves...", alumno.getId());
+                    return modificarEnSlaves(alumno.getId(), alumno);
+                } else {
+                    // No existía, crear en todas las bases
+                    logger.debug("Creando alumno {} en todas las bases", alumno.getId());
+                    return nuevoAlumno(alumno);
+                }
+            });
+    }
+
+    /**
+     * Sincroniza una lista de cambios en lote al sistema Master-Slave.
+     * - Procesa eliminaciones
+     * - Procesa creaciones/modificaciones (upsert)
+     *
+     * @param alumnos Lista actual de alumnos a guardar/actualizar
+     * @param alumnosEliminados Lista de alumnos a eliminar
+     * @return CompletableFuture que retorna true si todas las operaciones fueron exitosas
+     */
+    public static CompletableFuture<Boolean> sincronizarCambiosEnLote(
+            List<Alumno> alumnos,
+            List<Alumno> alumnosEliminados
+    ) {
+        logger.info("Sincronizando cambios en lote: {} alumnos, {} eliminaciones",
+                    alumnos.size(), alumnosEliminados.size());
+
+        List<CompletableFuture<Boolean>> operaciones = new ArrayList<>();
+
+        //  Procesar eliminaciones
+        for (Alumno alumno : alumnosEliminados) {
+            operaciones.add(eliminarAlumno(alumno));
+        }
+
+        // Procesar alumnos (upsert: modificar o crear)
+        for (Alumno alumno : alumnos) {
+            operaciones.add(guardarOActualizarAlumno(alumno));
+        }
+
+        // Esperar a que todas terminen
+        return CompletableFuture.allOf(operaciones.toArray(new CompletableFuture[0]))
+            .thenApply(v -> {
+                long exitosas = operaciones.stream()
+                    .filter(CompletableFuture::join)
+                    .count();
+
+                boolean todasExitosas = exitosas == operaciones.size();
+
+                if (todasExitosas) {
+                    logger.info("Sincronizacion en lote completada: {}/{} operaciones exitosas",
+                               exitosas, operaciones.size());
+                } else {
+                    logger.warn("Sincronizacion en lote parcial: {}/{} operaciones exitosas",
+                               exitosas, operaciones.size());
+                }
+
+                return todasExitosas;
+            })
+            .exceptionally(ex -> {
+                logger.error("Error en sincronizacion en lote: {}", ex.getMessage());
+                return false;
+            });
+    }
+
     // ==================== SINCRONIZACIÓN ====================
 
     /**
