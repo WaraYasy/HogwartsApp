@@ -84,7 +84,7 @@
                                     <menus>
                                         <Menu mnemonicParsing="false" styleClass="menu-item" text="%archivo">
                                             <items>
-                                                <MenuItem fx:id="btnArchivo" mnemonicParsing="false" onAction="#actionCerrar" text="%cerrar" />
+                                                <MenuItem fx:id="btnArchivo" mnemonicParsing="false" onAction="#actionRecargar" text="%actualizar" />
                                             </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" styleClass="menu-item" text="%ayuda">
@@ -105,22 +105,6 @@
                             <children>
                                 <TextField fx:id="txtBusqueda" onAction="#actionBusqueda" promptText="%busqueda" styleClass="search-field" />
                                 <Region HBox.hgrow="ALWAYS" />
-                                <Button fx:id="btnRecargar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionRecargar" styleClass="action-button" text="%guardarCambios">
-                                    <graphic>
-                                        <FontIcon iconLiteral="fas-save" styleClass="glyph-icon" />
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip text="%tooltipGuardarCambios" />
-                                    </tooltip>
-                                </Button>
-                                <Button fx:id="btnEliminar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEliminar" styleClass="action-button" text="%eliminar">
-                                    <graphic>
-                                        <FontIcon iconLiteral="fas-trash-alt" styleClass="glyph-icon" />
-                                    </graphic>
-                                    <tooltip>
-                                        <Tooltip text="%tooltipEliminar" />
-                                    </tooltip>
-                                </Button>
                                 <Button fx:id="btnNuevo" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionNuevo" styleClass="action-button" text="%nuevoAlumno">
                                     <graphic>
                                         <FontIcon iconLiteral="fas-plus" styleClass="glyph-icon" />
@@ -135,6 +119,14 @@
                                     </graphic>
                                     <tooltip>
                                         <Tooltip text="%tooltipEditar" />
+                                    </tooltip>
+                                </Button>
+                                <Button fx:id="btnEliminar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEliminar" styleClass="action-button" text="%eliminar">
+                                    <graphic>
+                                        <FontIcon iconLiteral="fas-trash-alt" styleClass="glyph-icon" />
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="%tooltipEliminar" />
                                     </tooltip>
                                 </Button>
                             </children>
