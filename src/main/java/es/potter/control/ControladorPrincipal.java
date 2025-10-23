@@ -14,20 +14,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class ControladorPrincipal {
 
     private ObservableList<Alumno> listaAlumnos = FXCollections.observableArrayList();
     private Map<Alumno, CheckBox> checkBoxMap = new HashMap<>();
-    private Map<String, String> alumnosEliminados = new HashMap<>();
 
     /** Tipo de base de datos actual */
     private TipoBaseDatos baseDatosActual = TipoBaseDatos.MARIADB;
@@ -166,19 +173,74 @@ public class ControladorPrincipal {
         List<Alumno> alumnosSeleccionados = obtenerAlumnosSeleccionados();
         if (alumnosSeleccionados.isEmpty()) return;
 
-        // Guardar los eliminados en el Map temporal
-        for (Alumno alumno : alumnosSeleccionados) {
-            alumnosEliminados.put(alumno.getId(), alumno.getCasa());
+        // Mostrar alerta de confirmación antes de eliminar
+        Alert confirmacion = new Alert(Alert.AlertType.WARNING);
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText("¿Estás seguro de eliminar " + alumnosSeleccionados.size() + " alumno(s)?");
+        confirmacion.setContentText("Esta acción eliminará los alumnos de todas las bases de datos y no se puede deshacer.");
+
+        ButtonType botonSi = new ButtonType("Eliminar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType botonNo = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmacion.getButtonTypes().setAll(botonSi, botonNo);
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isEmpty() || resultado.get() != botonSi) {
+            return; // Usuario canceló
         }
 
-        // Eliminar de la lista y del map de checkboxes
-        listaAlumnos.removeAll(alumnosSeleccionados);
-        for (Alumno alumno : alumnosSeleccionados) checkBoxMap.remove(alumno);
+        // Mostrar indicador de progreso
+        progressIndicator.setVisible(true);
 
-        // Deseleccionar todos los checkboxes y refrescar la tabla
-        checkBoxMap.values().forEach(cb -> cb.setSelected(false));
-        tablaAlumnos.refresh(); // <--- forzar refresco visual
-        actualizarEstadoBotones();
+        // Eliminar cada alumno del sistema Master-Slave
+        List<CompletableFuture<Boolean>> eliminaciones = new ArrayList<>();
+        for (Alumno alumno : alumnosSeleccionados) {
+            eliminaciones.add(ServicioHogwarts.eliminarAlumno(alumno));
+        }
+
+        // Esperar a que todas las eliminaciones terminen
+        CompletableFuture.allOf(eliminaciones.toArray(new CompletableFuture[0]))
+            .thenApply(v -> eliminaciones.stream()
+                .map(CompletableFuture::join)
+                .allMatch(exito -> exito))
+            .thenAccept(todasExitosas -> Platform.runLater(() -> {
+                progressIndicator.setVisible(false);
+
+                if (todasExitosas) {
+                    // Eliminar de la lista local y del map de checkboxes
+                    listaAlumnos.removeAll(alumnosSeleccionados);
+                    for (Alumno alumno : alumnosSeleccionados) checkBoxMap.remove(alumno);
+
+                    // Deseleccionar todos los checkboxes y refrescar la tabla
+                    checkBoxMap.values().forEach(cb -> cb.setSelected(false));
+                    tablaAlumnos.refresh();
+                    actualizarEstadoBotones();
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Eliminación exitosa");
+                    alert.setHeaderText("Alumnos eliminados");
+                    alert.setContentText(alumnosSeleccionados.size() + " alumno(s) eliminado(s) correctamente.");
+                    alert.showAndWait();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Eliminación parcial");
+                    alert.setHeaderText("Algunos alumnos no se pudieron eliminar");
+                    alert.setContentText("Revisa los logs para más detalles.");
+                    alert.showAndWait();
+                }
+            }))
+            .exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    progressIndicator.setVisible(false);
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error al eliminar alumnos");
+                    alert.setContentText("No se pudieron eliminar: " + ex.getMessage());
+                    alert.showAndWait();
+                });
+                return null;
+            });
     }
 
     private List<Alumno> obtenerAlumnosSeleccionados() {
@@ -211,8 +273,6 @@ public class ControladorPrincipal {
 
     @FXML
     void actionRecargar() {
-        if (listaAlumnos.isEmpty() && alumnosEliminados.isEmpty()) return;
-
         // Mostrar alerta de confirmación antes de sincronizar
         Alert confirmacion = new Alert(Alert.AlertType.WARNING);
         confirmacion.setTitle(bundle.getString("confirmarActualizacion"));
@@ -229,55 +289,43 @@ public class ControladorPrincipal {
             return; // Usuario canceló
         }
 
-        // Convertir Map a List de Alumnos para eliminación
-        List<Alumno> alumnosAEliminar = new ArrayList<>();
-        for (Map.Entry<String, String> entry : alumnosEliminados.entrySet()) {
-            Alumno alumno = new Alumno();
-            alumno.setId(entry.getKey());
-            alumno.setCasa(entry.getValue());
-            alumnosAEliminar.add(alumno);
-        }
-
         // Mostrar indicador de progreso
         progressIndicator.setVisible(true);
 
-        // Delegar toda la lógica al servicio
-        ServicioHogwarts.sincronizarCambiosEnLote(
-            new ArrayList<>(listaAlumnos),
-            alumnosAEliminar
-        )
-        .thenAccept(exito -> Platform.runLater(() -> {
-            progressIndicator.setVisible(false);
-
-            if (exito) {
-                // Limpiar cambios pendientes
-                alumnosEliminados.clear();
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Recargar");
-                alert.setHeaderText("Sincronización completada");
-                alert.setContentText("Todos los cambios se han guardado exitosamente en todas las bases de datos.");
-                alert.showAndWait();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Recargar");
-                alert.setHeaderText("Sincronización parcial");
-                alert.setContentText("Algunos cambios no pudieron guardarse. Revisa los logs para más información.");
-                alert.showAndWait();
-            }
-        }))
-        .exceptionally(ex -> {
-            Platform.runLater(() -> {
+        // Sincronizar desde Master (reconstruye todas las BDs slave)
+        ServicioHogwarts.sincronizarDesdeMaster()
+            .thenAccept(exito -> Platform.runLater(() -> {
                 progressIndicator.setVisible(false);
 
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Error en sincronización");
-                alert.setContentText("No se pudieron sincronizar los cambios: " + ex.getMessage());
-                alert.showAndWait();
+                if (exito) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Sincronización");
+                    alert.setHeaderText("Sincronización completada");
+                    alert.setContentText("Todas las bases de datos han sido sincronizadas exitosamente desde Master.");
+                    alert.showAndWait();
+
+                    // Recargar vista actual
+                    cargarAlumnosPorCasa(baseDatosActual);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Sincronización");
+                    alert.setHeaderText("Sincronización parcial");
+                    alert.setContentText("Algunas bases de datos no pudieron sincronizarse. Revisa los logs.");
+                    alert.showAndWait();
+                }
+            }))
+            .exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    progressIndicator.setVisible(false);
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error en sincronización");
+                    alert.setContentText("No se pudo sincronizar: " + ex.getMessage());
+                    alert.showAndWait();
+                });
+                return null;
             });
-            return null;
-        });
     }
 
     @FXML
@@ -296,16 +344,16 @@ public class ControladorPrincipal {
         alert.setHeaderText("HogwartsApp");
 
         // Crear contenido personalizado con enlace
-        javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(10);
-        content.getChildren().add(new javafx.scene.control.Label("Aplicación desarrollada por el Equipo Potter.\n"));
-        content.getChildren().add(new javafx.scene.control.Label("• Curso: DM2"));
-        content.getChildren().add(new javafx.scene.control.Label("• Año: 2025\n"));
+        VBox content = new javafx.scene.layout.VBox(10);
+        content.getChildren().add(new Label("Aplicación desarrollada por el Equipo Potter.\n"));
+        content.getChildren().add(new Label("• Curso: DM2"));
+        content.getChildren().add(new Label("• Año: 2025\n"));
 
-        javafx.scene.control.Hyperlink link = new javafx.scene.control.Hyperlink("Ver Guía Rápida");
+        Hyperlink link = new Hyperlink("Ver Guía Rápida");
         link.setOnAction(event -> {
             try {
-                java.awt.Desktop.getDesktop().browse(
-                    new java.net.URI("https://drive.google.com/file/d/1NNKw8lqIA9fLnGyaAIynb3-7H5PA6mqZ/view?usp=sharing")
+                Desktop.getDesktop().browse(
+                    new URI("https://drive.google.com/file/d/1NNKw8lqIA9fLnGyaAIynb3-7H5PA6mqZ/view?usp=sharing")
                 );
             } catch (Exception ex) {
                 ex.printStackTrace();
