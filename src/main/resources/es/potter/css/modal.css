@@ -1,40 +1,23 @@
 
-/* Variables de color */
+/* Variables de color generales (modo claro por defecto) */
 * {
+    -fx-color-fondo: #FFFFFF;
+    -fx-color-texto: #515151;
+    -fx-color-encabezados: #000000;
+    -fx-color-destacado: #BEBEBE;
+    -fx-color-acento: #BEBEBE;
+    -fx-color-texto-acento: #444444;
+}
+
+/* Variables de color modo oscuro (para uso futuro con botón de tema) */
+.modo-oscuro {
     -fx-color-fondo: #151515;
     -fx-color-texto: #BDC1CA;
     -fx-color-encabezados: white;
     -fx-color-destacado: #444444;
     -fx-color-acento: #444444;
     -fx-color-texto-acento: #BEBEBE;
-}
 
-/* ============================================
-   ESTILOS ESPECÍFICOS POR CASA
-   ============================================ */
-
-/* Gryffindor */
-.gryffindor {
-    -fx-color-acento: #740001;
-    -fx-color-texto-acento: #FF9FB0;
-}
-
-/* Slytherin */
-.slytherin {
-    -fx-color-acento: #183F3E;
-    -fx-color-texto-acento: #7EABAA;
-}
-
-/* Ravenclaw */
-.ravenclaw {
-    -fx-color-acento: #242D56;
-    -fx-color-texto-acento: #8D96BE;
-}
-
-/* Hufflepuff */
-.hufflepuff {
-    -fx-color-acento: #D29238;
-    -fx-color-texto-acento: #4F2E00;
 }
 
 /* ============================================
