@@ -26,9 +26,11 @@
 <BorderPane minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="1200.0" styleClass="root" stylesheets="@../css/estilo.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.potter.control.ControladorPrincipal">
     <left>
         <GridPane prefHeight="622.0" prefWidth="286.0" styleClass="side-panel" BorderPane.alignment="CENTER">
+
             <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
             </columnConstraints>
+
             <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -37,74 +39,74 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="30.0" percentHeight="60.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
             </rowConstraints>
-            <children>
-                <Button fx:id="btnHogwarts" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionHogwarts" styleClass="house-button" text="HOGWARTS" GridPane.hgrow="ALWAYS">
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionHogwarts" styleClass="house-button" text="HOGWARTS" GridPane.hgrow="ALWAYS">
                     <tooltip>
                         <Tooltip text="%tooltipHogwarts" />
                     </tooltip>
                 </Button>
-                <Button fx:id="btnGryffindor" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionGryffindor" styleClass="house-button" text="GRYFFINDOR" GridPane.rowIndex="1">
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionGryffindor" styleClass="house-button" text="GRYFFINDOR" GridPane.rowIndex="1">
                     <tooltip>
                         <Tooltip text="%tooltipGryffindor" />
                     </tooltip>
                 </Button>
-                <Button fx:id="btnSlytherin" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionSlytherin" styleClass="house-button" text="SLYTHERIN" GridPane.rowIndex="2">
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionSlytherin" styleClass="house-button" text="SLYTHERIN" GridPane.rowIndex="2">
                     <tooltip>
                         <Tooltip text="%tooltipSlytherin" />
                     </tooltip>
                 </Button>
-                <Button fx:id="btnRavenclaw" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionRavenclaw" styleClass="house-button" text="RAVENCLAW" GridPane.rowIndex="3">
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionRavenclaw" styleClass="house-button" text="RAVENCLAW" GridPane.rowIndex="3">
                     <tooltip>
                         <Tooltip text="%tooltipRavenclaw" />
                     </tooltip>
                 </Button>
-                <Button fx:id="btnHufflepuff" alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionHufflepuff" styleClass="house-button" text="HUFFLEPUFF" GridPane.rowIndex="4">
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionHufflepuff" styleClass="house-button" text="HUFFLEPUFF" GridPane.rowIndex="4">
                     <tooltip>
                         <Tooltip text="%tooltipHufflepuff" />
                     </tooltip>
                 </Button>
+
                 <ImageView fitHeight="259.0" fitWidth="318.0" pickOnBounds="true" preserveRatio="true" smooth="false" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
-                    <image>
-                        <Image url="@../img/hogwarts_.png" />
-                    </image>
+                    <Image url="@../img/hogwarts_.png" />
                 </ImageView>
-            </children>
+
         </GridPane>
     </left>
     <center>
         <BorderPane>
             <top>
                 <VBox BorderPane.alignment="CENTER">
-                    <children>
+
                         <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="top-bar">
-                            <children>
+
                                 <Label styleClass="app-title" text="HogwartsApp" />
                                 <Region HBox.hgrow="ALWAYS" />
+
                                 <MenuBar prefHeight="30.0" styleClass="menu-bar">
-                                    <menus>
-                                        <Menu mnemonicParsing="false" styleClass="menu-item" text="%archivo">
-                                            <items>
-                                                <MenuItem fx:id="btnArchivo" mnemonicParsing="false" onAction="#actionRecargar" text="%actualizar" />
-                                            </items>
-                                        </Menu>
-                                        <Menu mnemonicParsing="false" styleClass="menu-item" text="%ayuda">
-                                            <items>
-                                                <MenuItem fx:id="btnAyuda" mnemonicParsing="false" onAction="#actionAyuda" text="%sobreHogwartsApp" />
-                                            </items>
-                                        </Menu>
-                                    </menus>
+                                    <Menu mnemonicParsing="false" styleClass="menu-item" text="%archivo">
+                                        <MenuItem mnemonicParsing="false" onAction="#actionRecargar" text="%actualizar" />
+                                    </Menu>
+                                    <Menu mnemonicParsing="false" styleClass="menu-item" text="%ayuda">
+                                        <MenuItem mnemonicParsing="false" onAction="#actionAyuda" text="%sobreHogwartsApp" />
+                                    </Menu>
                                 </MenuBar>
-                                <Button fx:id="btnCerrar" mnemonicParsing="false" onAction="#actionCerrar" styleClass="btn-cerrar" text="%cerrar">
+
+                                <Button mnemonicParsing="false" onAction="#actionCerrar" styleClass="btn-cerrar" text="%cerrar">
                                     <tooltip>
                                         <Tooltip text="%tooltipCerrar" />
                                     </tooltip>
                                 </Button>
-                            </children>
+
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="31.0" prefWidth="1104.0" spacing="10.0" styleClass="toolbar">
-                            <children>
+
                                 <TextField fx:id="txtBusqueda" onAction="#actionBusqueda" promptText="%busqueda" styleClass="search-field" />
                                 <Region HBox.hgrow="ALWAYS" />
+
                                 <Button fx:id="btnNuevo" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionNuevo" styleClass="action-button" text="%nuevoAlumno">
                                     <graphic>
                                         <FontIcon iconLiteral="fas-plus" styleClass="glyph-icon" />
@@ -113,6 +115,7 @@
                                         <Tooltip text="%tooltipNuevo" />
                                     </tooltip>
                                 </Button>
+
                                 <Button fx:id="btnEditar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEditar" styleClass="action-button" text="%editar">
                                     <graphic>
                                         <FontIcon iconLiteral="fas-edit" styleClass="glyph-icon" />
@@ -121,6 +124,7 @@
                                         <Tooltip text="%tooltipEditar" />
                                     </tooltip>
                                 </Button>
+
                                 <Button fx:id="btnEliminar" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#actionEliminar" styleClass="action-button" text="%eliminar">
                                     <graphic>
                                         <FontIcon iconLiteral="fas-trash-alt" styleClass="glyph-icon" />
@@ -129,15 +133,15 @@
                                         <Tooltip text="%tooltipEliminar" />
                                     </tooltip>
                                 </Button>
-                            </children>
+
                         </HBox>
-                    </children>
                 </VBox>
             </top>
             <center>
                 <StackPane BorderPane.alignment="CENTER">
-                    <children>
+
                         <TableView fx:id="tablaAlumnos" onMouseClicked="#clickElementoTabla" prefHeight="200.0" prefWidth="200.0">
+
                             <columns>
                                 <TableColumn fx:id="checkBox" minWidth="3.0" prefWidth="50.0" />
                                 <TableColumn fx:id="colId" minWidth="0.0" prefWidth="150.0" text="ID" />
@@ -147,12 +151,14 @@
                                 <TableColumn fx:id="colCasa" prefWidth="83.0" text="%casa" />
                                 <TableColumn fx:id="colPatronus" minWidth="0.0" prefWidth="86.0" text="%patronus" />
                             </columns>
+
                             <opaqueInsets>
                                 <Insets top="10.0" />
                             </opaqueInsets>
+
                         </TableView>
                         <ProgressIndicator fx:id="progressIndicator" prefHeight="60.0" prefWidth="60.0" visible="false" />
-                    </children>
+
                 </StackPane>
             </center>
         </BorderPane>
