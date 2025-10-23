@@ -288,13 +288,27 @@ public class ControladorPrincipal {
     void actionAyuda(ActionEvent e) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Sobre HogwartsApp");
-        alert.setHeaderText("Equipo Potter");
-        alert.setContentText("""
-                Aplicación desarrollada por el Equipo Potter.
+        alert.setHeaderText("HogwartsApp");
 
-                • Curso: DM2
-                • Año: 2025
-                """);
+        // Crear contenido personalizado con enlace
+        javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(10);
+        content.getChildren().add(new javafx.scene.control.Label("Aplicación desarrollada por el Equipo Potter.\n"));
+        content.getChildren().add(new javafx.scene.control.Label("• Curso: DM2"));
+        content.getChildren().add(new javafx.scene.control.Label("• Año: 2025\n"));
+
+        javafx.scene.control.Hyperlink link = new javafx.scene.control.Hyperlink("Ver Guía Rápida");
+        link.setOnAction(event -> {
+            try {
+                java.awt.Desktop.getDesktop().browse(
+                    new java.net.URI("https://drive.google.com/file/d/1NNKw8lqIA9fLnGyaAIynb3-7H5PA6mqZ/view?usp=sharing")
+                );
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        content.getChildren().add(link);
+
+        alert.getDialogPane().setContent(content);
         alert.showAndWait();
     }
 
