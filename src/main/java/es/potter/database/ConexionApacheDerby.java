@@ -17,9 +17,11 @@ import java.sql.SQLException;
  * @version 1.0
  * @since 2025-10-10
  */
+@Deprecated
 public class ConexionApacheDerby {
+
     /** Conexión activa a la base de datos Derby */
-    private Connection conexionDerby = null;
+    private final Connection conexionDerby;
 
     /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ConexionApacheDerby.class);
@@ -30,6 +32,8 @@ public class ConexionApacheDerby {
      * la conexión utilizando DriverManager.
      * 
      * @throws SQLException si ocurre un error al establecer la conexión
+     *
+     * @author Salca
      */
     public ConexionApacheDerby() throws SQLException {
         try {
@@ -50,6 +54,8 @@ public class ConexionApacheDerby {
      * Obtiene la conexión activa a la base de datos Derby.
      * 
      * @return la conexión a Derby, o null si no está establecida
+     *
+     * @author Salca
      */
     public Connection getConnection() {
         return conexionDerby;
@@ -59,6 +65,8 @@ public class ConexionApacheDerby {
      * Cierra la conexión activa a la base de datos Derby de forma segura.
      * Si la conexión está abierta, la cierra y registra el evento.
      * Si ocurre un error durante el cierre, lo registra en el log.
+     *
+     * @author Salca
      */
     public void closeConnection() {
         if (conexionDerby != null) {
@@ -72,12 +80,14 @@ public class ConexionApacheDerby {
     }
 
     /**
-     * Método principal para probar la funcionalidad de la conexión a Derby.
+     * Metodo principal para probar la funcionalidad de la conexión a Derby.
      * Crea una instancia de la clase, verifica la conexión y la cierra correctamente.
      * Utiliza manejo de excepciones y bloques try-catch-finally para garantizar
      * la liberación de recursos.
      * 
      * @param args argumentos de línea de comandos (no utilizados)
+     *
+     * @author Salca
      */
     public static void main(String[] args) {
         ConexionApacheDerby conexion = null;

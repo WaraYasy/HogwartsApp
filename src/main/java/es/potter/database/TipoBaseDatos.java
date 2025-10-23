@@ -2,7 +2,6 @@ package es.potter.database;
 
 /**
  * Enum que define los tipos de base de datos soportados por la aplicación.
- *
  * ARQUITECTURA:
  * - MariaDB: Base de datos MASTER (fuente de verdad)
  * - SQLite: Base de datos local (backup)
@@ -12,6 +11,7 @@ package es.potter.database;
  * @version 2.0
  * @since 2025-10-12
  */
+@Deprecated
 public enum TipoBaseDatos {
 
     /** Base de datos H2 */
@@ -48,7 +48,10 @@ public enum TipoBaseDatos {
 
     // ==================== ATRIBUTOS ====================
 
+    /** Prefijo usado en el archivo de propiedades para esta base de datos */
     private final String prefijo;
+
+    /** Nombre de la casa Hogwarts, si aplica; {@code null} si no es una casa */
     private final String nombreCasa;
 
     // ==================== CONSTRUCTOR ====================
@@ -58,6 +61,8 @@ public enum TipoBaseDatos {
      *
      * @param prefijo prefijo en configuration.properties (ej: "db.mariadb")
      * @param nombreCasa nombre de la casa de Hogwarts (null si no es una casa)
+     *
+     * @author Wara
      */
     TipoBaseDatos(String prefijo, String nombreCasa) {
         this.prefijo = prefijo;
@@ -71,6 +76,8 @@ public enum TipoBaseDatos {
      * Usado para buscar propiedades: {prefijo}.url, {prefijo}.user, {prefijo}.password
      *
      * @return prefijo de configuración (ej: "db.mariadb")
+     *
+     * @author Wara
      */
     public String getPrefijo() {
         return prefijo;
@@ -80,6 +87,8 @@ public enum TipoBaseDatos {
      * Obtiene el nombre de la casa de Hogwarts.
      *
      * @return nombre de la casa, o null si no es una casa
+     *
+     * @author Wara
      */
     public String obtenerNombreCasa() {
         return nombreCasa;
@@ -89,6 +98,8 @@ public enum TipoBaseDatos {
      * Verifica si este tipo corresponde a una casa de Hogwarts.
      *
      * @return true si es una casa (Gryffindor, Slytherin, Ravenclaw, Hufflepuff)
+     *
+     * @author Wara
      */
     public boolean esCasa() {
         return nombreCasa != null;
@@ -102,32 +113,33 @@ public enum TipoBaseDatos {
      * @param nombreCasa nombre de la casa (case-insensitive)
      * @return tipo de base de datos correspondiente
      * @throws IllegalArgumentException si la casa no existe
+     *
+     * @author Wara
      */
     public static TipoBaseDatos obtenerTipoBaseDatosPorCasa(String nombreCasa) {
         if (nombreCasa == null || nombreCasa.trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre de la casa no puede ser nulo o vacío");
         }
-        switch (nombreCasa.toLowerCase().trim()) {
-            case "gryffindor":
-                return GRYFFINDOR;
-            case "slytherin":
-                return SLYTHERIN;
-            case "ravenclaw":
-                return RAVENCLAW;
-            case "hufflepuff":
-                return HUFFLEPUFF;
-            case "hogwarts":
-                return MARIADB;
-            case "local":
-                return SQLITE;
-            default:
-                throw new IllegalArgumentException(
-                        "Casa desconocida: '" + nombreCasa + "'. " +
-                                "Casas válidas: Gryffindor, Slytherin, Ravenclaw, Hufflepuff"
-                );
-        }
+        return switch (nombreCasa.toLowerCase().trim()) {
+            case "gryffindor" -> GRYFFINDOR;
+            case "slytherin" -> SLYTHERIN;
+            case "ravenclaw" -> RAVENCLAW;
+            case "hufflepuff" -> HUFFLEPUFF;
+            case "hogwarts" -> MARIADB;
+            case "local" -> SQLITE;
+            default -> throw new IllegalArgumentException("Casa desconocida: '" + nombreCasa + "'. " +
+                            "Casas válidas: Gryffindor, Slytherin, Ravenclaw, Hufflepuff"
+            );
+        };
     }
 
+    /**
+     * Devuelve una representación en cadena del tipo de base de datos.
+     *
+     * @return representación en {@link String} del tipo de base de datos
+     *
+     * @author Wara
+     */
     @Override
     public String toString() {
         if (esCasa()) {

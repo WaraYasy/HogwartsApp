@@ -17,10 +17,11 @@ import java.sql.SQLException;
  * @version 1.0
  * @since 2025-10-10
  */
+@Deprecated
 public class ConexionH2 {
 
     /** Conexión activa a la base de datos H2 */
-    private Connection conexionH2 = null;
+    private final Connection conexionH2;
 
     /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ConexionH2.class);
@@ -31,6 +32,8 @@ public class ConexionH2 {
      * la conexión utilizando DriverManager.
      * 
      * @throws SQLException si ocurre un error al establecer la conexión
+     *
+     * @author Nizam
      */
     public ConexionH2() throws SQLException {
         try {
@@ -51,6 +54,8 @@ public class ConexionH2 {
      * Obtiene la conexión activa a la base de datos H2.
      * 
      * @return la conexión a H2, o null si no está establecida
+     *
+     * @author Nizam
      */
     public Connection getConnection() {
         return conexionH2;
@@ -61,6 +66,8 @@ public class ConexionH2 {
      * Si la conexión está abierta, la cierra y registra el evento.
      * Si ocurre un error durante el cierre, lo registra en el log.
      * Es importante cerrar las conexiones H2 para liberar recursos correctamente.
+     *
+     * @author Nizam
      */
     public void closeConnection() {
         if (conexionH2 != null) {
@@ -74,12 +81,14 @@ public class ConexionH2 {
     }
 
     /**
-     * Método principal para probar la funcionalidad de la conexión a H2.
+     * Metodo principal para probar la funcionalidad de la conexión a H2.
      * Crea una instancia de la clase, verifica la conexión y la cierra correctamente.
      * Utiliza manejo de excepciones y bloques try-catch-finally para garantizar
      * la liberación de recursos.
      * 
      * @param args argumentos de línea de comandos (no utilizados)
+     *
+     * @author Nizam
      */
     public static void main(String[] args) {
         ConexionH2 conexion = null;

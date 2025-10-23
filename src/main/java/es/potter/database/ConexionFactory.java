@@ -17,7 +17,10 @@ import java.util.concurrent.CompletableFuture;
  * @version 3.0
  * @since 2025-10-16
  */
+@Deprecated
 public class ConexionFactory {
+
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ConexionFactory.class);
 
     /**
@@ -25,6 +28,8 @@ public class ConexionFactory {
      *
      * @param tipo el tipo de base de datos
      * @return CompletableFuture con la conexión
+     *
+     * @author Wara
      */
     public static CompletableFuture<Connection> getConnectionAsync(TipoBaseDatos tipo) {
         return CompletableFuture.supplyAsync(() -> {
@@ -49,6 +54,8 @@ public class ConexionFactory {
      *
      * @param connection la conexión a cerrar
      * @return CompletableFuture que se completa cuando se cierra la conexión
+     *
+     * @author Wara
      */
     public static CompletableFuture<Void> closeConnectionAsync(Connection connection) {
         return CompletableFuture.runAsync(() -> {
@@ -71,6 +78,8 @@ public class ConexionFactory {
      *
      * @param tipo el tipo de base de datos
      * @return CompletableFuture con true si la conexión es exitosa
+     *
+     * @author Wara
      */
     public static CompletableFuture<Boolean> testConnectionAsync(TipoBaseDatos tipo) {
         return getConnectionAsync(tipo)
