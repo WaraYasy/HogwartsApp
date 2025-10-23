@@ -213,6 +213,22 @@ public class ControladorPrincipal {
     void actionRecargar() {
         if (listaAlumnos.isEmpty() && alumnosEliminados.isEmpty()) return;
 
+        // Mostrar alerta de confirmación antes de sincronizar
+        Alert confirmacion = new Alert(Alert.AlertType.WARNING);
+        confirmacion.setTitle(bundle.getString("confirmarActualizacion"));
+        confirmacion.setHeaderText(bundle.getString("advertenciaActualizacion"));
+        confirmacion.setContentText(bundle.getString("mensajeAdvertenciaActualizacion"));
+
+        ButtonType botonSi = new ButtonType(bundle.getString("continuar"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType botonNo = new ButtonType(bundle.getString("cancelar"), ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmacion.getButtonTypes().setAll(botonSi, botonNo);
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isEmpty() || resultado.get() != botonSi) {
+            return; // Usuario canceló
+        }
+
         // Convertir Map a List de Alumnos para eliminación
         List<Alumno> alumnosAEliminar = new ArrayList<>();
         for (Map.Entry<String, String> entry : alumnosEliminados.entrySet()) {
