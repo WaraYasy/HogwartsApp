@@ -72,7 +72,7 @@ public enum TipoBaseDatos {
 
     /**
      * Obtiene el prefijo de configuración.
-     * Usado para buscar propiedades: {prefijo}.url, {prefijo}.user, {prefijo}.password
+     * Usado para buscar propiedades: {prefijo}.url, {prefijo}.user, {prefijo}password
      *
      * @return prefijo de configuración (ej: "db.mariadb")
      *
