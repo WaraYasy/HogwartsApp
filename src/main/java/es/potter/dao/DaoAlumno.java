@@ -16,13 +16,18 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * DaoAlumno gestiona el acceso a datos de alumnos en la base de datos.
- * Todos los métodos son asíncronos usando CompletableFuture.
+ * Implementa operaciones CRUD asíncronas para manipular alumnos en distintas bases de datos.
+ * Utiliza transacciones para garantizar la integridad de los datos.
+ * Emplea UUID para generar identificadores únicos de alumnos.
+ * Los métodos retornan CompletableFuture para operaciones no bloqueantes.
+ * Se recomienda manejar las excepciones verificadas con logging adecuado.
  *
  * @author Wara Pacheco
  * @version 3.0
  */
 public class DaoAlumno {
 
+    /** Logger SLF4J para la clase DaoAlumno */
     private static final Logger logger = LoggerFactory.getLogger(DaoAlumno.class);
 
     /*-------------------------------------------*/
@@ -30,7 +35,12 @@ public class DaoAlumno {
     /*-------------------------------------------*/
 
     /**
-     * Carga todos los alumnos de una base de datos.
+     * Carga todos los alumnos disponibles en una base de datos específica.
+     *
+     * @param tipo Tipo de base de datos desde donde cargar los datos
+     * @return CompletableFuture con una lista observable de alumnos cargados
+     *
+     * @author Wara
      */
     public static CompletableFuture<ObservableList<Alumno>> cargarAlumnos(TipoBaseDatos tipo) {
         String sql = "SELECT id, nombre, apellidos, curso, casa, patronus FROM alumnos";
@@ -52,8 +62,14 @@ public class DaoAlumno {
     }
 
     /**
-     * Crea un nuevo alumno con transacción.
-     * Genera el ID automáticamente con UUID si no lo tiene.
+     * Inserta un nuevo alumno en la base de datos con control transaccional.
+     * Si el alumno no tiene ID, se genera uno único basado en UUID y prefijo de casa.
+     *
+     * @param alumno Alumno a insertar
+     * @param tipo Tipo de base de datos destino
+     * @return CompletableFuture con true si la operación fue exitosa, false en caso contrario
+     *
+     * @author Wara
      */
     public static CompletableFuture<Boolean> nuevoAlumno(Alumno alumno, TipoBaseDatos tipo) {
         String sql = "INSERT INTO alumnos (id, nombre, apellidos, curso, casa, patronus) VALUES (?,?,?,?,?,?)";
@@ -79,29 +95,36 @@ public class DaoAlumno {
                     stmt.executeUpdate();
                     conn.commit(); // Commit transacción
 
-                    logger.info("Alumno {} creado en {}", alumno.getId(), tipo);
+                    logger.info("Alumno con ID {} creado correctamente en {}", alumno.getId(), tipo);
                     return true;
                 }
             } catch (SQLException e) {
                 try {
-                    conn.rollback(); // Rollback si hay error
-                    logger.error("Rollback en {}: {}", tipo, e.getMessage());
+                    conn.rollback(); // Rollback sí hay error
+                    logger.error("Rollback en {} al crear alumno con ID {}: {}", tipo, alumno.getId(), e.getMessage());
                 } catch (SQLException ex) {
-                    logger.error("Error en rollback: {}", ex.getMessage());
+                    logger.error("Error en rollback al crear alumno: {}", ex.getMessage());
                 }
                 return false;
             } finally {
                 try {
                     conn.close();
                 } catch (SQLException e) {
-                    logger.error("Error cerrando conexión: {}", e.getMessage());
+                    logger.error("Error cerrando conexión tras creación de alumno: {}", e.getMessage());
                 }
             }
         });
     }
 
     /**
-     * Elimina un alumno por su ID con transacción.
+     * Elimina un alumno específico identificado por su ID en la base de datos.
+     * Ejecuta la operación dentro de una transacción para seguridad y consistencia.
+     *
+     * @param alumno Alumno a eliminar
+     * @param tipo Tipo de base de datos donde se eliminará
+     * @return CompletableFuture con true si la eliminación fue exitosa, false en caso contrario
+     *
+     * @author Wara
      */
     public static CompletableFuture<Boolean> eliminarAlumno(Alumno alumno, TipoBaseDatos tipo) {
         String sql = "DELETE FROM alumnos WHERE id = ?";
@@ -116,29 +139,37 @@ public class DaoAlumno {
                     stmt.executeUpdate();
                     conn.commit(); // Commit transacción
 
-                    logger.info("Alumno {} eliminado de {}", alumno.getId(), tipo);
+                    logger.info("Alumno con ID {} eliminado correctamente de {}", alumno.getId(), tipo);
                     return true;
                 }
             } catch (SQLException e) {
                 try {
                     conn.rollback();
-                    logger.error("Rollback en {}: {}", tipo, e.getMessage());
+                    logger.error("Rollback en {} al eliminar alumno con ID {}: {}", tipo, alumno.getId(), e.getMessage());
                 } catch (SQLException ex) {
-                    logger.error("Error en rollback: {}", ex.getMessage());
+                    logger.error("Error en rollback al eliminar alumno: {}", ex.getMessage());
                 }
                 return false;
             } finally {
                 try {
                     conn.close();
                 } catch (SQLException e) {
-                    logger.error("Error cerrando conexión: {}", e.getMessage());
+                    logger.error("Error cerrando conexión tras eliminación de alumno: {}", e.getMessage());
                 }
             }
         });
     }
 
     /**
-     * Modifica un alumno existente con transacción.
+     * Actualiza los datos de un alumno existente identificado por su ID.
+     * Realiza la actualización en una transacción para mantener la integridad.
+     *
+     * @param id ID del alumno a modificar
+     * @param alumno Objeto Alumno con los datos modificados
+     * @param tipo Tipo de base de datos donde se modificará el registro
+     * @return CompletableFuture con true si la actualización fue exitosa, false en caso contrario
+     *
+     * @author Wara
      */
     public static CompletableFuture<Boolean> modificarAlumno(String id, Alumno alumno, TipoBaseDatos tipo) {
         String sql = "UPDATE alumnos SET nombre = ?, apellidos = ?, curso = ?, casa = ?, patronus = ? WHERE id = ?";
@@ -158,13 +189,13 @@ public class DaoAlumno {
                     stmt.executeUpdate();
                     conn.commit(); // Commit transacción
 
-                    logger.info("Alumno {} modificado en {}", id, tipo);
+                    logger.info("Alumno con ID {} modificado correctamente en {}", id, tipo);
                     return true;
                 }
             } catch (SQLException e) {
                 try {
                     conn.rollback();
-                    logger.error("Rollback en {}: {}", tipo, e.getMessage());
+                    logger.error("Rollback en {} al modificar alumno con ID {}: {}", tipo, id, e.getMessage());
                 } catch (SQLException ex) {
                     logger.error("Error en rollback: {}", ex.getMessage());
                 }
@@ -173,7 +204,7 @@ public class DaoAlumno {
                 try {
                     conn.close();
                 } catch (SQLException e) {
-                    logger.error("Error cerrando conexión: {}", e.getMessage());
+                    logger.error("Error cerrando conexión tras modificación de alumno: {}", e.getMessage());
                 }
             }
         });
@@ -184,7 +215,13 @@ public class DaoAlumno {
     /*-------------------------------------------*/
 
     /**
-     * Convierte una fila de ResultSet a un objeto Alumno.
+     * Crea un objeto Alumno a partir de la fila actual del ResultSet.
+     *
+     * @param rs ResultSet con datos de la fila del alumno
+     * @return Objeto Alumno mapeado
+     * @throws SQLException Sí ocurre error leyendo datos
+     *
+     * @author Wara
      */
     private static Alumno mapearAlumno(ResultSet rs) throws SQLException {
         Alumno alumno = new Alumno();
@@ -198,8 +235,15 @@ public class DaoAlumno {
     }
 
     /**
-     * Genera un ID único con UUID y prefijo de casa.
-     * Formato: GRY-a4f3b2c1 (3 letras mayúsculas + guión + 8 hex minúsculas)
+     * Genera un identificador único para un alumno.
+     * El formato es el prefijo de la casa en mayúsculas,
+     * un guion y las primeras 8 letras de un UUID en minúsculas.
+     * Ejemplo: GRY-a4f3b2c1
+     *
+     * @param alumno Alumno para obtener la casa y generar el ID
+     * @return Identificador único generado
+     *
+     * @author Wara
      */
     private static String generarId(Alumno alumno) {
         String prefijo = alumno.getCasa().substring(0, 3).toUpperCase();
