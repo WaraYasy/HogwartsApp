@@ -17,13 +17,13 @@ import java.sql.SQLException;
  * @version 1.0
  * @since 2025-10-11
  */
+@Deprecated
 public class ConexionHSQLDB {
-        /** Conexión activa a la base de datos HSQLDB. */
+
+    /** Conexión activa a la base de datos HSQLDB. */
     private Connection conexionHSQL = null;
 
-    /**
-     * Logger para registrar eventos, errores y mensajes de depuración durante el ciclo de vida de la aplicación.
-     */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ConexionHSQLDB.class);
 
     /**
@@ -34,6 +34,8 @@ public class ConexionHSQLDB {
      * </p>
      *
      * @throws SQLException si ocurre un error durante el establecimiento de la conexión
+     *
+     * @author Wara
      */
     public ConexionHSQLDB() throws SQLException{
         try {
@@ -46,7 +48,7 @@ public class ConexionHSQLDB {
             logger.info("Conexión establecida con {}", url);
 
         } catch (SQLException e) {
-            logger.error("Conexión a BD fallida: " + e.getMessage());
+            logger.error("Conexión a BD fallida: {}", e.getMessage());
         }
     }
 
@@ -58,6 +60,8 @@ public class ConexionHSQLDB {
      *
      * @return la conexión activa a la base de datos, o {@code null} si la conexión falló
      * @see java.sql.Connection
+     *
+     * @author Wara
      */
     public Connection getConnection() {
         return conexionHSQL;
@@ -72,6 +76,8 @@ public class ConexionHSQLDB {
      * </p>
      *
      * @see java.sql.Connection#close()
+     *
+     * @author Wara
      */
     public void closeConnection() {
         if (conexionHSQL != null) {
@@ -79,18 +85,20 @@ public class ConexionHSQLDB {
                 conexionHSQL.close();
                 logger.info("Conexión cerrada");
             } catch (SQLException e) {
-                logger.error("Error al cerrar conexión: " + e.getMessage());
+                logger.error("Error al cerrar conexión: {}", e.getMessage());
             }
         }
     }
 
     /**
-     * Método principal para probar la funcionalidad de la conexión a HSQLDB.
+     * Metodo principal para probar la funcionalidad de la conexión a HSQLDB.
      * Crea una instancia de la clase, verifica la conexión y la cierra correctamente.
      * Utiliza manejo de excepciones y bloques try-catch-finally para garantizar
      * la liberación de recursos.
      * 
      * @param args argumentos de línea de comandos (no utilizados)
+     *
+     * @author Wara
      */
     public static void main(String[] args) {
         ConexionHSQLDB conexion = null;

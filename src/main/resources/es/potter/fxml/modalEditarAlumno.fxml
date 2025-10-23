@@ -12,57 +12,67 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.potter.control.ControladorEditar">
-    <children>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="anchor-pane" stylesheets="@../css/modal.css" xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.potter.control.ControladorEditarAlumno">
+
         <BorderPane prefHeight="400.0" prefWidth="600.0">
+
             <center>
                 <GridPane BorderPane.alignment="CENTER">
+
                     <columnConstraints>
                         <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" percentWidth="20.0" prefWidth="100.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="75.0" prefWidth="100.0"/>
                     </columnConstraints>
+
                     <rowConstraints>
                         <RowConstraints percentHeight="25.0"/>
                         <RowConstraints percentHeight="25.0"/>
                         <RowConstraints percentHeight="25.0"/>
                         <RowConstraints percentHeight="25.0"/>
                     </rowConstraints>
-                    <children>
-                        <Label text="%nombre" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                        <Label text="%apellido" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                        <Label text="%curso" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                        <Label text="%patronus" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
 
-                        <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                        <TextField fx:id="txtApellido" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                        <ComboBox fx:id="cmbxCurso" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="%promptCurso"/>
-                        <TextField fx:id="txtPatronus" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                    </children>
-                    <padding><Insets left="20.0" right="20.0" top="20.0" bottom="20.0"/></padding>
+                    <Label text="%nombre" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Label text="%apellido" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label text="%curso" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Label text="%patronus" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+
+                    <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <TextField fx:id="txtApellido" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <ComboBox fx:id="cmbxCurso" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="%promptCurso"/>
+                    <TextField fx:id="txtPatronus" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                    <padding>
+                        <Insets left="20.0" right="20.0" top="20.0" bottom="20.0"/>
+                    </padding>
+
                 </GridPane>
             </center>
 
             <bottom>
                 <GridPane BorderPane.alignment="CENTER">
+
                     <columnConstraints>
                         <ColumnConstraints percentWidth="60.0"/>
                         <ColumnConstraints percentWidth="20.0"/>
                         <ColumnConstraints percentWidth="20.0"/>
                     </columnConstraints>
+
                     <rowConstraints>
                         <RowConstraints prefHeight="30.0"/>
                     </rowConstraints>
-                    <children>
-                        <Button fx:id="btnCancelar" text="%cancelar" onAction="#actionCancelar" GridPane.columnIndex="1">
-                            <tooltip><Tooltip text="%tooltipCancelar"/></tooltip>
-                        </Button>
-                        <Button fx:id="btnGuardar" text="%guardar" onAction="#actionGuardar" GridPane.columnIndex="2">
-                            <tooltip><Tooltip text="%tooltipGuardar"/></tooltip>
-                        </Button>
-                    </children>
+
+                    <Button fx:id="btnCancelar" text="%cancelar" onAction="#actionCancelar" GridPane.columnIndex="1">
+                        <tooltip><Tooltip text="%tooltipCancelar"/></tooltip>
+                    </Button>
+
+                    <Button fx:id="btnGuardar" text="%guardar" onAction="#actionGuardar" GridPane.columnIndex="2">
+                        <tooltip><Tooltip text="%tooltipGuardar"/></tooltip>
+                    </Button>
+
                 </GridPane>
             </bottom>
+
         </BorderPane>
-    </children>
+
 </AnchorPane>

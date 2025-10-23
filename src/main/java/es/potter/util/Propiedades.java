@@ -3,6 +3,7 @@ package es.potter.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -19,42 +20,46 @@ import java.util.Properties;
  */
 public abstract class Propiedades {
 
+    /** Ruta del archivo de configuración dentro del classpath. */
     private static final String RUTA_CONFIG = "es/potter/configuration.properties";
+
+    /** Contenedor estático de las propiedades cargadas. */
     private static final Properties props = new Properties();
+
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(Propiedades.class);
 
     // Bloque estático: carga el archivo de configuración al iniciar la clase
     static {
-        InputStream input = null;
-        
-        try {
-            // Intento 1: Usando ClassLoader (sin barra inicial)
-            input = Propiedades.class.getClassLoader().getResourceAsStream(RUTA_CONFIG);
-            
-            // Intento 2: Usando Class.getResourceAsStream (con barra inicial)
-            if (input == null) {
-                input = Propiedades.class.getResourceAsStream("/" + RUTA_CONFIG);
-            }
-            
+        try (InputStream input = obtenerInputStream()) {
             if (input == null) {
                 throw new RuntimeException("No se encontró " + RUTA_CONFIG + " en el classpath");
             }
-            
+
             props.load(input);
-            logger.info("Archivo configuration.properties cargado correctamente");
-            
-        } catch (Exception e) {
+            logger.info("Archivo configuration.properties cargado correctamente.");
+
+        } catch (IOException e) {
             logger.error("Error al cargar configuration.properties: {}", e.getMessage());
             throw new RuntimeException("Error crítico al cargar configuration.properties", e);
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (Exception e) {
-                    logger.warn("Error al cerrar el stream: {}", e.getMessage());
-                }
-            }
         }
+    }
+
+    /**
+     * Intenta localizar el archivo de configuración usando diferentes estrategias de carga.
+     *
+     * @return Un {@link InputStream} del archivo, o {@code null} si no fue encontrado.
+     *
+     * @author Wara
+     */
+    private static InputStream obtenerInputStream() {
+        InputStream input = Propiedades.class.getClassLoader().getResourceAsStream(RUTA_CONFIG);
+
+        if (input == null) {
+            input = Propiedades.class.getResourceAsStream("/" + RUTA_CONFIG);
+        }
+
+        return input;
     }
 
     /**
@@ -63,6 +68,8 @@ public abstract class Propiedades {
      * @param clave La clave de la propiedad a buscar
      * @return El valor de la propiedad (puede ser vacío si la propiedad existe sin valor)
      * @throws RuntimeException Si la clave no existe en el archivo
+     *
+     * @author Wara
      */
     public static String getValor(String clave) {
         if (!props.containsKey(clave)) {

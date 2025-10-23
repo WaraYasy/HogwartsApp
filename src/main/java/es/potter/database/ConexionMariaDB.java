@@ -17,14 +17,13 @@ import java.sql.SQLException;
  * @version 1.0
  * @since 2025-10-11
  */
+@Deprecated
 public class ConexionMariaDB {
 
     /** Conexión activa a la base de datos MariaDB. */
     private Connection conexionMDB = null;
 
-    /**
-     * Logger para registrar eventos, errores y mensajes de depuración durante el ciclo de vida de la aplicación.
-     */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ConexionMariaDB.class);
 
     /**
@@ -35,6 +34,8 @@ public class ConexionMariaDB {
      * </p>
      *
      * @throws SQLException si ocurre un error durante el establecimiento de la conexión
+     *
+     * @author Wara
      */
     public ConexionMariaDB() throws SQLException{
         try {
@@ -47,7 +48,7 @@ public class ConexionMariaDB {
             logger.info("Conexión establecida con {}", url);
 
         } catch (SQLException e) {
-            logger.error("Conexión a BD fallida: " + e.getMessage());
+            logger.error("Conexión a BD fallida: {}", e.getMessage());
         }
     }
 
@@ -60,6 +61,8 @@ public class ConexionMariaDB {
      *
      * @return la conexión activa a la base de datos, o {@code null} si la conexión falló
      * @see java.sql.Connection
+     *
+     * @author Wara
      */
     public Connection getConnection() {
         return conexionMDB;
@@ -69,11 +72,13 @@ public class ConexionMariaDB {
      * Cierra la conexión a la base de datos de forma segura.
      * <p>
      * Verifica que la conexión esté activa antes de cerrarla y registra el evento.
-     * Es importante llamar a este método cuando se termine de usar la conexión
+     * Es importante llamar a este metodo cuando se termine de usar la conexión
      * para liberar recursos del sistema.
      * </p>
      *
      * @see java.sql.Connection#close()
+     *
+     * @author Wara
      */
     public void closeConnection() {
         if (conexionMDB != null) {
@@ -86,12 +91,14 @@ public class ConexionMariaDB {
     }
 
     /**
-     * Método principal para probar la funcionalidad de la conexión a MariaDB.
+     * Metodo principal para probar la funcionalidad de la conexión a MariaDB.
      * Crea una instancia de la clase, verifica la conexión y la cierra correctamente.
      * Utiliza manejo de excepciones y bloques try-catch-finally para garantizar
      * la liberación de recursos.
      * 
      * @param args argumentos de línea de comandos (no utilizados)
+     *
+     * @author Wara
      */
     public static void main(String[] args) {
         ConexionMariaDB conexion = null;

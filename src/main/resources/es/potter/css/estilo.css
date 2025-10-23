@@ -1,1 +1,543 @@
 
+/* Variables de color generales (modo claro por defecto) */
+* {
+    -fx-color-fondo: #FFFFFF;
+    -fx-color-texto: #515151;
+    -fx-color-encabezados: #000000;
+    -fx-color-destacado: #BEBEBE;
+    -fx-color-acento: #BEBEBE;
+    -fx-color-texto-acento: #444444;
+}
+
+/* Variables de color modo oscuro (para uso futuro con botón de tema) */
+.modo-oscuro {
+    -fx-color-fondo: #151515;
+    -fx-color-texto: #BDC1CA;
+    -fx-color-encabezados: white;
+    -fx-color-destacado: #444444;
+    -fx-color-acento: #444444;
+    -fx-color-texto-acento: #BEBEBE;
+
+}
+
+/* ============================================
+   ESTILOS ESPECÍFICOS POR CASA
+   ============================================ */
+
+/* Hogwarts */
+.hogwarts {
+    -fx-color-acento: #BEBEBE;
+    -fx-color-texto-acento: #444444;
+}
+.hogwarts-oscuro {
+    -fx-color-acento: #444444;
+    -fx-color-texto-acento: #BEBEBE;
+}
+
+/* Gryffindor */
+.gryffindor {
+    -fx-color-acento: #FF9FB0;
+    -fx-color-texto-acento: #740001;
+}
+.gryffindor-oscuro {
+    -fx-color-acento: #740001;
+    -fx-color-texto-acento: #FF9FB0;
+}
+
+
+/* Slytherin */
+.slytherin {
+    -fx-color-acento: #7EABAA;
+    -fx-color-texto-acento: #183F3E;
+}
+.slytherin-oscuro {
+    -fx-color-acento: #183F3E;
+    -fx-color-texto-acento: #7EABAA;
+}
+
+
+/* Ravenclaw */
+.ravenclaw {
+    -fx-color-acento: #8D96BE;
+    -fx-color-texto-acento: #242D56;
+}
+.ravenclaw-oscuro {
+    -fx-color-acento: #242D56;
+    -fx-color-texto-acento: #8D96BE;
+}
+
+/* Hufflepuff */
+.hufflepuff {
+    -fx-color-acento: #4F2E00;
+    -fx-color-texto-acento: #D29238;
+}
+.hufflepuff-oscuro {
+    -fx-color-acento: #D29238;
+    -fx-color-texto-acento: #4F2E00;
+}
+
+.root {
+    -fx-background-color: -fx-color-fondo;
+    -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 15px;
+}
+
+.side-panel {
+    -fx-background-color: -fx-color-fondo;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 4, 0, 4, 0);
+    -fx-padding: 15px;
+}
+
+.house-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-texto;
+    -fx-font-family: "Manrope";
+    -fx-font-size: 15px;
+    -fx-font-weight: 400;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-padding: 10px;
+    -fx-alignment: center-left;
+}
+
+.house-button.selected {
+    -fx-background-color: -fx-color-acento;
+    -fx-text-fill: -fx-color-texto-acento;
+}
+
+/* Estilos específicos para cada botón de casa cuando está seleccionado */
+#btnHogwarts.selected {
+    -fx-background-color: #BEBEBE;
+    -fx-text-fill: #444444;
+}
+
+#btnGryffindor.selected {
+    -fx-background-color: #FF9FB0;
+    -fx-text-fill: #740001;
+}
+
+#btnSlytherin.selected {
+    -fx-background-color: #7EABAA;
+    -fx-text-fill: #183F3E;
+}
+
+#btnRavenclaw.selected {
+    -fx-background-color: #8D96BE;
+    -fx-text-fill: #242D56;
+}
+
+#btnHufflepuff.selected {
+    -fx-background-color: #F0C17F;
+    -fx-text-fill: #7C4800;
+}
+
+/* ============================================
+   ENCABEZADO SUPERIOR
+   ============================================ */
+.top-bar {
+    -fx-background-color: -fx-color-fondo;
+    -fx-padding: 13px 17px;
+    -fx-border-color: -fx-color-destacado;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.app-title {
+    -fx-text-fill: -fx-color-encabezados;
+    -fx-font-family: "Lexend", "Segoe UI", sans-serif;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+}
+
+.menu-bar {
+    -fx-background-color: -fx-color-fondo;
+}
+
+.menu-bar .menu .label {
+    -fx-text-fill: -fx-color-texto;
+}
+
+.menu-item {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.menu-item .label {
+    -fx-text-fill: -fx-color-texto;
+}
+
+.context-menu {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.menu-bar .menu:hover,
+.menu-bar .menu:showing {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+}
+
+.menu-item:hover .label,
+.menu-item:focused .label {
+    -fx-background-color: -fx-color-destacado;
+}
+
+/* Estilo especial para el botón "Cerrar conexión" */
+.btn-cerrar {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+    -fx-text-fill: -fx-color-texto-acento;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+}
+
+.btn-cerrar:hover {
+    -fx-background-color: derive(-fx-color-destacado, -10%);
+}
+
+.btn-cerrar:pressed {
+    -fx-background-color: derive(-fx-color-destacado, -20%);
+}
+
+/* Colores específicos del botón cerrar por casa */
+.hogwarts .btn-cerrar {
+    -fx-background-color: #BEBEBE;
+    -fx-text-fill: #444444;
+}
+
+.gryffindor .btn-cerrar {
+    -fx-background-color: #FF9FB0;
+    -fx-text-fill: #740001;
+}
+
+.slytherin .btn-cerrar {
+    -fx-background-color: #7EABAA;
+    -fx-text-fill: #183F3E;
+}
+
+.ravenclaw .btn-cerrar {
+    -fx-background-color: #8D96BE;
+    -fx-text-fill: #242D56;
+}
+
+.hufflepuff .btn-cerrar {
+    -fx-background-color: #F0C17F;
+    -fx-text-fill: #7C4800;
+}
+
+/* ============================================
+   BARRA DE HERRAMIENTAS - Búsqueda y botones
+   ============================================ */
+.toolbar {
+    -fx-background-color: -fx-color-fondo;
+    -fx-padding: 15px;
+    -fx-border-radius: 4px 4px 0 0;
+    -fx-background-radius: 4px 4px 0 0;
+}
+
+.search-field {
+    -fx-background-color: -fx-color-fondo;
+    -fx-text-fill: -fx-color-texto;
+    -fx-prompt-text-fill: -fx-color-texto;
+    -fx-border-color: -fx-color-texto;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 15px;
+    -fx-font-family: "Manrope";
+}
+
+.search-field:focused {
+    -fx-border-color: -fx-color-encabezados;
+}
+
+.action-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-texto-acento;
+    -fx-font-size: 14px;
+    -fx-font-family: "Manrope";
+    -fx-cursor: hand;
+    -fx-padding: 2px 8px;
+}
+
+/* Color de los iconos en los botones de acción */
+.action-button .glyph-icon {
+    -fx-fill: -fx-color-texto-acento;
+}
+
+.action-button:hover {
+    -fx-text-fill: -fx-color-encabezados;
+}
+
+.action-button:hover .glyph-icon {
+    -fx-fill: -fx-color-encabezados;
+}
+
+.action-button:disabled {
+    -fx-text-fill: -fx-color-destacado;
+    -fx-opacity: 0.5;
+}
+
+.action-button:disabled .glyph-icon {
+    -fx-fill: -fx-color-destacado;
+}
+
+
+/* ============================================
+   TABLA
+   ============================================ */
+
+/* Fondo general de la tabla */
+.table-view {
+    -fx-background-color: -fx-color-fondo;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+/* Encabezados de columnas - fondo y estilo */
+.table-view .column-header-background {
+    -fx-background-color: -fx-color-destacado;
+}
+
+.table-view .column-header {
+    -fx-background-color: -fx-color-destacado;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+/* Alinear los encabezados de las columnas a la izquierda */
+.table-view .column-header-background .label {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 0 0 8px;
+    -fx-text-fill: -fx-color-encabezados;
+    -fx-font-weight: 600;
+}
+
+/* Colores específicos de encabezados de tabla por casa */
+.hogwarts .table-view .column-header-background {
+    -fx-background-color: #BEBEBE;
+}
+.hogwarts .table-view .column-header {
+    -fx-background-color: #BEBEBE;
+}
+.hogwarts .table-view .column-header-background .filler {
+    -fx-background-color: #BEBEBE;
+}
+
+.gryffindor .table-view .column-header-background {
+    -fx-background-color: #FF9FB0;
+}
+.gryffindor .table-view .column-header {
+    -fx-background-color: #FF9FB0;
+}
+.gryffindor .table-view .column-header-background .filler {
+    -fx-background-color: #FF9FB0;
+}
+
+.slytherin .table-view .column-header-background {
+    -fx-background-color: #7EABAA;
+}
+.slytherin .table-view .column-header {
+    -fx-background-color: #7EABAA;
+}
+.slytherin .table-view .column-header-background .filler {
+    -fx-background-color: #7EABAA;
+}
+
+.ravenclaw .table-view .column-header-background {
+    -fx-background-color: #8D96BE;
+}
+.ravenclaw .table-view .column-header {
+    -fx-background-color: #8D96BE;
+}
+.ravenclaw .table-view .column-header-background .filler {
+    -fx-background-color: #8D96BE;
+}
+
+.hufflepuff .table-view .column-header-background {
+    -fx-background-color: #F0C17F;
+}
+.hufflepuff .table-view .column-header {
+    -fx-background-color: #F0C17F;
+}
+.hufflepuff .table-view .column-header-background .filler {
+    -fx-background-color: #F0C17F;
+}
+
+/* Esquinas redondeadas superior izquierda */
+.table-view .column-header-background .filler {
+    -fx-background-color: -fx-color-destacado;
+}
+
+/* Ocultar el recuadro blanco de la esquina inferior derecha */
+.table-view .corner {
+    -fx-background-color: -fx-color-fondo;
+}
+
+/* Filas de la tabla */
+.table-row-cell {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: transparent;
+    -fx-text-fill: -fx-color-texto;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: derive(-fx-color-fondo, 2%);
+}
+
+/* Hover en filas */
+.table-row-cell:hover {
+    -fx-background-color: -fx-color-destacado;
+}
+
+/* Colores específicos de hover en filas por casa */
+.hogwarts .table-row-cell:hover {
+    -fx-background-color: #BEBEBE;
+}
+
+.gryffindor .table-row-cell:hover {
+    -fx-background-color: #FF9FB0;
+}
+
+.slytherin .table-row-cell:hover {
+    -fx-background-color: #7EABAA;
+}
+
+.ravenclaw .table-row-cell:hover {
+    -fx-background-color: #8D96BE;
+}
+
+.hufflepuff .table-row-cell:hover {
+    -fx-background-color: #F0C17F;
+}
+
+/* Fila seleccionada */
+.table-row-cell:selected {
+    -fx-background-color: derive(-fx-color-destacado, 10%);
+    -fx-text-fill: -fx-color-encabezados;
+}
+
+/* Celdas de la tabla */
+.table-view .table-cell {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 0 0 8px;
+    -fx-text-fill: -fx-color-texto;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: -fx-color-encabezados;
+}
+
+/* Quitar bordes y barras de desplazamiento predeterminadas */
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:horizontal {
+    -fx-background-color: -fx-color-fondo;
+}
+
+.table-view .virtual-flow .scroll-bar .thumb {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+}
+
+.table-view .virtual-flow .scroll-bar .thumb:hover {
+    -fx-background-color: derive(-fx-color-destacado, 20%);
+}
+
+/* ============================================
+   CHECKBOX - Estilo personalizado
+   ============================================ */
+.check-box {
+    -fx-text-fill: -fx-color-texto;
+}
+
+.check-box .box {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: -fx-color-texto;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.check-box:selected .box {
+    -fx-background-color: -fx-color-acento;
+    -fx-border-color: -fx-color-acento;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: -fx-color-encabezados;
+}
+
+/* Colores específicos de checkboxes por casa */
+.hogwarts .check-box:selected .box {
+    -fx-background-color: #BEBEBE;
+    -fx-border-color: #BEBEBE;
+}
+
+.gryffindor .check-box:selected .box {
+    -fx-background-color: #FF9FB0;
+    -fx-border-color: #FF9FB0;
+}
+
+.slytherin .check-box:selected .box {
+    -fx-background-color: #7EABAA;
+    -fx-border-color: #7EABAA;
+}
+
+.ravenclaw .check-box:selected .box {
+    -fx-background-color: #8D96BE;
+    -fx-border-color: #8D96BE;
+}
+
+.hufflepuff .check-box:selected .box {
+    -fx-background-color: #F0C17F;
+    -fx-border-color: #F0C17F;
+}
+
+/* ============================================
+   SCROLLBAR - Barra de desplazamiento
+   ============================================ */
+.scroll-bar {
+    -fx-background-color: -fx-color-fondo;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: derive(-fx-color-destacado, 10%);
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* ============================================
+   LABEL - Etiquetas generales
+   ============================================ */
+.label {
+    -fx-text-fill: -fx-color-texto;
+    -fx-font-family: "Manrope";
+}
+
+/* ============================================
+   TOOLTIPS
+   ============================================ */
+.tooltip {
+    -fx-background-color: -fx-color-destacado;
+    -fx-text-fill: -fx-color-texto;
+    -fx-font-size: 12px;
+    -fx-font-family: "Manrope";
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 8px;
+}

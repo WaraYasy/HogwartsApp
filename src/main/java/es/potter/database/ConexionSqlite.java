@@ -14,18 +14,42 @@ import java.sql.SQLException;
  * utilizando configuraciones definidas en archivos de propiedades.
  * SQLite es una base de datos ligera, sin servidor y autocontenida,
  * ideal para aplicaciones embebidas y desarrollo.
- * 
+ *
+ * <p><b>DEPRECADA:</b> Esta clase tiene problemas al empaquetar la aplicación en JAR
+ * porque usa rutas absolutas del sistema de archivos que no funcionan con recursos embebidos.
+ * </p>
+ *
+ * <h3>Migración:</h3>
+ * En lugar de usar esta clase directamente, utilizar:
+ * <pre>{@code
+ * // FORMA ANTIGUA (NO USAR):
+ * ConexionSqlite conexion = new ConexionSqlite();
+ * Connection conn = conexion.getConnection();
+ *
+ * // FORMA NUEVA (USAR ESTA):
+ * CompletableFuture<Connection> futureConn = ConexionFactory.getConnectionAsync(TipoBaseDatos.SQLITE);
+ * futureConn.thenAccept(conn -> {
+ *     // usar conexión
+ * });
+ * }</pre>
+ *
+ * <p>La Factory utiliza {@link SQLiteManager} internamente para manejar correctamente
+ * la base de datos embebida tanto en desarrollo como en producción empaquetada.</p>
+ *
+ * @see ConexionFactory#getConnectionAsync(TipoBaseDatos)
+ * @see SQLiteManager
  * @author Wara Pacheco
  * @version 1.0
  * @since 2025-10-11
+ * @deprecated Use {@link ConexionFactory#getConnectionAsync(TipoBaseDatos)} con {@link TipoBaseDatos#SQLITE} en su lugar
  */
+@Deprecated(since = "2.0", forRemoval = true)
 public class ConexionSqlite {
+
     /** Conexión activa a la base de datos SQLite. */
     private Connection conexionSqlite = null;
 
-    /**
-     * Logger para registrar eventos, errores y mensajes de depuración durante el ciclo de vida de la aplicación.
-     */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ConexionSqlite.class);
 
     /**
@@ -37,6 +61,8 @@ public class ConexionSqlite {
      * </p>
      *
      * @throws SQLException si ocurre un error durante el establecimiento de la conexión
+     *
+     * @author Wara
      */
     public ConexionSqlite() throws SQLException{
         try {
@@ -49,7 +75,7 @@ public class ConexionSqlite {
             logger.info("Conexión establecida con {}", url);
 
         } catch (SQLException e) {
-            logger.error("Conexión a BD fallida: " + e.getMessage());
+            logger.error("Conexión a BD fallida: {}", e.getMessage());
         }
     }
 
@@ -62,6 +88,8 @@ public class ConexionSqlite {
      *
      * @return la conexión activa a la base de datos, o {@code null} si la conexión falló
      * @see java.sql.Connection
+     *
+     * @author Wara
      */
     public Connection getConnection() {
         return conexionSqlite;
@@ -76,6 +104,8 @@ public class ConexionSqlite {
      * </p>
      *
      * @see java.sql.Connection#close()
+     *
+     * @author Wara
      */
     public void closeConnection() {
         if (conexionSqlite != null) {
@@ -83,18 +113,20 @@ public class ConexionSqlite {
                 conexionSqlite.close();
                 logger.info("Conexión cerrada");
             } catch (SQLException e) {
-                logger.error("Error al cerrar conexión: " + e.getMessage());
+                logger.error("Error al cerrar conexión: {}", e.getMessage());
             }
         }
     }
 
     /**
-     * Método principal para probar la funcionalidad de la conexión a SQLite.
+     * Metodo principal para probar la funcionalidad de la conexión a SQLite.
      * Crea una instancia de la clase, verifica la conexión y la cierra correctamente.
      * Utiliza manejo de excepciones y bloques try-catch-finally para garantizar
      * la liberación de recursos.
      * 
      * @param args argumentos de línea de comandos (no utilizados)
+     *
+     * @author Wara
      */
     public static void main(String[] args) {
         ConexionSqlite conexion = null;

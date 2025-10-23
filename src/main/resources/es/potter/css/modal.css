@@ -1,0 +1,219 @@
+
+/* Variables de color generales (modo claro por defecto) */
+* {
+    -fx-color-fondo: #FFFFFF;
+    -fx-color-texto: #515151;
+    -fx-color-encabezados: #000000;
+    -fx-color-destacado: #BEBEBE;
+    -fx-color-acento: #BEBEBE;
+    -fx-color-texto-acento: #444444;
+}
+
+/* Variables de color modo oscuro (para uso futuro con botón de tema) */
+.modo-oscuro {
+    -fx-color-fondo: #151515;
+    -fx-color-texto: #BDC1CA;
+    -fx-color-encabezados: white;
+    -fx-color-destacado: #444444;
+    -fx-color-acento: #444444;
+    -fx-color-texto-acento: #BEBEBE;
+
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL DEL MODAL
+   ============================================ */
+.anchor-pane {
+    -fx-background-color: -fx-color-fondo;
+}
+
+.border-pane {
+    -fx-background-color: -fx-color-fondo;
+}
+
+/* ============================================
+   TÍTULO DEL MODAL
+   ============================================ */
+.border-pane > .top .label {
+    -fx-text-fill: -fx-color-encabezados;
+    -fx-font-family: "Lexend", "Segoe UI", sans-serif;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+}
+
+/* ============================================
+   LABELS DE FORMULARIO
+   ============================================ */
+.label {
+    -fx-text-fill: -fx-color-texto;
+    -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+}
+
+/* ============================================
+   TEXT FIELDS
+   ============================================ */
+.text-field {
+    -fx-background-color: -fx-color-fondo;
+    -fx-text-fill: -fx-color-texto;
+    -fx-prompt-text-fill: derive(-fx-color-texto, -30%);
+    -fx-border-color: -fx-color-texto;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
+}
+
+.text-field:focused {
+    -fx-border-color: -fx-color-encabezados;
+    -fx-border-width: 1.5px;
+}
+
+.text-field:disabled {
+    -fx-opacity: 0.5;
+    -fx-background-color: derive(-fx-color-fondo, 5%);
+}
+
+/* ============================================
+   COMBO BOX
+   ============================================ */
+.combo-box {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: -fx-color-texto;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: -fx-color-fondo;
+    -fx-text-fill: -fx-color-texto;
+    -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 12px;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -fx-color-fondo;
+    -fx-border-color: -fx-color-texto;
+    -fx-border-width: 1px;
+    -fx-background-insets: 0;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: -fx-color-fondo;
+    -fx-text-fill: -fx-color-texto;
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: -fx-color-destacado;
+}
+
+.combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: -fx-color-acento;
+    -fx-text-fill: -fx-color-texto-acento;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: -fx-color-texto;
+}
+
+.combo-box:focused {
+    -fx-border-color: -fx-color-encabezados;
+    -fx-border-width: 1.5px;
+}
+
+/* ============================================
+   BOTONES DEL MODAL
+   ============================================ */
+.button {
+    -fx-background-color: -fx-color-destacado;
+    -fx-text-fill: -fx-color-texto-acento;
+    -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-min-width: 100px;
+}
+
+.button:hover {
+    -fx-background-color: derive(-fx-color-destacado, 10%);
+    -fx-text-fill: -fx-color-encabezados;
+}
+
+.button:pressed {
+    -fx-background-color: derive(-fx-color-destacado, -10%);
+}
+
+.button:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+/* Botón guardar - destacado */
+#btnGuardar {
+    -fx-background-color: -fx-color-acento;
+    -fx-text-fill: -fx-color-texto-acento;
+}
+
+#btnGuardar:hover {
+    -fx-background-color: derive(-fx-color-acento, 10%);
+    -fx-text-fill: white;
+}
+
+#btnGuardar:pressed {
+    -fx-background-color: derive(-fx-color-acento, -10%);
+}
+
+/* ============================================
+   GRID PANE
+   ============================================ */
+.grid-pane {
+    -fx-background-color: -fx-color-fondo;
+    -fx-hgap: 10px;
+    -fx-vgap: 10px;
+}
+
+/* ============================================
+   TOOLTIPS
+   ============================================ */
+.tooltip {
+    -fx-background-color: -fx-color-destacado;
+    -fx-text-fill: -fx-color-texto;
+    -fx-font-size: 12px;
+    -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 8px;
+}
+
+/* ============================================
+   SCROLLBAR (por si hay contenido largo)
+   ============================================ */
+.scroll-bar {
+    -fx-background-color: -fx-color-fondo;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -fx-color-destacado;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: derive(-fx-color-destacado, 10%);
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}

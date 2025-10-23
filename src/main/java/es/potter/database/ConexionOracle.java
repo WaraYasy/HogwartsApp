@@ -9,27 +9,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Clase de gestión de conexiones a la base de datos MariaDB.
- * <ul>
- *   <li>Establecimiento automático de conexión en la construcción del objeto</li>
- *   <li>Carga de configuración desde archivo properties</li>
- *   <li>Gestión segura del cierre de conexiones</li>
- *   <li>Logging completo de eventos y errores de conexión</li>
- * </ul>
- *
+ * Clase para gestionar la conexión a la base de datos Oracle.
+ * Proporciona métodos para establecer, obtener y cerrar conexiones a Oracle
+ * utilizando configuraciones definidas en archivos de propiedades.
  *
  * @author Erlantz
  * @version 1.0
  * @since 2025-10-10
  */
+@Deprecated
 public class ConexionOracle {
 
     /** Conexión activa a la base de datos MariaDB. */
     private Connection conexionOracle = null;
 
-    /**
-     * Logger para registrar eventos, errores y mensajes de depuración durante el ciclo de vida de la aplicación.
-     */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ConexionOracle.class);
 
     /**
@@ -40,6 +34,8 @@ public class ConexionOracle {
      * </p>
      *
      * @throws SQLException si ocurre un error durante el establecimiento de la conexión
+     *
+     * @author Erlantz
      */
     public ConexionOracle() throws SQLException{
         try {
@@ -52,7 +48,7 @@ public class ConexionOracle {
             logger.info("Conexión establecida con {}", url);
 
         } catch (SQLException e) {
-            logger.error("Conexión a BD fallida: " + e.getMessage());
+            logger.error("Conexión a BD fallida: {}", e.getMessage());
         }
     }
 
@@ -65,6 +61,8 @@ public class ConexionOracle {
      *
      * @return la conexión activa a la base de datos, o {@code null} si la conexión falló
      * @see java.sql.Connection
+     *
+     * @author Erlantz
      */
     public Connection getConnection() {
         return conexionOracle;
@@ -79,6 +77,8 @@ public class ConexionOracle {
      * </p>
      *
      * @see java.sql.Connection#close()
+     *
+     * @author Erlantz
      */
     public void closeConnection() {
         if (conexionOracle != null) {
@@ -86,17 +86,27 @@ public class ConexionOracle {
                 conexionOracle.close();
                 logger.info("Conexión cerrada");
             } catch (SQLException e) {
-                logger.error("Error al cerrar conexión: " + e.getMessage());
+                logger.error("Error al cerrar conexión: {}", e.getMessage());
             }
         }
     }
-    /*Main de Prueba*/
-        /*public static void main(String[] args) {
-        es.potter.database.ConexionOracle conexion = null;
+
+    /**
+     * Metodo principal para probar la funcionalidad de la conexión a Oracle.
+     * Crea una instancia de la clase, verifica la conexión y la cierra correctamente.
+     * Utiliza manejo de excepciones y bloques try-catch-finally para garantizar
+     * la liberación de recursos.
+     *
+     * @param args argumentos de línea de comandos (no utilizados)
+     *
+     * @author Erlantz
+     */
+    public static void main(String[] args) {
+        ConexionOracle conexion = null;
 
         try {
             // Crear la conexión
-            conexion = new es.potter.database.ConexionOracle();
+            conexion = new ConexionOracle();
 
             // Verificar si la conexión fue exitosa
             if (conexion.getConnection() != null && !conexion.getConnection().isClosed()) {
@@ -113,5 +123,5 @@ public class ConexionOracle {
                 conexion.closeConnection();
             }
         }
-    }*/
+    }
 }
