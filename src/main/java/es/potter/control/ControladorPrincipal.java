@@ -123,7 +123,7 @@ public class ControladorPrincipal {
         inicializarBotones();
 
         // Cargar datos iniciales desde la base de datos master
-        cargarAlumnosPorCasa(baseDatosActual);
+        cargarAlumnosPorCasa(baseDatosActual, true);
     }
 
     /**
@@ -315,8 +315,7 @@ public class ControladorPrincipal {
         // Esperar a que todas las eliminaciones terminen
         CompletableFuture.allOf(eliminaciones.toArray(new CompletableFuture[0]))
             .thenApply(v -> eliminaciones.stream()
-                .map(CompletableFuture::join)
-                .allMatch(exito -> exito))
+                .allMatch(CompletableFuture::join))
             .thenAccept(todasExitosas -> Platform.runLater(() -> {
                 progressIndicator.setVisible(false);
 
@@ -566,6 +565,10 @@ public class ControladorPrincipal {
      * @author Marco
      */
     private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase) {
+        cargarAlumnosPorCasa(tipoBase, false);
+    }
+
+    private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase, boolean esCargaInicial) {
         baseDatosActual = tipoBase;
         listaAlumnos.clear();
 
@@ -592,6 +595,13 @@ public class ControladorPrincipal {
                         progressIndicator.setVisible(false);
 
                         mandarAlertas(Alert.AlertType.ERROR, bundle.getString("errorCargarAlumnos"), bundle.getString("noPuedeCargarAlumnos") + " " + tipoBase, ex.getMessage());
+
+                        // Si es la carga inicial, cerrar la aplicación
+                        if (esCargaInicial) {
+                            logger.error("Error crítico en la carga inicial de alumnos. Cerrando aplicación...");
+                            Platform.exit();
+                            System.exit(1);
+                        }
                     });
                     return null;
                 });
