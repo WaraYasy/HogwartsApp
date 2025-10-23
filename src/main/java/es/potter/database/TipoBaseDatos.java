@@ -11,7 +11,6 @@ package es.potter.database;
  * @version 2.0
  * @since 2025-10-12
  */
-@Deprecated
 public enum TipoBaseDatos {
 
     /** Base de datos H2 */

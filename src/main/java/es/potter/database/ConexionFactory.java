@@ -17,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
  * @version 3.0
  * @since 2025-10-16
  */
-@Deprecated
 public class ConexionFactory {
 
     /** Logger para registrar eventos y errores de la conexión */
