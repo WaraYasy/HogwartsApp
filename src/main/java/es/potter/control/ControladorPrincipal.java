@@ -273,7 +273,7 @@ public class ControladorPrincipal {
 
     /**
      * Elimina los alumnos seleccionados tras mostrar un mensaje de confirmación.
-     * Este metodo:
+     * Esta función:
      * 1. Muestra una alerta al usuario para confirmar la eliminación.
      * 2. Ejecuta las eliminaciones de forma asíncrona utilizando CompletableFuture.
      * 3. Actualiza la interfaz (tabla y botones) en el hilo de JavaFX una vez finalizado el proceso.
