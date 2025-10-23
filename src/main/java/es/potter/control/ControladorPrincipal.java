@@ -1,6 +1,5 @@
 package es.potter.control;
 
-import es.potter.dao.DaoAlumno;
 import es.potter.database.TipoBaseDatos;
 import es.potter.model.Alumno;
 import es.potter.servicio.ServicioHogwarts;
@@ -23,7 +22,6 @@ import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class ControladorPrincipal {
 
@@ -215,64 +213,55 @@ public class ControladorPrincipal {
     void actionRecargar() {
         if (listaAlumnos.isEmpty() && alumnosEliminados.isEmpty()) return;
 
-        List<CompletableFuture<Boolean>> operaciones = new ArrayList<>();
-
-        // Procesar eliminados
+        // Convertir Map a List de Alumnos para eliminación
+        List<Alumno> alumnosAEliminar = new ArrayList<>();
         for (Map.Entry<String, String> entry : alumnosEliminados.entrySet()) {
-            String id = entry.getKey();
-            String casaAlumno = entry.getValue();
-            Alumno dummy = new Alumno();
-            dummy.setId(id);
-
-            CompletableFuture<Boolean> op = DaoAlumno.eliminarAlumno(dummy, TipoBaseDatos.MARIADB)
-                    .thenCompose(ok -> DaoAlumno.eliminarAlumno(dummy, TipoBaseDatos.SQLITE))
-                    .thenCompose(ok -> {
-                        try {
-                            TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(casaAlumno);
-                            return DaoAlumno.eliminarAlumno(dummy, casa);
-                        } catch (IllegalArgumentException e) {
-                            return CompletableFuture.completedFuture(true);
-                        }
-                    });
-
-            operaciones.add(op);
-        }
-        alumnosEliminados.clear();
-
-        // Procesar alumnos existentes/nuevos
-        for (Alumno alumno : listaAlumnos) {
-            TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
-
-            CompletableFuture<Boolean> futuraOp = DaoAlumno.modificarAlumno(alumno.getId(), alumno, TipoBaseDatos.MARIADB)
-                    .exceptionally(ex -> false)
-                    .thenCompose(exito -> {
-                        if (!exito) return DaoAlumno.nuevoAlumno(alumno, TipoBaseDatos.MARIADB);
-                        return CompletableFuture.completedFuture(true);
-                    })
-                    .thenCompose(ok -> DaoAlumno.modificarAlumno(alumno.getId(), alumno, casa)
-                            .exceptionally(ex -> false)
-                            .thenCompose(exitoCasa -> {
-                                if (!exitoCasa) return DaoAlumno.nuevoAlumno(alumno, casa);
-                                return CompletableFuture.completedFuture(true);
-                            }))
-                    .thenCompose(ok -> DaoAlumno.modificarAlumno(alumno.getId(), alumno, TipoBaseDatos.SQLITE)
-                            .exceptionally(ex -> false)
-                            .thenCompose(exitoSqlite -> {
-                                if (!exitoSqlite) return DaoAlumno.nuevoAlumno(alumno, TipoBaseDatos.SQLITE);
-                                return CompletableFuture.completedFuture(true);
-                            }));
-
-            operaciones.add(futuraOp);
+            Alumno alumno = new Alumno();
+            alumno.setId(entry.getKey());
+            alumno.setCasa(entry.getValue());
+            alumnosAEliminar.add(alumno);
         }
 
-        CompletableFuture.allOf(operaciones.toArray(new CompletableFuture[0]))
-                .thenRun(() -> Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Recargar");
-                    alert.setHeaderText("Sincronización completada");
-                    alert.setContentText("Todos los cambios se han guardado en MariaDB, SQLite y las bases de las casas correspondientes.");
-                    alert.showAndWait();
-                }));
+        // Mostrar indicador de progreso
+        progressIndicator.setVisible(true);
+
+        // Delegar toda la lógica al servicio
+        ServicioHogwarts.sincronizarCambiosEnLote(
+            new ArrayList<>(listaAlumnos),
+            alumnosAEliminar
+        )
+        .thenAccept(exito -> Platform.runLater(() -> {
+            progressIndicator.setVisible(false);
+
+            if (exito) {
+                // Limpiar cambios pendientes
+                alumnosEliminados.clear();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Recargar");
+                alert.setHeaderText("Sincronización completada");
+                alert.setContentText("Todos los cambios se han guardado exitosamente en todas las bases de datos.");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Recargar");
+                alert.setHeaderText("Sincronización parcial");
+                alert.setContentText("Algunos cambios no pudieron guardarse. Revisa los logs para más información.");
+                alert.showAndWait();
+            }
+        }))
+        .exceptionally(ex -> {
+            Platform.runLater(() -> {
+                progressIndicator.setVisible(false);
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error en sincronización");
+                alert.setContentText("No se pudieron sincronizar los cambios: " + ex.getMessage());
+                alert.showAndWait();
+            });
+            return null;
+        });
     }
 
     @FXML
@@ -333,6 +322,7 @@ public class ControladorPrincipal {
             modalStage.setTitle(bundle.getString("editarAlumno"));
             modalStage.setScene(new Scene(root));
             modalStage.initModality(Modality.APPLICATION_MODAL);
+            modalStage.initOwner(btnEditar.getScene().getWindow());
             modalStage.setResizable(false);
             modalStage.showAndWait();
 
@@ -372,6 +362,7 @@ public class ControladorPrincipal {
             modalStage.setTitle(bundle.getString("nuevoAlumno"));
             modalStage.setScene(new Scene(root));
             modalStage.initModality(Modality.APPLICATION_MODAL);
+            modalStage.initOwner(btnNuevo.getScene().getWindow());
             modalStage.setResizable(false);
             modalStage.showAndWait();
 
