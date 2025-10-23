@@ -73,6 +73,7 @@ public class ConexionFactory {
      *
      * @author Wara
      */
+    @Deprecated
     public static CompletableFuture<Void> closeConnectionAsync(Connection connection) {
         return CompletableFuture.runAsync(() -> {
             if (connection != null) {
@@ -89,23 +90,4 @@ public class ConexionFactory {
         });
     }
 
-    /**
-     * Prueba la conexión de forma asíncrona.
-     *
-     * @param tipo el tipo de base de datos
-     * @return CompletableFuture con true si la conexión es exitosa
-     *
-     * @author Wara
-     */
-
-    public static CompletableFuture<Boolean> testConnectionAsync(TipoBaseDatos tipo) {
-        return getConnectionAsync(tipo)
-                .thenCompose(conn ->
-                    closeConnectionAsync(conn).thenApply(v -> true)
-                )
-                .exceptionally(ex -> {
-                    logger.error("Test de conexión falló para {}", tipo, ex);
-                    return false;
-                });
-    }
 }

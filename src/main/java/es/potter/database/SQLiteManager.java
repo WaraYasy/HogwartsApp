@@ -3,7 +3,6 @@ package es.potter.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -61,7 +60,7 @@ public class SQLiteManager {
     /**
      * Obtiene la ruta absoluta al archivo de base de datos SQLite.
      * <p>
-     * Este método garantiza que:
+     * Este procedimiento garantiza que:
      * <ol>
      *   <li>El directorio de datos de la aplicación existe</li>
      *   <li>La base de datos se copia desde resources si no existe</li>
@@ -185,7 +184,7 @@ public class SQLiteManager {
     /**
      * Copia el archivo de base de datos desde los recursos del JAR al sistema de archivos.
      * <p>
-     * Este método extrae el archivo {@code hogwarts.db} embebido en el JAR
+     * Esta función extrae el archivo {@code hogwarts.db} embebido en el JAR
      * ({@code /es/potter/db/hogwarts.db}) y lo copia a una ubicación escribible.
      * </p>
      *
@@ -232,85 +231,9 @@ public class SQLiteManager {
      */
     public static String getJdbcUrl() {
         Path dbPath = getDatabasePath();
-        String jdbcUrl = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString();
+        String jdbcUrl = "jdbc:sqlite:" + dbPath.toAbsolutePath();
         logger.debug("URL JDBC de SQLite: {}", jdbcUrl);
         return jdbcUrl;
     }
 
-    /**
-     * Verifica si la base de datos existe y es accesible.
-     *
-     * @return true si el archivo existe y es un archivo regular, false en caso contrario
-     *
-     * @author Wara Pacheco
-     */
-    public static boolean databaseExists() {
-        if (databasePath == null) {
-            getDatabasePath(); // Inicializar si no se ha hecho
-        }
-        return databasePath != null && Files.exists(databasePath) && Files.isRegularFile(databasePath);
-    }
-
-    /**
-     * Obtiene el tamaño del archivo de base de datos en bytes.
-     *
-     * @return tamaño en bytes, o -1 si hay error
-     *
-     * @author Wara Pacheco
-     */
-    public static long getDatabaseSize() {
-        try {
-            if (databasePath == null) {
-                getDatabasePath();
-            }
-            return Files.size(databasePath);
-        } catch (IOException e) {
-            logger.error("Error al obtener tamaño de la base de datos: {}", e.getMessage());
-            return -1;
-        }
-    }
-
-    /**
-     * Método de prueba para verificar la funcionalidad del gestor.
-     * <p>
-     * Ejecuta las siguientes pruebas:
-     * <ol>
-     *   <li>Obtiene la ruta de la base de datos</li>
-     *   <li>Verifica que existe</li>
-     *   <li>Muestra la URL JDBC</li>
-     *   <li>Muestra el tamaño del archivo</li>
-     * </ol>
-     * </p>
-     *
-     * @param args argumentos de línea de comandos (no utilizados)
-     *
-     * @author Wara Pacheco
-     */
-    public static void main(String[] args) {
-        System.out.println("=== Test de SQLiteManager ===");
-
-        try {
-            // Test 1: Obtener ruta
-            Path dbPath = getDatabasePath();
-            System.out.println("✓ Ruta de la base de datos: " + dbPath);
-
-            // Test 2: Verificar existencia
-            boolean exists = databaseExists();
-            System.out.println("✓ La base de datos existe: " + exists);
-
-            // Test 3: Obtener URL JDBC
-            String jdbcUrl = getJdbcUrl();
-            System.out.println("✓ URL JDBC: " + jdbcUrl);
-
-            // Test 4: Obtener tamaño
-            long size = getDatabaseSize();
-            System.out.println("✓ Tamaño: " + size + " bytes (" + (size / 1024) + " KB)");
-
-            System.out.println("\n✓✓✓ Todos los tests pasaron correctamente ✓✓✓");
-
-        } catch (Exception e) {
-            System.err.println("✗ Error durante los tests: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 }

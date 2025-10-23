@@ -84,11 +84,11 @@ public class ServicioHogwarts {
         return DaoAlumno.nuevoAlumno(alumno, TipoBaseDatos.MARIADB)
                 .thenCompose(exitoMaster -> {
                     if (!exitoMaster) {
-                        logger.error("❌ Falló en MASTER, operación abortada");
+                        logger.error("Falló en MASTER, operación abortada");
                         return CompletableFuture.completedFuture(false);
                     }
 
-                    logger.info("✅ Guardado en MASTER, sincronizando slaves...");
+                    logger.info("Guardado en MASTER, sincronizando slaves...");
                     return copiarASlaves(alumno);
                 });
     }
@@ -108,11 +108,11 @@ public class ServicioHogwarts {
         return DaoAlumno.eliminarAlumno(alumno, TipoBaseDatos.MARIADB)
                 .thenCompose(exitoMaster -> {
                     if (!exitoMaster) {
-                        logger.error("❌ Falló eliminar de MASTER, operación abortada");
+                        logger.error("Falló eliminar de MASTER, operación abortada");
                         return CompletableFuture.completedFuture(false);
                     }
 
-                    logger.info("✅ Eliminado de MASTER, sincronizando slaves...");
+                    logger.info("Eliminado de MASTER, sincronizando slaves...");
                     return eliminarDeSlaves(alumno);
                 });
     }
@@ -132,11 +132,11 @@ public class ServicioHogwarts {
         return DaoAlumno.modificarAlumno(id, alumno, TipoBaseDatos.MARIADB)
                 .thenCompose(exitoMaster -> {
                     if (!exitoMaster) {
-                        logger.error("❌ Falló modificar en MASTER, operación abortada");
+                        logger.error("Falló modificar en MASTER, operación abortada");
                         return CompletableFuture.completedFuture(false);
                     }
 
-                    logger.info("✅ Modificado en MASTER, sincronizando slaves...");
+                    logger.info("Modificado en MASTER, sincronizando slaves...");
                     return modificarEnSlaves(id, alumno);
                 });
     }
@@ -177,16 +177,16 @@ public class ServicioHogwarts {
                                 boolean todoOk = sincronizaciones.stream().allMatch(CompletableFuture::join);
 
                                 if (todoOk) {
-                                    logger.info("✅ Sincronización completa exitosa");
+                                    logger.info("Sincronización completa exitosa");
                                 } else {
-                                    logger.warn("⚠️ Sincronización completada con algunos errores");
+                                    logger.warn("Sincronización completada con algunos errores");
                                 }
 
                                 return todoOk;
                             });
                 })
                 .exceptionally(ex -> {
-                    logger.error("❌ Error en sincronización: {}", ex.getMessage());
+                    logger.error("Error en sincronización: {}", ex.getMessage());
                     return false;
                 });
     }
@@ -220,9 +220,9 @@ public class ServicioHogwarts {
                 })
                 .thenApply(exito -> {
                     if (exito) {
-                        logger.info("✅ {} sincronizado correctamente", tipo);
+                        logger.info("{} sincronizado correctamente", tipo);
                     } else {
-                        logger.error("❌ Error sincronizando {}", tipo);
+                        logger.error("Error sincronizando {}", tipo);
                     }
                     return exito;
                 });
@@ -248,9 +248,9 @@ public class ServicioHogwarts {
             boolean exito = okCasa && okSqlite;
 
             if (exito) {
-                logger.info("✅ Copiado a {} y SQLite", casa);
+                logger.info("Copiado a {} y SQLite", casa);
             } else {
-                logger.error("❌ Error copiando - {}: {}, SQLite: {}", casa, okCasa, okSqlite);
+                logger.error("Error copiando - {}: {}, SQLite: {}", casa, okCasa, okSqlite);
             }
 
             return exito;
@@ -275,9 +275,9 @@ public class ServicioHogwarts {
             boolean exito = okCasa && okSqlite;
 
             if (exito) {
-                logger.info("✅ Eliminado de {} y SQLite", casa);
+                logger.info("Eliminado de {} y SQLite", casa);
             } else {
-                logger.error("❌ Error eliminando - {}: {}, SQLite: {}", casa, okCasa, okSqlite);
+                logger.error("Error eliminando - {}: {}, SQLite: {}", casa, okCasa, okSqlite);
             }
 
             return exito;
@@ -303,9 +303,9 @@ public class ServicioHogwarts {
             boolean exito = okCasa && okSqlite;
 
             if (exito) {
-                logger.info("✅ Modificado en {} y SQLite", casa);
+                logger.info("Modificado en {} y SQLite", casa);
             } else {
-                logger.error("❌ Error modificando - {}: {}, SQLite: {}", casa, okCasa, okSqlite);
+                logger.error("Error modificando - {}: {}, SQLite: {}", casa, okCasa, okSqlite);
             }
 
             return exito;
@@ -353,9 +353,9 @@ public class ServicioHogwarts {
                                 long exitosos = inserts.stream().filter(CompletableFuture::join).count();
 
                                 if (exitosos == faltantes.size()) {
-                                    logger.info("✅ {} sincronizado: {}/{} alumnos", slave, exitosos, faltantes.size());
+                                    logger.info("{} sincronizado: {}/{} alumnos", slave, exitosos, faltantes.size());
                                 } else {
-                                    logger.warn("⚠️ {} parcialmente sincronizado: {}/{} alumnos",
+                                    logger.warn("{} parcialmente sincronizado: {}/{} alumnos",
                                             slave, exitosos, faltantes.size());
                                 }
 
@@ -363,7 +363,7 @@ public class ServicioHogwarts {
                             });
                 })
                 .exceptionally(ex -> {
-                    logger.error("❌ Error sincronizando {}: {}", slave, ex.getMessage());
+                    logger.error("Error sincronizando {}: {}", slave, ex.getMessage());
                     return false;
                 });
     }
