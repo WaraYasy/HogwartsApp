@@ -14,12 +14,36 @@ import java.sql.SQLException;
  * utilizando configuraciones definidas en archivos de propiedades.
  * SQLite es una base de datos ligera, sin servidor y autocontenida,
  * ideal para aplicaciones embebidas y desarrollo.
- * 
+ *
+ * <p><b>DEPRECADA:</b> Esta clase tiene problemas al empaquetar la aplicación en JAR
+ * porque usa rutas absolutas del sistema de archivos que no funcionan con recursos embebidos.
+ * </p>
+ *
+ * <h3>Migración:</h3>
+ * En lugar de usar esta clase directamente, utilizar:
+ * <pre>{@code
+ * // FORMA ANTIGUA (NO USAR):
+ * ConexionSqlite conexion = new ConexionSqlite();
+ * Connection conn = conexion.getConnection();
+ *
+ * // FORMA NUEVA (USAR ESTA):
+ * CompletableFuture<Connection> futureConn = ConexionFactory.getConnectionAsync(TipoBaseDatos.SQLITE);
+ * futureConn.thenAccept(conn -> {
+ *     // usar conexión
+ * });
+ * }</pre>
+ *
+ * <p>La Factory utiliza {@link SQLiteManager} internamente para manejar correctamente
+ * la base de datos embebida tanto en desarrollo como en producción empaquetada.</p>
+ *
+ * @see ConexionFactory#getConnectionAsync(TipoBaseDatos)
+ * @see SQLiteManager
  * @author Wara Pacheco
  * @version 1.0
  * @since 2025-10-11
+ * @deprecated Use {@link ConexionFactory#getConnectionAsync(TipoBaseDatos)} con {@link TipoBaseDatos#SQLITE} en su lugar
  */
-@Deprecated
+@Deprecated(since = "2.0", forRemoval = true)
 public class ConexionSqlite {
 
     /** Conexión activa a la base de datos SQLite. */
