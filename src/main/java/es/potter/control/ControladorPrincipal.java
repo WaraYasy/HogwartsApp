@@ -3,6 +3,8 @@ package es.potter.control;
 import es.potter.database.TipoBaseDatos;
 import es.potter.model.Alumno;
 import es.potter.servicio.ServicioHogwarts;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,12 +111,19 @@ public class ControladorPrincipal {
     @FXML
     private TextField txtBusqueda;
 
-    /** Indicador visual de progreso para operaciones asíncronas (carga, sincronización...). */
+    /** ImageView para mostrar la animación de carga con el caldero */
     @FXML
-    private ProgressIndicator progressIndicator;
+    private ImageView loadingImageView;
 
     /** Bundle del sistema de internacionalización */
     private ResourceBundle bundle;
+
+    /** Imágenes para la animación del caldero */
+    private Image calderoImage1;
+    private Image calderoImage2;
+
+    /** Timeline para la animación del caldero */
+    private Timeline loadingAnimation;
 
     /** Lista filtrada utilizada para búsquedas en tabla */
     private FilteredList<Alumno> filteredList;
@@ -136,6 +146,7 @@ public class ControladorPrincipal {
         configurarFiltrado();
         configurarAnchosColumnas();
         inicializarBotones();
+        configurarAnimacionCarga();
 
         // Cargar datos iniciales desde la base de datos master
         cargarAlumnosPorCasa(baseDatosActual, true);
@@ -251,6 +262,35 @@ public class ControladorPrincipal {
         // Inicializar botones deshabilitados
         btnEditar.setDisable(true);
         btnEliminar.setDisable(true);
+    }
+
+    /**
+     * Configura la animación de carga usando las imágenes del caldero.
+     * Alterna entre caldero.png y caldero2.png para crear un efecto de burbujeo.
+     *
+     * @author Marco
+     */
+    private void configurarAnimacionCarga() {
+        try {
+            // Cargar las imágenes del caldero
+            calderoImage1 = new Image(Objects.requireNonNull(
+                getClass().getResourceAsStream("/es/potter/img/caldero.png")
+            ));
+            calderoImage2 = new Image(Objects.requireNonNull(
+                getClass().getResourceAsStream("/es/potter/img/caldero2.png")
+            ));
+
+            // Crear animación que alterna entre las dos imágenes
+            loadingAnimation = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> loadingImageView.setImage(calderoImage1)),
+                new KeyFrame(Duration.millis(400), e -> loadingImageView.setImage(calderoImage2)),
+                new KeyFrame(Duration.millis(800), e -> loadingImageView.setImage(calderoImage1))
+            );
+            loadingAnimation.setCycleCount(Timeline.INDEFINITE);
+            loadingAnimation.setAutoReverse(false);
+        } catch (Exception e) {
+            logger.error("Error al cargar las imágenes del caldero para la animación de carga", e);
+        }
     }
 
     /**
@@ -374,8 +414,9 @@ public class ControladorPrincipal {
             return; // Usuario canceló
         }
 
-        // Mostrar indicador de progreso
-        progressIndicator.setVisible(true);
+        // Mostrar animación de carga
+        loadingImageView.setVisible(true);
+        loadingAnimation.play();
 
         // Eliminar cada alumno del sistema Master-Slave
         List<CompletableFuture<Boolean>> eliminaciones = new ArrayList<>();
@@ -388,7 +429,8 @@ public class ControladorPrincipal {
             .thenApply(v -> eliminaciones.stream()
                 .allMatch(CompletableFuture::join))
             .thenAccept(todasExitosas -> Platform.runLater(() -> {
-                progressIndicator.setVisible(false);
+                loadingAnimation.stop();
+                loadingImageView.setVisible(false);
 
                 if (todasExitosas) {
                     // Eliminar de la lista local y del map de checkboxes
@@ -406,7 +448,8 @@ public class ControladorPrincipal {
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
-                    progressIndicator.setVisible(false);
+                    loadingAnimation.stop();
+                    loadingImageView.setVisible(false);
 
                     mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("errorEliminarAlumno"), bundle.getString("contenidoNoSePuedeEliminar") + " " + ex.getMessage());
                 });
@@ -480,13 +523,15 @@ public class ControladorPrincipal {
             return; // Usuario canceló
         }
 
-        // Mostrar indicador de progreso
-        progressIndicator.setVisible(true);
+        // Mostrar animación de carga
+        loadingImageView.setVisible(true);
+        loadingAnimation.play();
 
         // Sincronizar desde Master (reconstruye todas las BDs slave)
         ServicioHogwarts.sincronizarDesdeMaster()
             .thenAccept(exito -> Platform.runLater(() -> {
-                progressIndicator.setVisible(false);
+                loadingAnimation.stop();
+                loadingImageView.setVisible(false);
 
                 if (exito) {
                     mandarAlertas(Alert.AlertType.INFORMATION, bundle.getString("sincronizacion"), bundle.getString("sincronizacionCompletada"),bundle.getString("contenidoSincronizacion"));
@@ -499,7 +544,8 @@ public class ControladorPrincipal {
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
-                    progressIndicator.setVisible(false);
+                    loadingAnimation.stop();
+                    loadingImageView.setVisible(false);
 
                     mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("errorSincronizacion"), bundle.getString("contenidoErrorSincronizar") + " " + ex.getMessage());
                 });
@@ -643,8 +689,9 @@ public class ControladorPrincipal {
         baseDatosActual = tipoBase;
         listaAlumnos.clear();
 
-        // Mostrar indicador de progreso
-        progressIndicator.setVisible(true);
+        // Mostrar animación de carga
+        loadingImageView.setVisible(true);
+        loadingAnimation.play();
 
         ServicioHogwarts.cargarAlumnosDesde(tipoBase)
                 .thenAccept(alumnos -> Platform.runLater(() -> {
@@ -659,14 +706,16 @@ public class ControladorPrincipal {
                     // Actualizar estilos de la casa activa
                     actualizarEstilosCasa();
 
-                    // Ocultar indicador de progreso
-                    progressIndicator.setVisible(false);
+                    // Ocultar animación de carga
+                    loadingAnimation.stop();
+                    loadingImageView.setVisible(false);
                 }))
                 .exceptionally(ex -> {
                     logger.error("Error cargando alumnos de la base de datos {}: {}", tipoBase, ex.getMessage());
                     Platform.runLater(() -> {
-                        // Ocultar indicador de progreso en caso de error
-                        progressIndicator.setVisible(false);
+                        // Ocultar animación de carga en caso de error
+                        loadingAnimation.stop();
+                        loadingImageView.setVisible(false);
 
                         mandarAlertas(Alert.AlertType.ERROR, bundle.getString("errorCargarAlumnos"), bundle.getString("noPuedeCargarAlumnos") + " " + tipoBase, ex.getMessage());
 
