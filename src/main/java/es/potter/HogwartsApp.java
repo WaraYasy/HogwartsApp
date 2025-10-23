@@ -58,6 +58,14 @@ public class HogwartsApp extends Application {
             // Configurar el stage
             primaryStage.setTitle("HogwartsApp");
             primaryStage.setScene(scene);
+
+            // Tamaños mínimos
+            primaryStage.setMinWidth(1200);
+            primaryStage.setMinHeight(700);
+
+            // Centrar la ventana en la pantalla
+            primaryStage.centerOnScreen();
+
             primaryStage.show();
 
         } catch (Exception e) {
