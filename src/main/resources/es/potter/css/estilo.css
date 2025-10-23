@@ -1,41 +1,81 @@
 
-/* Variables de color */
+/* Variables de color generales (modo claro por defecto) */
 * {
+    -fx-color-fondo: #FFFFFF;
+    -fx-color-texto: #515151;
+    -fx-color-encabezados: #000000;
+    -fx-color-destacado: #BEBEBE;
+    -fx-color-acento: #BEBEBE;
+    -fx-color-texto-acento: #444444;
+}
+
+/* Variables de color modo oscuro (para uso futuro con botón de tema) */
+.modo-oscuro {
     -fx-color-fondo: #151515;
     -fx-color-texto: #BDC1CA;
     -fx-color-encabezados: white;
     -fx-color-destacado: #444444;
     -fx-color-acento: #444444;
     -fx-color-texto-acento: #BEBEBE;
+
 }
 
 /* ============================================
    ESTILOS ESPECÍFICOS POR CASA
    ============================================ */
 
+/* Hogwarts */
+.hogwarts {
+    -fx-color-acento: #BEBEBE;
+    -fx-color-texto-acento: #444444;
+}
+.hogwarts-oscuro {
+    -fx-color-acento: #444444;
+    -fx-color-texto-acento: #BEBEBE;
+}
+
 /* Gryffindor */
 .gryffindor {
+    -fx-color-acento: #FF9FB0;
+    -fx-color-texto-acento: #740001;
+}
+.gryffindor-oscuro {
     -fx-color-acento: #740001;
     -fx-color-texto-acento: #FF9FB0;
 }
 
+
 /* Slytherin */
 .slytherin {
+    -fx-color-acento: #7EABAA;
+    -fx-color-texto-acento: #183F3E;
+}
+.slytherin-oscuro {
     -fx-color-acento: #183F3E;
     -fx-color-texto-acento: #7EABAA;
 }
 
+
 /* Ravenclaw */
 .ravenclaw {
+    -fx-color-acento: #8D96BE;
+    -fx-color-texto-acento: #242D56;
+}
+.ravenclaw-oscuro {
     -fx-color-acento: #242D56;
     -fx-color-texto-acento: #8D96BE;
 }
 
 /* Hufflepuff */
 .hufflepuff {
+    -fx-color-acento: #4F2E00;
+    -fx-color-texto-acento: #D29238;
+}
+.hufflepuff-oscuro {
     -fx-color-acento: #D29238;
     -fx-color-texto-acento: #4F2E00;
 }
+
 .root {
     -fx-background-color: -fx-color-fondo;
     -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
@@ -60,9 +100,35 @@
     -fx-alignment: center-left;
 }
 
-.house-button:pressed, .house-button.selected {
+.house-button.selected {
     -fx-background-color: -fx-color-acento;
     -fx-text-fill: -fx-color-texto-acento;
+}
+
+/* Estilos específicos para cada botón de casa cuando está seleccionado */
+#btnHogwarts.selected {
+    -fx-background-color: #BEBEBE;
+    -fx-text-fill: #444444;
+}
+
+#btnGryffindor.selected {
+    -fx-background-color: #FF9FB0;
+    -fx-text-fill: #740001;
+}
+
+#btnSlytherin.selected {
+    -fx-background-color: #7EABAA;
+    -fx-text-fill: #183F3E;
+}
+
+#btnRavenclaw.selected {
+    -fx-background-color: #8D96BE;
+    -fx-text-fill: #242D56;
+}
+
+#btnHufflepuff.selected {
+    -fx-background-color: #F0C17F;
+    -fx-text-fill: #7C4800;
 }
 
 /* ============================================
@@ -138,6 +204,32 @@
     -fx-background-color: derive(-fx-color-destacado, -20%);
 }
 
+/* Colores específicos del botón cerrar por casa */
+.hogwarts .btn-cerrar {
+    -fx-background-color: #BEBEBE;
+    -fx-text-fill: #444444;
+}
+
+.gryffindor .btn-cerrar {
+    -fx-background-color: #FF9FB0;
+    -fx-text-fill: #740001;
+}
+
+.slytherin .btn-cerrar {
+    -fx-background-color: #7EABAA;
+    -fx-text-fill: #183F3E;
+}
+
+.ravenclaw .btn-cerrar {
+    -fx-background-color: #8D96BE;
+    -fx-text-fill: #242D56;
+}
+
+.hufflepuff .btn-cerrar {
+    -fx-background-color: #F0C17F;
+    -fx-text-fill: #7C4800;
+}
+
 /* ============================================
    BARRA DE HERRAMIENTAS - Búsqueda y botones
    ============================================ */
@@ -196,6 +288,7 @@
     -fx-fill: -fx-color-destacado;
 }
 
+
 /* ============================================
    TABLA
    ============================================ */
@@ -226,6 +319,57 @@
     -fx-font-weight: 600;
 }
 
+/* Colores específicos de encabezados de tabla por casa */
+.hogwarts .table-view .column-header-background {
+    -fx-background-color: #BEBEBE;
+}
+.hogwarts .table-view .column-header {
+    -fx-background-color: #BEBEBE;
+}
+.hogwarts .table-view .column-header-background .filler {
+    -fx-background-color: #BEBEBE;
+}
+
+.gryffindor .table-view .column-header-background {
+    -fx-background-color: #FF9FB0;
+}
+.gryffindor .table-view .column-header {
+    -fx-background-color: #FF9FB0;
+}
+.gryffindor .table-view .column-header-background .filler {
+    -fx-background-color: #FF9FB0;
+}
+
+.slytherin .table-view .column-header-background {
+    -fx-background-color: #7EABAA;
+}
+.slytherin .table-view .column-header {
+    -fx-background-color: #7EABAA;
+}
+.slytherin .table-view .column-header-background .filler {
+    -fx-background-color: #7EABAA;
+}
+
+.ravenclaw .table-view .column-header-background {
+    -fx-background-color: #8D96BE;
+}
+.ravenclaw .table-view .column-header {
+    -fx-background-color: #8D96BE;
+}
+.ravenclaw .table-view .column-header-background .filler {
+    -fx-background-color: #8D96BE;
+}
+
+.hufflepuff .table-view .column-header-background {
+    -fx-background-color: #F0C17F;
+}
+.hufflepuff .table-view .column-header {
+    -fx-background-color: #F0C17F;
+}
+.hufflepuff .table-view .column-header-background .filler {
+    -fx-background-color: #F0C17F;
+}
+
 /* Esquinas redondeadas superior izquierda */
 .table-view .column-header-background .filler {
     -fx-background-color: -fx-color-destacado;
@@ -250,6 +394,27 @@
 /* Hover en filas */
 .table-row-cell:hover {
     -fx-background-color: -fx-color-destacado;
+}
+
+/* Colores específicos de hover en filas por casa */
+.hogwarts .table-row-cell:hover {
+    -fx-background-color: #BEBEBE;
+}
+
+.gryffindor .table-row-cell:hover {
+    -fx-background-color: #FF9FB0;
+}
+
+.slytherin .table-row-cell:hover {
+    -fx-background-color: #7EABAA;
+}
+
+.ravenclaw .table-row-cell:hover {
+    -fx-background-color: #8D96BE;
+}
+
+.hufflepuff .table-row-cell:hover {
+    -fx-background-color: #F0C17F;
 }
 
 /* Fila seleccionada */
@@ -307,6 +472,32 @@
 
 .check-box:selected .mark {
     -fx-background-color: -fx-color-encabezados;
+}
+
+/* Colores específicos de checkboxes por casa */
+.hogwarts .check-box:selected .box {
+    -fx-background-color: #BEBEBE;
+    -fx-border-color: #BEBEBE;
+}
+
+.gryffindor .check-box:selected .box {
+    -fx-background-color: #FF9FB0;
+    -fx-border-color: #FF9FB0;
+}
+
+.slytherin .check-box:selected .box {
+    -fx-background-color: #7EABAA;
+    -fx-border-color: #7EABAA;
+}
+
+.ravenclaw .check-box:selected .box {
+    -fx-background-color: #8D96BE;
+    -fx-border-color: #8D96BE;
+}
+
+.hufflepuff .check-box:selected .box {
+    -fx-background-color: #F0C17F;
+    -fx-border-color: #F0C17F;
 }
 
 /* ============================================

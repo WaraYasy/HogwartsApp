@@ -17,6 +17,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -52,6 +55,18 @@ public class ControladorPrincipal {
 
     /** Tipo de base de datos actual seleccionada */
     private TipoBaseDatos baseDatosActual = TipoBaseDatos.MARIADB;
+
+    /** Panel raíz de la aplicación para aplicar estilos dinámicos */
+    @FXML
+    private BorderPane rootPane;
+
+    /** Botones de las casas para cambiar la vista de la base de datos */
+    @FXML
+    private Button btnHogwarts, btnGryffindor, btnSlytherin, btnRavenclaw, btnHufflepuff;
+
+    /** ImageView que muestra el escudo de la casa actual */
+    @FXML
+    private ImageView escudoImageView;
 
     /** Botones principales para la gestión de alumnos en la interfaz: editar, eliminar y nuevo. */
     @FXML
@@ -269,6 +284,62 @@ public class ControladorPrincipal {
         long seleccionados = checkBoxMap.values().stream().filter(CheckBox::isSelected).count();
         btnEditar.setDisable(seleccionados != 1);
         btnEliminar.setDisable(seleccionados == 0);
+    }
+
+    /**
+     * Actualiza los estilos visuales de los botones de casa, del panel raíz
+     * y del escudo según la base de datos actualmente seleccionada.
+     * Aplica la clase CSS correspondiente a la casa activa y cambia la imagen del escudo.
+     */
+    private void actualizarEstilosCasa() {
+        // Remover la clase 'selected' de todos los botones
+        btnHogwarts.getStyleClass().remove("selected");
+        btnGryffindor.getStyleClass().remove("selected");
+        btnSlytherin.getStyleClass().remove("selected");
+        btnRavenclaw.getStyleClass().remove("selected");
+        btnHufflepuff.getStyleClass().remove("selected");
+
+        // Remover todas las clases de casa del rootPane
+        rootPane.getStyleClass().removeAll("hogwarts", "gryffindor", "slytherin", "ravenclaw", "hufflepuff");
+
+        // Añadir la clase 'selected' al botón activo, la clase de casa al rootPane y actualizar escudo
+        String rutaEscudo;
+        switch (baseDatosActual) {
+            case MARIADB -> {
+                btnHogwarts.getStyleClass().add("selected");
+                rootPane.getStyleClass().add("hogwarts");
+                rutaEscudo = "/es/potter/img/hogwarts.png";
+            }
+            case GRYFFINDOR -> {
+                btnGryffindor.getStyleClass().add("selected");
+                rootPane.getStyleClass().add("gryffindor");
+                rutaEscudo = "/es/potter/img/gryffindor.png";
+            }
+            case SLYTHERIN -> {
+                btnSlytherin.getStyleClass().add("selected");
+                rootPane.getStyleClass().add("slytherin");
+                rutaEscudo = "/es/potter/img/slytherin.png";
+            }
+            case RAVENCLAW -> {
+                btnRavenclaw.getStyleClass().add("selected");
+                rootPane.getStyleClass().add("ravenclaw");
+                rutaEscudo = "/es/potter/img/ravenclaw.png";
+            }
+            case HUFFLEPUFF -> {
+                btnHufflepuff.getStyleClass().add("selected");
+                rootPane.getStyleClass().add("hufflepuff");
+                rutaEscudo = "/es/potter/img/hufflepuff.png";
+            }
+            default -> rutaEscudo = "/es/potter/img/hogwarts.png";
+        }
+
+        // Actualizar la imagen del escudo
+        try {
+            Image nuevaImagen = new Image(Objects.requireNonNull(getClass().getResourceAsStream(rutaEscudo)));
+            escudoImageView.setImage(nuevaImagen);
+        } catch (Exception e) {
+            logger.error("Error al cargar la imagen del escudo: {}", rutaEscudo, e);
+        }
     }
 
     /**
@@ -584,6 +655,9 @@ public class ControladorPrincipal {
                         seleccionarTodosCheckBox.setSelected(false);
                     }
                     actualizarEstadoBotones();
+
+                    // Actualizar estilos de la casa activa
+                    actualizarEstilosCasa();
 
                     // Ocultar indicador de progreso
                     progressIndicator.setVisible(false);
