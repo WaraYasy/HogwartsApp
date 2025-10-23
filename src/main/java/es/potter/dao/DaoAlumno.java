@@ -27,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class DaoAlumno {
 
-    /** Logger SLF4J para la clase DaoAlumno */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(DaoAlumno.class);
 
     /*-------------------------------------------*/

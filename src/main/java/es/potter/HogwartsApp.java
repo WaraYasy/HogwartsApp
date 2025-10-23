@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  */
 public class HogwartsApp extends Application {
 
-    /** Logger SLF4J para la clase HogwartsApp */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(HogwartsApp.class);
 
     /**

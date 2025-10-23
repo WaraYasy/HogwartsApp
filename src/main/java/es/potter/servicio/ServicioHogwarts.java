@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 public class ServicioHogwarts {
 
-    /** Logger SLF4J para la clase ServicioHogwarts */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ServicioHogwarts.class);
 
     // Casas de Hogwarts (SLAVES)

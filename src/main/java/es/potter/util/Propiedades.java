@@ -26,7 +26,7 @@ public abstract class Propiedades {
     /** Contenedor estático de las propiedades cargadas. */
     private static final Properties props = new Properties();
 
-    /** Logger para el registro de eventos y errores. */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(Propiedades.class);
 
     // Bloque estático: carga el archivo de configuración al iniciar la clase

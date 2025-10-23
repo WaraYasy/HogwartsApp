@@ -103,7 +103,7 @@ public class ControladorPrincipal {
     /** Lista filtrada utilizada para búsquedas en tabla */
     private FilteredList<Alumno> filteredList;
 
-    /** Logger SLF4J para la clase ControladorPrincipal */
+    /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ControladorPrincipal.class);
 
     /**
