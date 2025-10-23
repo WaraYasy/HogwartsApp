@@ -12,14 +12,22 @@ echo    HogwartsApp - Portable Edition v1.0
 echo ==========================================
 echo.
 
+REM Detectar la ubicación del script y el proyecto
+SET SCRIPT_DIR=%~dp0
+cd /d "%SCRIPT_DIR%.."
+
 REM Verificar que existe el JAR portable
 SET JAR_FILE=target\hogwartsApp-1.0-SNAPSHOT-portable.jar
 
 if not exist "%JAR_FILE%" (
     echo ERROR: No se encontro el archivo JAR portable.
     echo.
-    echo Por favor, ejecuta primero:
+    echo Ubicacion esperada: %CD%\%JAR_FILE%
+    echo.
+    echo Por favor, ejecuta primero desde la raiz del proyecto:
     echo   mvn clean package -DskipTests
+    echo.
+    echo El plugin Maven Shade creara el JAR portable automaticamente.
     echo.
     pause
     exit /b 1
