@@ -24,6 +24,10 @@ public class ConexionFactory {
 
     /**
      * Obtiene una conexión asíncrona a la base de datos.
+     * <p>
+     * Para SQLite, utiliza {@link SQLiteManager} para obtener la ruta embebida
+     * correctamente, garantizando que funcione tanto en desarrollo como empaquetado.
+     * </p>
      *
      * @param tipo el tipo de base de datos
      * @return CompletableFuture con la conexión
@@ -33,11 +37,24 @@ public class ConexionFactory {
     public static CompletableFuture<Connection> getConnectionAsync(TipoBaseDatos tipo) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String url = Propiedades.getValor(tipo.getPrefijo() + ".url");
-                String user = Propiedades.getValor(tipo.getPrefijo() + ".user");
-                String password = Propiedades.getValor(tipo.getPrefijo() + ".password");
-                
-                logger.debug("Conectando a: {} ({})", tipo, url);
+                String url;
+                String user;
+                String password;
+
+                // Caso especial: SQLite embebida
+                if (tipo == TipoBaseDatos.SQLITE) {
+                    url = SQLiteManager.getJdbcUrl();
+                    user = "";
+                    password = "";
+                    logger.debug("Conectando a SQLite embebida: {}", url);
+                } else {
+                    // Bases de datos remotas: leer desde properties
+                    url = Propiedades.getValor(tipo.getPrefijo() + ".url");
+                    user = Propiedades.getValor(tipo.getPrefijo() + ".user");
+                    password = Propiedades.getValor(tipo.getPrefijo() + ".password");
+                    logger.debug("Conectando a: {} ({})", tipo, url);
+                }
+
                 Connection conn = DriverManager.getConnection(url, user, password);
                 logger.info("Conexión establecida exitosamente: {}", tipo);
                 return conn;
@@ -80,9 +97,10 @@ public class ConexionFactory {
      *
      * @author Wara
      */
+
     public static CompletableFuture<Boolean> testConnectionAsync(TipoBaseDatos tipo) {
         return getConnectionAsync(tipo)
-                .thenCompose(conn -> 
+                .thenCompose(conn ->
                     closeConnectionAsync(conn).thenApply(v -> true)
                 )
                 .exceptionally(ex -> {

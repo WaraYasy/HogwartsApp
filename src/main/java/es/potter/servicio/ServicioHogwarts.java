@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * - Persistencia: Los datos se mantienen en MASTER + 2 SLAVES
  * - Recuperación: Metodo de sincronización desde MASTER
  *
- * @author Marco
+ * @author Wara
  * @version 1.0
  * @since 2025-10-23
  */
