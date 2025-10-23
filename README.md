@@ -7,7 +7,7 @@ Este proyecto es una aplicación Java diseñada para la gestión de el Colegio d
 
 ## 📂 Estructura del Proyecto
 
-El proyecto está organizado siguiendo una arquitectura modular basada en **MVC (Modelo–Vista–Controlador)** y separa la lógica, los datos y la interfaz de usuario de forma clara.
+El proyecto está organizado siguiendo una arquitectura modular basada en **MVC (Modelo Vista Controlador)** y separa la lógica, los datos y la interfaz de usuario de forma clara.
 
 ---
 
@@ -119,54 +119,47 @@ Archivos de traducción de la interfaz y mensajes del sistema.
 - `.gitignore` → Archivos y carpetas excluidos del repositorio.
 - `README.md` → Documentación principal del proyecto.
 ---
-## Conexión remota mediante Tailscale
 
-Esta aplicación se conecta a la base de datos a través de una red privada Tailscale.
-
-### Requisitos previos
-- Tener una cuenta en [Tailscale](https://tailscale.com)
-- Instalar el cliente Tailscale en su sistema
-- Solicitar acceso a la red privada del proyecto (tailnet)
-
-### Pasos para conectarse
-1. Instale Tailscale en su equipo.
-2. Inicie sesión con la cuenta autorizada o use el auth key proporcionado.
-3. Verifique la conexión:
-   ```bash
-   tailscale status
----
 ## ⚙️ Requisitos de la aplicación
-- ☕ **JDK 11+**
-- 🎭 **JavaFX 17+**
-- 🗄️ **Base de datos compatible** (MySQL, PostgreSQL, etc.)
+- ☕ **JDK 24**
+- 🎭 **JavaFX 24**
+- 🗄️ **Oracle**
+- 🗄️ **MariaDB**
+- 🗄️ **H2**
+- 🗄️ **SQLite**
+- 🗄️ **HSQLDB**
+- 🗄️ **ApacheDerby**
 
 ## 🚀 Instalación y Ejecución
-1. Clona el repositorio:
+1. Abrir el enlace proporcionado para la conexion remota
+
+    ### Conexión remota mediante Tailscale
+
+    Esta aplicación se conecta a la base de datos a través de una red privada Tailscale.
+
+    #### Requisitos previos
+   - Tener una cuenta en [Tailscale](https://tailscale.com)
+   - Instalar el cliente Tailscale en su sistema
+   - Solicitar acceso a la red privada del proyecto (tailnet)
+
+    #### Pasos para conectarse
+   1. Instale Tailscale en su equipo.
+   2. Inicie sesión con la cuenta autorizada o use el auth key proporcionado.
+   3. Verifique la conexión:
+      ```bash
+      tailscale status
+
+
+2. Clona el repositorio:
    ```sh
    git clone https://github.com/WaraYasy/HogwartsApp.git
    ```
    
-2. Importa el proyecto en tu IDE preferido.
-3. Configura la base de datos en `configuration.properties`.
-4. Ejecuta `App.java` para iniciar la aplicación.
+3. Importa el proyecto en tu IDE preferido.
+4. Configura la base de datos en `configuration.properties`.
+5. Ejecuta `Lanzador.java` para iniciar la aplicación.
 
 
----
-
-## 🚀 Ejecución del proyecto
-
-### 1. Requisitos previos
-
-- **Java 17** o superior
-- **Maven 3.8+**
-- **Tailscale** instalado (para conexión remota a la base de datos)
-
-### 2. Clonar el repositorio
-
-```bash
-git clone https://github.com/WaraYasy/HogwartsApp.git
-cd proyecto-ejemplo
-```
 
 ## ✨ Autores
 - 👤 **Erlantz Garcia**
@@ -175,3 +168,4 @@ cd proyecto-ejemplo
 - 👤 **Salca Baschir**
 - 👤 **Wara Yasy**
 - 👤 **Arantxa Main**
+- 👤 **Telmo Castillo**
