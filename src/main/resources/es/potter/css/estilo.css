@@ -231,6 +231,11 @@
     -fx-background-color: -fx-color-destacado;
 }
 
+/* Ocultar el recuadro blanco de la esquina inferior derecha */
+.table-view .corner {
+    -fx-background-color: -fx-color-fondo;
+}
+
 /* Filas de la tabla */
 .table-row-cell {
     -fx-background-color: -fx-color-fondo;
