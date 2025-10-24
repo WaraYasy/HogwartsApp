@@ -45,6 +45,7 @@ Contiene las clases que permiten conectarse a diferentes motores de base de dato
     - 📌 `ConexionMariaDB.java` → Conexión con base de datos **MariaDB**.
     - 📌 `ConexionOracle.java` → Conexión con base de datos **Oracle**.
     - 📌 `ConexionSqlite.java` → Conexión con base de datos **SQLite**.
+    - 📌 `SQLiteManager.java` → Conexión con base de datos **SQLite**.
 
 ---
 
@@ -150,6 +151,7 @@ Archivos de traducción de la interfaz y mensajes del sistema.
    ```
    
 3. Importa el proyecto en tu IDE preferido.
+4. 
 4. Configura la base de datos en `configuration.properties`.
 5. Ejecuta `Lanzador.java` para iniciar la aplicación.
 
@@ -159,7 +161,7 @@ Archivos de traducción de la interfaz y mensajes del sistema.
 - 👤 **Erlantz Garcia**
 - 👤 **Marco Muro**
 - 👤 **Nizam Abdel-Ghaffar**
-- 👤 **Salca Baschir**
+- 👤 **Salca Bachir**
 - 👤 **Wara Pacheco**
 - 👤 **Arantxa Main**
 - 👤 **Telmo Castillo**
