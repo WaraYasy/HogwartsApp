@@ -1,8 +1,6 @@
 
 package es.potter.control;
 
-import es.potter.control.ControladorEditarAlumno;
-import es.potter.control.ControladorNuevoAlumno;
 import es.potter.database.TipoBaseDatos;
 import es.potter.model.Alumno;
 import es.potter.servicio.ServicioHogwarts;
@@ -707,12 +705,11 @@ public class ControladorPrincipal {
                     () -> {
                         tablaAlumnos.refresh();
                         // Limpiar checkbox de "seleccionar todos" al cerrar modal
-                        if (checkBox.getGraphic() != null && checkBox.getGraphic() instanceof CheckBox) {
-                            CheckBox seleccionarTodosCheckBox = (CheckBox) checkBox.getGraphic();
+                        if (checkBox.getGraphic() != null && checkBox.getGraphic() instanceof CheckBox seleccionarTodosCheckBox) {
                             seleccionarTodosCheckBox.setSelected(false);
                         }
                     },
-                    baseDatosActual.name() // <-- quinto argumento: la casa visible
+                    baseDatosActual.esCasa() ? baseDatosActual.obtenerNombreCasa() : "Hogwarts" // <-- quinto argumento: la casa visible
             );
 
             // Aplicar el tema actual al modal
