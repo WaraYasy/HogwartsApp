@@ -27,6 +27,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +75,10 @@ public class ControladorPrincipal {
     /** Botones principales para la gestión de alumnos en la interfaz: editar, eliminar y nuevo. */
     @FXML
     private Button btnEditar, btnEliminar, btnNuevo;
+
+    /** Icono del botón de modo oscuro (luna/sol) */
+    @FXML
+    private FontIcon iconoTema;
 
     /** Columnas con checkboxes para seleccionar múltiples alumnos en la tabla. */
     @FXML
@@ -128,6 +133,9 @@ public class ControladorPrincipal {
     /** Lista filtrada utilizada para búsquedas en tabla */
     private FilteredList<Alumno> filteredList;
 
+    /** Indica si el modo oscuro está activo */
+    private boolean modoOscuroActivo = false;
+
     /** Logger para registrar eventos y errores de la conexión */
     private static final Logger logger = LoggerFactory.getLogger(ControladorPrincipal.class);
 
@@ -147,6 +155,9 @@ public class ControladorPrincipal {
         configurarAnchosColumnas();
         inicializarBotones();
         configurarAnimacionCarga();
+
+        // Inicializar con modo claro
+        rootPane.getStyleClass().add("modo-claro");
 
         // Cargar datos iniciales desde la base de datos master
         cargarAlumnosPorCasa(baseDatosActual, true);
@@ -330,6 +341,7 @@ public class ControladorPrincipal {
      * Actualiza los estilos visuales de los botones de casa, del panel raíz
      * y del escudo según la base de datos actualmente seleccionada.
      * Aplica la clase CSS correspondiente a la casa activa y cambia la imagen del escudo.
+     * También considera el modo oscuro para aplicar las clases de casa correctas.
      */
     private void actualizarEstilosCasa() {
         // Remover la clase 'selected' de todos los botones
@@ -339,44 +351,62 @@ public class ControladorPrincipal {
         btnRavenclaw.getStyleClass().remove("selected");
         btnHufflepuff.getStyleClass().remove("selected");
 
-        // Remover todas las clases de casa del rootPane
-        rootPane.getStyleClass().removeAll("hogwarts", "gryffindor", "slytherin", "ravenclaw", "hufflepuff");
+        // Remover todas las clases de casa del rootPane (normales y oscuras)
+        rootPane.getStyleClass().removeAll(
+            "hogwarts", "gryffindor", "slytherin", "ravenclaw", "hufflepuff",
+            "hogwarts-oscuro", "gryffindor-oscuro", "slytherin-oscuro", "ravenclaw-oscuro", "hufflepuff-oscuro"
+        );
 
         // Añadir la clase 'selected' al botón activo, la clase de casa al rootPane y actualizar escudo
         String rutaEscudo;
+        String claseCasa;
+
         switch (baseDatosActual) {
             case MARIADB -> {
                 btnHogwarts.getStyleClass().add("selected");
-                rootPane.getStyleClass().add("hogwarts");
-                rutaEscudo = "/es/potter/img/hogwarts.png";
+                claseCasa = modoOscuroActivo ? "hogwarts-oscuro" : "hogwarts";
+                rutaEscudo = modoOscuroActivo ? "/es/potter/img/hogwarts-oscuro.png" : "/es/potter/img/hogwarts.png";
             }
             case GRYFFINDOR -> {
                 btnGryffindor.getStyleClass().add("selected");
-                rootPane.getStyleClass().add("gryffindor");
-                rutaEscudo = "/es/potter/img/gryffindor.png";
+                claseCasa = modoOscuroActivo ? "gryffindor-oscuro" : "gryffindor";
+                rutaEscudo = modoOscuroActivo ? "/es/potter/img/gryffindor-oscuro.png" : "/es/potter/img/gryffindor.png";
             }
             case SLYTHERIN -> {
                 btnSlytherin.getStyleClass().add("selected");
-                rootPane.getStyleClass().add("slytherin");
-                rutaEscudo = "/es/potter/img/slytherin.png";
+                claseCasa = modoOscuroActivo ? "slytherin-oscuro" : "slytherin";
+                rutaEscudo = modoOscuroActivo ? "/es/potter/img/slytherin-oscuro.png" : "/es/potter/img/slytherin.png";
             }
             case RAVENCLAW -> {
                 btnRavenclaw.getStyleClass().add("selected");
-                rootPane.getStyleClass().add("ravenclaw");
-                rutaEscudo = "/es/potter/img/ravenclaw.png";
+                claseCasa = modoOscuroActivo ? "ravenclaw-oscuro" : "ravenclaw";
+                rutaEscudo = modoOscuroActivo ? "/es/potter/img/ravenclaw-oscuro.png" : "/es/potter/img/ravenclaw.png";
             }
             case HUFFLEPUFF -> {
                 btnHufflepuff.getStyleClass().add("selected");
-                rootPane.getStyleClass().add("hufflepuff");
-                rutaEscudo = "/es/potter/img/hufflepuff.png";
+                claseCasa = modoOscuroActivo ? "hufflepuff-oscuro" : "hufflepuff";
+                rutaEscudo = modoOscuroActivo ? "/es/potter/img/hufflepuff-oscuro.png" : "/es/potter/img/hufflepuff.png";
             }
-            default -> rutaEscudo = "/es/potter/img/hogwarts.png";
+            default -> {
+                claseCasa = "hogwarts";
+                rutaEscudo = "/es/potter/img/hogwarts.png";
+            }
         }
+
+        // Aplicar la clase de casa correspondiente
+        rootPane.getStyleClass().add(claseCasa);
 
         // Actualizar la imagen del escudo
         try {
-            Image nuevaImagen = new Image(Objects.requireNonNull(getClass().getResourceAsStream(rutaEscudo)));
+            logger.info("Cargando escudo desde: {}", rutaEscudo);
+            // Cargar la imagen en su resolución original con alta calidad
+            Image nuevaImagen = new Image(Objects.requireNonNull(getClass().getResourceAsStream(rutaEscudo)),
+                                          0,
+                                          0,
+                                          true,
+                                          true);
             escudoImageView.setImage(nuevaImagen);
+            logger.info("Escudo actualizado correctamente");
         } catch (Exception e) {
             logger.error("Error al cargar la imagen del escudo: {}", rutaEscudo, e);
         }
@@ -615,6 +645,13 @@ public class ControladorPrincipal {
             ControladorEditarAlumno controladorEditar = loader.getController();
             controladorEditar.setAlumno(alumnoSeleccionado);
 
+            // Aplicar el tema actual al modal
+            if (modoOscuroActivo) {
+                root.getStyleClass().add("modo-oscuro");
+            } else {
+                root.getStyleClass().add("modo-claro");
+            }
+
             Stage modalStage = new Stage();
             modalStage.setTitle(bundle.getString("editarAlumno"));
             modalStage.setScene(new Scene(root));
@@ -659,6 +696,13 @@ public class ControladorPrincipal {
                     this::actualizarEstadoBotones,
                     () -> tablaAlumnos.refresh()
             );
+
+            // Aplicar el tema actual al modal
+            if (modoOscuroActivo) {
+                root.getStyleClass().add("modo-oscuro");
+            } else {
+                root.getStyleClass().add("modo-claro");
+            }
 
             Stage modalStage = new Stage();
             modalStage.setTitle(bundle.getString("nuevoAlumno"));
@@ -803,4 +847,34 @@ public class ControladorPrincipal {
      * @author Marco
      */
     @FXML void actionBusqueda() {}
+
+    /**
+     * Cambia entre el modo claro y oscuro de la aplicación.
+     * Intercambia las clases CSS "modo-claro" y "modo-oscuro" en el rootPane
+     * y cambia el icono del botón entre luna (modo claro) y sol (modo oscuro).
+     * También actualiza la clase de casa para usar los colores correspondientes al tema.
+     *
+     * @author Marco
+     */
+    @FXML
+    void actionCambiarTema() {
+        modoOscuroActivo = !modoOscuroActivo;
+
+        if (modoOscuroActivo) {
+            // Activar modo oscuro
+            rootPane.getStyleClass().remove("modo-claro");
+            rootPane.getStyleClass().add("modo-oscuro");
+            iconoTema.setIconLiteral("fas-sun");
+        } else {
+            // Activar modo claro
+            rootPane.getStyleClass().remove("modo-oscuro");
+            rootPane.getStyleClass().add("modo-claro");
+            iconoTema.setIconLiteral("fas-moon");
+        }
+
+        // Actualizar la clase de casa para aplicar los colores del tema actual
+        actualizarEstilosCasa();
+
+        logger.info("Tema cambiado a: {}", modoOscuroActivo ? "Modo Oscuro" : "Modo Claro");
+    }
 }

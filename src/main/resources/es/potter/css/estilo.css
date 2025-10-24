@@ -1,6 +1,5 @@
-
-/* Variables de color generales (modo claro por defecto) */
-* {
+/* Variables de color por defecto (evita warnings) */
+.root {
     -fx-color-fondo: #FFFFFF;
     -fx-color-texto: #515151;
     -fx-color-encabezados: #000000;
@@ -9,15 +8,24 @@
     -fx-color-texto-acento: #444444;
 }
 
-/* Variables de color modo oscuro (para uso futuro con botón de tema) */
+/* Variables de color generales (modo claro) */
+.modo-claro {
+    -fx-color-fondo: #FFFFFF;
+    -fx-color-texto: #515151;
+    -fx-color-encabezados: #000000;
+    -fx-color-destacado: #BEBEBE;
+    -fx-color-acento: #BEBEBE;
+    -fx-color-texto-acento: #444444;
+}
+
+/* Variables de color modo oscuro */
 .modo-oscuro {
     -fx-color-fondo: #151515;
     -fx-color-texto: #BDC1CA;
-    -fx-color-encabezados: white;
+    -fx-color-encabezados: #FFFFFF;
     -fx-color-destacado: #444444;
     -fx-color-acento: #444444;
     -fx-color-texto-acento: #BEBEBE;
-
 }
 
 /* ============================================
@@ -131,6 +139,32 @@
     -fx-text-fill: #7C4800;
 }
 
+/* Estilos específicos para cada botón de casa cuando está seleccionado (modo oscuro) */
+.modo-oscuro #btnHogwarts.selected {
+    -fx-background-color: #444444;
+    -fx-text-fill: #BEBEBE;
+}
+
+.modo-oscuro #btnGryffindor.selected {
+    -fx-background-color: #740001;
+    -fx-text-fill: #FF9FB0;
+}
+
+.modo-oscuro #btnSlytherin.selected {
+    -fx-background-color: #183F3E;
+    -fx-text-fill: #7EABAA;
+}
+
+.modo-oscuro #btnRavenclaw.selected {
+    -fx-background-color: #242D56;
+    -fx-text-fill: #8D96BE;
+}
+
+.modo-oscuro #btnHufflepuff.selected {
+    -fx-background-color: #D29238;
+    -fx-text-fill: #4F2E00;
+}
+
 /* ============================================
    ENCABEZADO SUPERIOR
    ============================================ */
@@ -230,6 +264,32 @@
     -fx-text-fill: #7C4800;
 }
 
+/* Colores específicos del botón cerrar por casa (modo oscuro) */
+.hogwarts-oscuro .btn-cerrar {
+    -fx-background-color: #444444;
+    -fx-text-fill: #BEBEBE;
+}
+
+.gryffindor-oscuro .btn-cerrar {
+    -fx-background-color: #740001;
+    -fx-text-fill: #FF9FB0;
+}
+
+.slytherin-oscuro .btn-cerrar {
+    -fx-background-color: #183F3E;
+    -fx-text-fill: #7EABAA;
+}
+
+.ravenclaw-oscuro .btn-cerrar {
+    -fx-background-color: #242D56;
+    -fx-text-fill: #8D96BE;
+}
+
+.hufflepuff-oscuro .btn-cerrar {
+    -fx-background-color: #D29238;
+    -fx-text-fill: #4F2E00;
+}
+
 /* ============================================
    BARRA DE HERRAMIENTAS - Búsqueda y botones
    ============================================ */
@@ -259,7 +319,7 @@
 
 .action-button {
     -fx-background-color: transparent;
-    -fx-text-fill: -fx-color-texto-acento;
+    -fx-text-fill: -fx-color-texto;
     -fx-font-size: 14px;
     -fx-font-family: "Manrope";
     -fx-cursor: hand;
@@ -268,7 +328,7 @@
 
 /* Color de los iconos en los botones de acción */
 .action-button .glyph-icon {
-    -fx-fill: -fx-color-texto-acento;
+    -fx-fill: -fx-color-texto;
 }
 
 .action-button:hover {
@@ -370,6 +430,78 @@
     -fx-background-color: #F0C17F;
 }
 
+/* Colores específicos de encabezados de tabla por casa (modo oscuro) */
+.hogwarts-oscuro .table-view .column-header-background {
+    -fx-background-color: #444444;
+}
+.hogwarts-oscuro .table-view .column-header {
+    -fx-background-color: #444444;
+}
+.hogwarts-oscuro .table-view .column-header-background .filler {
+    -fx-background-color: #444444;
+}
+
+.gryffindor-oscuro .table-view .column-header-background {
+    -fx-background-color: #740001;
+}
+.gryffindor-oscuro .table-view .column-header {
+    -fx-background-color: #740001;
+}
+.gryffindor-oscuro .table-view .column-header-background .filler {
+    -fx-background-color: #740001;
+}
+
+.slytherin-oscuro .table-view .column-header-background {
+    -fx-background-color: #183F3E;
+}
+.slytherin-oscuro .table-view .column-header {
+    -fx-background-color: #183F3E;
+}
+.slytherin-oscuro .table-view .column-header-background .filler {
+    -fx-background-color: #183F3E;
+}
+
+.ravenclaw-oscuro .table-view .column-header-background {
+    -fx-background-color: #242D56;
+}
+.ravenclaw-oscuro .table-view .column-header {
+    -fx-background-color: #242D56;
+}
+.ravenclaw-oscuro .table-view .column-header-background .filler {
+    -fx-background-color: #242D56;
+}
+
+.hufflepuff-oscuro .table-view .column-header-background {
+    -fx-background-color: #D29238;
+}
+.hufflepuff-oscuro .table-view .column-header {
+    -fx-background-color: #D29238;
+}
+.hufflepuff-oscuro .table-view .column-header-background .filler {
+    -fx-background-color: #D29238;
+}
+
+/* Color del texto de los encabezados en modo oscuro */
+.hogwarts-oscuro .table-view .column-header-background .label {
+    -fx-text-fill: #BEBEBE;
+}
+
+.gryffindor-oscuro .table-view .column-header-background .label {
+    -fx-text-fill: #FF9FB0;
+}
+
+.slytherin-oscuro .table-view .column-header-background .label {
+    -fx-text-fill: #7EABAA;
+}
+
+.ravenclaw-oscuro .table-view .column-header-background .label {
+    -fx-text-fill: #8D96BE;
+}
+
+.hufflepuff-oscuro .table-view .column-header-background .label {
+    -fx-text-fill: #4F2E00;
+}
+
 /* Esquinas redondeadas superior izquierda */
 .table-view .column-header-background .filler {
     -fx-background-color: -fx-color-destacado;
@@ -415,6 +547,27 @@
 
 .hufflepuff .table-row-cell:hover {
     -fx-background-color: #F0C17F;
+}
+
+/* Colores específicos de hover en filas por casa (modo oscuro) */
+.hogwarts-oscuro .table-row-cell:hover {
+    -fx-background-color: #444444;
+}
+
+.gryffindor-oscuro .table-row-cell:hover {
+    -fx-background-color: #740001;
+}
+
+.slytherin-oscuro .table-row-cell:hover {
+    -fx-background-color: #183F3E;
+}
+
+.ravenclaw-oscuro .table-row-cell:hover {
+    -fx-background-color: #242D56;
+}
+
+.hufflepuff-oscuro .table-row-cell:hover {
+    -fx-background-color: #D29238;
 }
 
 /* Fila seleccionada */
@@ -500,6 +653,32 @@
     -fx-border-color: #F0C17F;
 }
 
+/* Colores específicos de checkboxes por casa (modo oscuro) */
+.hogwarts-oscuro .check-box:selected .box {
+    -fx-background-color: #444444;
+    -fx-border-color: #444444;
+}
+
+.gryffindor-oscuro .check-box:selected .box {
+    -fx-background-color: #740001;
+    -fx-border-color: #740001;
+}
+
+.slytherin-oscuro .check-box:selected .box {
+    -fx-background-color: #183F3E;
+    -fx-border-color: #183F3E;
+}
+
+.ravenclaw-oscuro .check-box:selected .box {
+    -fx-background-color: #242D56;
+    -fx-border-color: #242D56;
+}
+
+.hufflepuff-oscuro .check-box:selected .box {
+    -fx-background-color: #D29238;
+    -fx-border-color: #D29238;
+}
+
 /* ============================================
    SCROLLBAR - Barra de desplazamiento
    ============================================ */
@@ -531,11 +710,35 @@
 }
 
 /* ============================================
+   BOTÓN DE CAMBIO DE TEMA
+   ============================================ */
+.theme-toggle-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 50%;
+    -fx-padding: 8px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.theme-toggle-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}
+
+.modo-oscuro .theme-toggle-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-toggle-button .theme-icon {
+    -fx-fill: -fx-color-destacado;
+}
+
+/* ============================================
    TOOLTIPS
    ============================================ */
 .tooltip {
-    -fx-background-color: -fx-color-destacado;
-    -fx-text-fill: -fx-color-texto;
+    -fx-background-color: -fx-color-texto;
+    -fx-text-fill: -fx-color-destacado;
     -fx-font-size: 12px;
     -fx-font-family: "Manrope";
     -fx-background-radius: 3px;
