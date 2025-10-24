@@ -2,26 +2,39 @@
 
 Bienvenido a HogwartsApp, la aplicación de gestión de estudiantes de Hogwarts.
 
+## Requisitos Previos
+
+### Tailscale (Obligatorio)
+Esta aplicación requiere **Tailscale** para conectarse a las bases de datos remotas.
+
+**¿Qué es Tailscale?**
+Es una VPN que permite conectar tu ordenador de forma segura a la red del proyecto.
+
+**Instalación:**
+1. Descarga Tailscale desde: https://tailscale.com/download
+2. Instala el programa en tu ordenador
+3. Inicia sesión con la cuenta proporcionada por el administrador
+4. Asegúrate de que Tailscale esté activo antes de usar la aplicación
+
+Para más detalles, consulta la **Guía de Instalación** completa en el README del proyecto.
+
+### Java 21 o superior
+La aplicación necesita Java 21 o superior para funcionar.
+- Descarga desde: https://adoptium.net/
+
 ## Cómo Ejecutar la Aplicación
 
 ### En Windows
 
-1. **Localiza el archivo** `hogwartsApp.bat` en la carpeta de la aplicación
-2. **Haz doble clic** sobre él
+1. **Asegúrate de que Tailscale esté activo** (icono verde en la barra de tareas)
+2. **Haz doble clic** en el archivo `hogwartsApp.bat`
 3. La aplicación se abrirá automáticamente
+
+**Nota:** El archivo `.bat` debe estar en la misma carpeta que el `.jar` de la aplicación.
 
 ### En macOS/Linux
 
-1. **Abre una terminal** en la carpeta de la aplicación
-2. **Ejecuta** el siguiente comando:
-   ```bash
-   ./scripts/ejecutar.sh
-   ```
-
-## Requisitos
-
-- **Java 21 o superior** debe estar instalado en tu ordenador
-  - Si no lo tienes, descárgalo desde: https://adoptium.net/
+Para sistemas macOS/Linux, consulta las instrucciones de ejecución en el README del proyecto o contacta al administrador.
 
 ## Guía de Ayuda
 
@@ -42,10 +55,27 @@ Allí encontrarás información detallada sobre:
 
 ### La aplicación no arranca
 
-**Solución:** Verifica que tienes Java 21 o superior instalado:
+**Solución 1:** Verifica que Tailscale esté activo
+```bash
+# macOS/Linux
+tailscale status
+
+# Windows: busca el icono en la barra de tareas
+```
+
+**Solución 2:** Verifica que tienes Java 21 o superior instalado:
 ```bash
 java -version
 ```
+
+### Error de conexión a la base de datos
+
+**Causa:** Tailscale no está activo o no tienes acceso a la red.
+
+**Solución:**
+1. Activa Tailscale
+2. Verifica que estás conectado a la red del proyecto
+3. Contacta al administrador si no tienes acceso
 
 ### Aparece un error de permisos
 
@@ -68,7 +98,10 @@ Tus datos se guardan automáticamente en:
 
 ## Soporte
 
-Si necesitas ayuda adicional, consulta la **Guía de Ayuda** completa dentro de la aplicación (menú Ayuda → Sobre HogwartsApp → Guía de Ayuda).
+Si necesitas ayuda adicional:
+- Consulta la **Guía de Ayuda** completa dentro de la aplicación (menú Ayuda → Sobre HogwartsApp → Guía de Ayuda)
+- Revisa el archivo **README.md** del proyecto para información técnica
+- Contacta al equipo de desarrollo
 
 ---
 
