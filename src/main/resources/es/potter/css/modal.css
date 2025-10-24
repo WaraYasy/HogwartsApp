@@ -1,3 +1,7 @@
+/* ============================================
+   VARIABLES DE COLOR
+   ============================================ */
+
 /* Variables de color por defecto (evita warnings) */
 .root {
     -fx-color-fondo: #FFFFFF;
@@ -8,7 +12,7 @@
     -fx-color-texto-acento: #444444;
 }
 
-/* Variables de color generales (modo claro) */
+/* Modo claro y oscuro */
 .modo-claro {
     -fx-color-fondo: #FFFFFF;
     -fx-color-texto: #515151;
@@ -18,7 +22,6 @@
     -fx-color-texto-acento: #444444;
 }
 
-/* Variables de color modo oscuro */
 .modo-oscuro {
     -fx-color-fondo: #151515;
     -fx-color-texto: #BDC1CA;

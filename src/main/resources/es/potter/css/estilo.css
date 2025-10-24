@@ -1,3 +1,7 @@
+/* ============================================
+   VARIABLES DE COLOR
+   ============================================ */
+
 /* Variables de color por defecto (evita warnings) */
 .root {
     -fx-color-fondo: #FFFFFF;
@@ -6,9 +10,12 @@
     -fx-color-destacado: #BEBEBE;
     -fx-color-acento: #BEBEBE;
     -fx-color-texto-acento: #444444;
+    -fx-background-color: -fx-color-fondo;
+    -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 15px;
 }
 
-/* Variables de color generales (modo claro) */
+/* Modo claro y oscuro */
 .modo-claro {
     -fx-color-fondo: #FFFFFF;
     -fx-color-texto: #515151;
@@ -18,7 +25,6 @@
     -fx-color-texto-acento: #444444;
 }
 
-/* Variables de color modo oscuro */
 .modo-oscuro {
     -fx-color-fondo: #151515;
     -fx-color-texto: #BDC1CA;
@@ -84,12 +90,9 @@
     -fx-color-texto-acento: #4F2E00;
 }
 
-.root {
-    -fx-background-color: -fx-color-fondo;
-    -fx-font-family: "Manrope", "Segoe UI", "Arial", sans-serif;
-    -fx-font-size: 15px;
-}
-
+/* ============================================
+   PANEL LATERAL (SIDE PANEL)
+   ============================================ */
 .side-panel {
     -fx-background-color: -fx-color-fondo;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 4, 0, 4, 0);
@@ -380,103 +383,63 @@
 }
 
 /* Colores específicos de encabezados de tabla por casa */
-.hogwarts .table-view .column-header-background {
-    -fx-background-color: #BEBEBE;
-}
-.hogwarts .table-view .column-header {
-    -fx-background-color: #BEBEBE;
-}
+.hogwarts .table-view .column-header-background,
+.hogwarts .table-view .column-header,
 .hogwarts .table-view .column-header-background .filler {
     -fx-background-color: #BEBEBE;
 }
 
-.gryffindor .table-view .column-header-background {
-    -fx-background-color: #FF9FB0;
-}
-.gryffindor .table-view .column-header {
-    -fx-background-color: #FF9FB0;
-}
+.gryffindor .table-view .column-header-background,
+.gryffindor .table-view .column-header,
 .gryffindor .table-view .column-header-background .filler {
     -fx-background-color: #FF9FB0;
 }
 
-.slytherin .table-view .column-header-background {
-    -fx-background-color: #7EABAA;
-}
-.slytherin .table-view .column-header {
-    -fx-background-color: #7EABAA;
-}
+.slytherin .table-view .column-header-background,
+.slytherin .table-view .column-header,
 .slytherin .table-view .column-header-background .filler {
     -fx-background-color: #7EABAA;
 }
 
-.ravenclaw .table-view .column-header-background {
-    -fx-background-color: #8D96BE;
-}
-.ravenclaw .table-view .column-header {
-    -fx-background-color: #8D96BE;
-}
+.ravenclaw .table-view .column-header-background,
+.ravenclaw .table-view .column-header,
 .ravenclaw .table-view .column-header-background .filler {
     -fx-background-color: #8D96BE;
 }
 
-.hufflepuff .table-view .column-header-background {
-    -fx-background-color: #F0C17F;
-}
-.hufflepuff .table-view .column-header {
-    -fx-background-color: #F0C17F;
-}
+.hufflepuff .table-view .column-header-background,
+.hufflepuff .table-view .column-header,
 .hufflepuff .table-view .column-header-background .filler {
     -fx-background-color: #F0C17F;
 }
 
 /* Colores específicos de encabezados de tabla por casa (modo oscuro) */
-.hogwarts-oscuro .table-view .column-header-background {
-    -fx-background-color: #444444;
-}
-.hogwarts-oscuro .table-view .column-header {
-    -fx-background-color: #444444;
-}
+.hogwarts-oscuro .table-view .column-header-background,
+.hogwarts-oscuro .table-view .column-header,
 .hogwarts-oscuro .table-view .column-header-background .filler {
     -fx-background-color: #444444;
 }
 
-.gryffindor-oscuro .table-view .column-header-background {
-    -fx-background-color: #740001;
-}
-.gryffindor-oscuro .table-view .column-header {
-    -fx-background-color: #740001;
-}
+.gryffindor-oscuro .table-view .column-header-background,
+.gryffindor-oscuro .table-view .column-header,
 .gryffindor-oscuro .table-view .column-header-background .filler {
     -fx-background-color: #740001;
 }
 
-.slytherin-oscuro .table-view .column-header-background {
-    -fx-background-color: #183F3E;
-}
-.slytherin-oscuro .table-view .column-header {
-    -fx-background-color: #183F3E;
-}
+.slytherin-oscuro .table-view .column-header-background,
+.slytherin-oscuro .table-view .column-header,
 .slytherin-oscuro .table-view .column-header-background .filler {
     -fx-background-color: #183F3E;
 }
 
-.ravenclaw-oscuro .table-view .column-header-background {
-    -fx-background-color: #242D56;
-}
-.ravenclaw-oscuro .table-view .column-header {
-    -fx-background-color: #242D56;
-}
+.ravenclaw-oscuro .table-view .column-header-background,
+.ravenclaw-oscuro .table-view .column-header,
 .ravenclaw-oscuro .table-view .column-header-background .filler {
     -fx-background-color: #242D56;
 }
 
-.hufflepuff-oscuro .table-view .column-header-background {
-    -fx-background-color: #D29238;
-}
-.hufflepuff-oscuro .table-view .column-header {
-    -fx-background-color: #D29238;
-}
+.hufflepuff-oscuro .table-view .column-header-background,
+.hufflepuff-oscuro .table-view .column-header,
 .hufflepuff-oscuro .table-view .column-header-background .filler {
     -fx-background-color: #D29238;
 }
@@ -588,21 +551,6 @@
     -fx-text-fill: -fx-color-encabezados;
 }
 
-/* Quitar bordes y barras de desplazamiento predeterminadas */
-.table-view .virtual-flow .scroll-bar:vertical,
-.table-view .virtual-flow .scroll-bar:horizontal {
-    -fx-background-color: -fx-color-fondo;
-}
-
-.table-view .virtual-flow .scroll-bar .thumb {
-    -fx-background-color: -fx-color-destacado;
-    -fx-background-radius: 5px;
-}
-
-.table-view .virtual-flow .scroll-bar .thumb:hover {
-    -fx-background-color: derive(-fx-color-destacado, 20%);
-}
-
 /* ============================================
    CHECKBOX - Estilo personalizado
    ============================================ */
@@ -682,15 +630,19 @@
 /* ============================================
    SCROLLBAR - Barra de desplazamiento
    ============================================ */
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:horizontal,
 .scroll-bar {
     -fx-background-color: -fx-color-fondo;
 }
 
+.table-view .virtual-flow .scroll-bar .thumb,
 .scroll-bar .thumb {
     -fx-background-color: -fx-color-destacado;
     -fx-background-radius: 5px;
 }
 
+.table-view .virtual-flow .scroll-bar .thumb:hover,
 .scroll-bar .thumb:hover {
     -fx-background-color: derive(-fx-color-destacado, 10%);
 }
