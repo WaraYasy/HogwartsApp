@@ -89,3 +89,8 @@ mvn clean package -DskipTests
 ```
 
 Esto genera: `target/hogwartsApp-1.0-SNAPSHOT-portable.jar`
+
+---
+
+## Autor
+Equipo Potter

@@ -88,7 +88,7 @@ java --enable-native-access=ALL-UNNAMED -Xmx1g -jar target/hogwartsApp-1.0-SNAPS
    cp scripts/ejecutar.sh scripts/ejecutar.bat HogwartsApp-Portable/
 
    # Copiar README (opcional)
-   cp docs/JAR_PORTABLE.md HogwartsApp-Portable/README.md
+   cp docs/JarPortable.md HogwartsApp-Portable/ComoUsarScripts.md
 
    # Crear ZIP para distribución
    zip -r HogwartsApp-Portable.zip HogwartsApp-Portable/
@@ -380,7 +380,7 @@ ls -lh ~/Library/Application\ Support/HogwartsApp/hogwarts.db
 ---
 
 ## Autor
-Wara Pacheco
+Equipo Potter
 
 ## Versión
 1.0 - JAR Portable con SQLite Embebida
