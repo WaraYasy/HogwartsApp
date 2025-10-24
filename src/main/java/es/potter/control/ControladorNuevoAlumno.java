@@ -17,9 +17,11 @@ import java.util.ResourceBundle;
  * Gestiona la interacción con los campos del formulario, validación y
  * la comunicación con el servicio que persiste el nuevo alumno.
  * Actualiza la vista principal mediante callbacks proporcionados.
+ * Ahora filtra la adición de alumnos según la casa visible en la tabla principal
+ * para evitar que se muestren temporalmente en otras casas.
  *
  * @author Marco
- * @version 1.0
+ * @version 1.1
  * @since 2025-10-23
  */
 public class ControladorNuevoAlumno {
@@ -30,7 +32,7 @@ public class ControladorNuevoAlumno {
     /** Botón para guardar el nuevo alumno */
     @FXML private Button btnGuardar;
 
-    /** ComboBox para seleccionar curso (1-7 */
+    /** ComboBox para seleccionar curso (1-7) */
     @FXML private ComboBox<Integer> cmbxCurso;
 
     /** ComboBox para seleccionar casa (Gryffindor, Slytherin, etc.) */
@@ -60,6 +62,9 @@ public class ControladorNuevoAlumno {
     /** Callback para refrescar la tabla de alumnos en la vista principal */
     private Runnable refrescarTablaCallback;
 
+    /** Casa actualmente visible en la tabla principal */
+    private String casaVisible;
+
     /**
      * Inicializa los elementos gráficos luego de cargarse el FXML.
      * Población de ComboBoxes con valores predefinidos.
@@ -70,25 +75,30 @@ public class ControladorNuevoAlumno {
     public void initialize() {
         cmbxCurso.setItems(javafx.collections.FXCollections.observableArrayList(1,2,3,4,5,6,7));
         cmbxCasa.setItems(javafx.collections.FXCollections.observableArrayList("Gryffindor", "Slytherin", "Hufflepuff", "Ravenclaw"));
+
+        // Asegurar que el botón esté habilitado cada vez que se abra la ventana
+        btnGuardar.setDisable(false);
     }
 
     /**
-     * Configura las referencias y callbacks de la vista principal para
-     * permitir actualización del listado y estado de los botones.
+     * Configura referencias y callbacks desde el controlador principal.
+     * Además recibe la casa actualmente visible para filtrar la lista.
      *
      * @param listaAlumnos Lista observable con los alumnos actuales.
      * @param checkBoxMap Mapa que relaciona alumnos y checkboxes.
      * @param actualizarBotones Callback para actualizar botones.
      * @param refrescarTabla Callback para refrescar vista tabla.
+     * @param casaVisible Nombre de la casa actualmente visible en la tabla.
      *
      * @author Marco
      */
     public void setParentData(ObservableList<Alumno> listaAlumnos, Map<Alumno, CheckBox> checkBoxMap,
-                              Runnable actualizarBotones, Runnable refrescarTabla) {
+                              Runnable actualizarBotones, Runnable refrescarTabla, String casaVisible) {
         this.listaAlumnosPrincipal = listaAlumnos;
         this.checkBoxMapPrincipal = checkBoxMap;
         this.actualizarBotonesCallback = actualizarBotones;
         this.refrescarTablaCallback = refrescarTabla;
+        this.casaVisible = casaVisible; // Guardamos la casa visible
     }
 
     /**
@@ -107,6 +117,7 @@ public class ControladorNuevoAlumno {
      * Acción para validar y guardar un nuevo alumno.
      * Válida que los campos obligatorios no estén vacíos.
      * Llama al servicio para persistir el alumno y actualiza la vista principal.
+     * Solo añade el alumno a la lista visible si coincide con la casa mostrada.
      * Muestra alertas informativas o de error según el resultado.
      *
      * @author Marco
@@ -124,15 +135,21 @@ public class ControladorNuevoAlumno {
             return;
         }
 
+        // Deshabilitar botón mientras se guarda
+        btnGuardar.setDisable(true);
+
         Alumno alumno = new Alumno(nombre, apellido, curso, casa, patronus);
 
         ServicioHogwarts.nuevoAlumno(alumno)
                 .thenAccept(exito -> Platform.runLater(() -> {
                     if (exito) {
-                        // Añadir a la lista del principal
-                        if (listaAlumnosPrincipal != null) listaAlumnosPrincipal.add(alumno);
+                        // Añadir a la lista visible solo si la casa coincide con la que se muestra
+                        if (listaAlumnosPrincipal != null) {
+                            if (casaVisible.equalsIgnoreCase(casa) || casaVisible.equalsIgnoreCase("Hogwarts")) {
+                                listaAlumnosPrincipal.add(alumno);
+                            }
+                        }
 
-                        // Crear checkbox para la fila nueva
                         if (checkBoxMapPrincipal != null) {
                             CheckBox cb = new CheckBox();
                             cb.selectedProperty().addListener((obs, oldVal, newVal) -> {
@@ -141,21 +158,25 @@ public class ControladorNuevoAlumno {
                             checkBoxMapPrincipal.put(alumno, cb);
                         }
 
-                        // Actualizar botones
                         if (actualizarBotonesCallback != null) actualizarBotonesCallback.run();
-
-                        // Refrescar tabla para mostrar el nuevo alumno
                         if (refrescarTablaCallback != null) refrescarTablaCallback.run();
 
                         mandarAlertas(Alert.AlertType.INFORMATION, bundle.getString("alumnoGuardado"), bundle.getString("alumnoGuardadoHeader"));
 
-                        // Cerrar modal
                         Stage stage = (Stage) btnGuardar.getScene().getWindow();
                         stage.close();
                     } else {
                         mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("alumnoNoGuardado"));
+                        btnGuardar.setDisable(false);
                     }
-                }));
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("alumnoNoGuardado"));
+                        btnGuardar.setDisable(false);
+                    });
+                    return null;
+                });
     }
 
     /**

@@ -1,5 +1,8 @@
+
 package es.potter.control;
 
+import es.potter.control.ControladorEditarAlumno;
+import es.potter.control.ControladorNuevoAlumno;
 import es.potter.database.TipoBaseDatos;
 import es.potter.model.Alumno;
 import es.potter.servicio.ServicioHogwarts;
@@ -285,17 +288,17 @@ public class ControladorPrincipal {
         try {
             // Cargar las imágenes del caldero
             calderoImage1 = new Image(Objects.requireNonNull(
-                getClass().getResourceAsStream("/es/potter/img/caldero.png")
+                    getClass().getResourceAsStream("/es/potter/img/caldero.png")
             ));
             calderoImage2 = new Image(Objects.requireNonNull(
-                getClass().getResourceAsStream("/es/potter/img/caldero2.png")
+                    getClass().getResourceAsStream("/es/potter/img/caldero2.png")
             ));
 
             // Crear animación que alterna entre las dos imágenes
             loadingAnimation = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> loadingImageView.setImage(calderoImage1)),
-                new KeyFrame(Duration.millis(400), e -> loadingImageView.setImage(calderoImage2)),
-                new KeyFrame(Duration.millis(800), e -> loadingImageView.setImage(calderoImage1))
+                    new KeyFrame(Duration.ZERO, e -> loadingImageView.setImage(calderoImage1)),
+                    new KeyFrame(Duration.millis(400), e -> loadingImageView.setImage(calderoImage2)),
+                    new KeyFrame(Duration.millis(800), e -> loadingImageView.setImage(calderoImage1))
             );
             loadingAnimation.setCycleCount(Timeline.INDEFINITE);
             loadingAnimation.setAutoReverse(false);
@@ -318,9 +321,9 @@ public class ControladorPrincipal {
             String filtro = texto.toLowerCase();
             filteredList.setPredicate(a ->
                     a.getNombre().toLowerCase().contains(filtro) ||
-                    a.getApellidos().toLowerCase().contains(filtro) ||
-                    a.getCasa().toLowerCase().contains(filtro) ||
-                    a.getId().toLowerCase().contains(filtro)
+                            a.getApellidos().toLowerCase().contains(filtro) ||
+                            a.getCasa().toLowerCase().contains(filtro) ||
+                            a.getId().toLowerCase().contains(filtro)
             );
         }
     }
@@ -353,8 +356,8 @@ public class ControladorPrincipal {
 
         // Remover todas las clases de casa del rootPane (normales y oscuras)
         rootPane.getStyleClass().removeAll(
-            "hogwarts", "gryffindor", "slytherin", "ravenclaw", "hufflepuff",
-            "hogwarts-oscuro", "gryffindor-oscuro", "slytherin-oscuro", "ravenclaw-oscuro", "hufflepuff-oscuro"
+                "hogwarts", "gryffindor", "slytherin", "ravenclaw", "hufflepuff",
+                "hogwarts-oscuro", "gryffindor-oscuro", "slytherin-oscuro", "ravenclaw-oscuro", "hufflepuff-oscuro"
         );
 
         // Añadir la clase 'selected' al botón activo, la clase de casa al rootPane y actualizar escudo
@@ -401,10 +404,10 @@ public class ControladorPrincipal {
             logger.info("Cargando escudo desde: {}", rutaEscudo);
             // Cargar la imagen en su resolución original con alta calidad
             Image nuevaImagen = new Image(Objects.requireNonNull(getClass().getResourceAsStream(rutaEscudo)),
-                                          0,
-                                          0,
-                                          true,
-                                          true);
+                    0,
+                    0,
+                    true,
+                    true);
             escudoImageView.setImage(nuevaImagen);
             logger.info("Escudo actualizado correctamente");
         } catch (Exception e) {
@@ -456,35 +459,35 @@ public class ControladorPrincipal {
 
         // Esperar a que todas las eliminaciones terminen
         CompletableFuture.allOf(eliminaciones.toArray(new CompletableFuture[0]))
-            .thenApply(v -> eliminaciones.stream()
-                .allMatch(CompletableFuture::join))
-            .thenAccept(todasExitosas -> Platform.runLater(() -> {
-                loadingAnimation.stop();
-                loadingImageView.setVisible(false);
-
-                if (todasExitosas) {
-                    // Eliminar de la lista local y del map de checkboxes
-                    listaAlumnos.removeAll(alumnosSeleccionados);
-                    for (Alumno alumno : alumnosSeleccionados) checkBoxMap.remove(alumno);
-
-                    // Deseleccionar todos los checkboxes y refrescar la tabla
-                    checkBoxMap.values().forEach(cb -> cb.setSelected(false));
-                    tablaAlumnos.refresh();
-                    actualizarEstadoBotones();
-                    mandarAlertas(Alert.AlertType.INFORMATION,  bundle.getString("eliminacionExitosa"), bundle.getString("alumnosEliminados"), alumnosSeleccionados.size() + " " + bundle.getString("contenidoEliminadoCorrectamente"));
-                } else {
-                    mandarAlertas(Alert.AlertType.WARNING, bundle.getString("eliminacionParcial"), bundle.getString("noSePuedenEliminar"), bundle.getString("contenidoRevisarLogs"));
-                }
-            }))
-            .exceptionally(ex -> {
-                Platform.runLater(() -> {
+                .thenApply(v -> eliminaciones.stream()
+                        .allMatch(CompletableFuture::join))
+                .thenAccept(todasExitosas -> Platform.runLater(() -> {
                     loadingAnimation.stop();
                     loadingImageView.setVisible(false);
 
-                    mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("errorEliminarAlumno"), bundle.getString("contenidoNoSePuedeEliminar") + " " + ex.getMessage());
+                    if (todasExitosas) {
+                        // Eliminar de la lista local y del map de checkboxes
+                        listaAlumnos.removeAll(alumnosSeleccionados);
+                        for (Alumno alumno : alumnosSeleccionados) checkBoxMap.remove(alumno);
+
+                        // Deseleccionar todos los checkboxes y refrescar la tabla
+                        checkBoxMap.values().forEach(cb -> cb.setSelected(false));
+                        tablaAlumnos.refresh();
+                        actualizarEstadoBotones();
+                        mandarAlertas(Alert.AlertType.INFORMATION,  bundle.getString("eliminacionExitosa"), bundle.getString("alumnosEliminados"), alumnosSeleccionados.size() + " " + bundle.getString("contenidoEliminadoCorrectamente"));
+                    } else {
+                        mandarAlertas(Alert.AlertType.WARNING, bundle.getString("eliminacionParcial"), bundle.getString("noSePuedenEliminar"), bundle.getString("contenidoRevisarLogs"));
+                    }
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        loadingAnimation.stop();
+                        loadingImageView.setVisible(false);
+
+                        mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("errorEliminarAlumno"), bundle.getString("contenidoNoSePuedeEliminar") + " " + ex.getMessage());
+                    });
+                    return null;
                 });
-                return null;
-            });
     }
 
     /**
@@ -559,28 +562,28 @@ public class ControladorPrincipal {
 
         // Sincronizar desde Master (reconstruye todas las BDs slave)
         ServicioHogwarts.sincronizarDesdeMaster()
-            .thenAccept(exito -> Platform.runLater(() -> {
-                loadingAnimation.stop();
-                loadingImageView.setVisible(false);
-
-                if (exito) {
-                    mandarAlertas(Alert.AlertType.INFORMATION, bundle.getString("sincronizacion"), bundle.getString("sincronizacionCompletada"),bundle.getString("contenidoSincronizacion"));
-
-                    // Recargar vista actual
-                    cargarAlumnosPorCasa(baseDatosActual);
-                } else {
-                    mandarAlertas(Alert.AlertType.WARNING, bundle.getString("sincronizacion"), bundle.getString("sincronizacionParcial"), bundle.getString("contenidoSincronizacionParcial"));
-                }
-            }))
-            .exceptionally(ex -> {
-                Platform.runLater(() -> {
+                .thenAccept(exito -> Platform.runLater(() -> {
                     loadingAnimation.stop();
                     loadingImageView.setVisible(false);
 
-                    mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("errorSincronizacion"), bundle.getString("contenidoErrorSincronizar") + " " + ex.getMessage());
+                    if (exito) {
+                        mandarAlertas(Alert.AlertType.INFORMATION, bundle.getString("sincronizacion"), bundle.getString("sincronizacionCompletada"),bundle.getString("contenidoSincronizacion"));
+
+                        // Recargar vista actual
+                        cargarAlumnosPorCasa(baseDatosActual);
+                    } else {
+                        mandarAlertas(Alert.AlertType.WARNING, bundle.getString("sincronizacion"), bundle.getString("sincronizacionParcial"), bundle.getString("contenidoSincronizacionParcial"));
+                    }
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        loadingAnimation.stop();
+                        loadingImageView.setVisible(false);
+
+                        mandarAlertas(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("errorSincronizacion"), bundle.getString("contenidoErrorSincronizar") + " " + ex.getMessage());
+                    });
+                    return null;
                 });
-                return null;
-            });
     }
 
     /**
@@ -607,7 +610,7 @@ public class ControladorPrincipal {
         link.setOnAction(event -> {
             try {
                 Desktop.getDesktop().browse(
-                    new URI("https://drive.google.com/file/d/1NNKw8lqIA9fLnGyaAIynb3-7H5PA6mqZ/view?usp=sharing")
+                        new URI("https://drive.google.com/file/d/1NNKw8lqIA9fLnGyaAIynb3-7H5PA6mqZ/view?usp=sharing")
                 );
             } catch (Exception ex) {
                 logger.error("Error al abrir el enlace de la Guía Rápida en el navegador", ex);
@@ -690,11 +693,20 @@ public class ControladorPrincipal {
             Parent root = loader.load();
 
             ControladorNuevoAlumno controladorAniadir = loader.getController();
+            // Callback actualizado para limpiar correctamente el checkbox "seleccionar todos"
             controladorAniadir.setParentData(
                     listaAlumnos,
                     checkBoxMap,
                     this::actualizarEstadoBotones,
-                    () -> tablaAlumnos.refresh()
+                    () -> {
+                        tablaAlumnos.refresh();
+                        // Limpiar checkbox de "seleccionar todos" al cerrar modal
+                        if (checkBox.getGraphic() != null && checkBox.getGraphic() instanceof CheckBox) {
+                            CheckBox seleccionarTodosCheckBox = (CheckBox) checkBox.getGraphic();
+                            seleccionarTodosCheckBox.setSelected(false);
+                        }
+                    },
+                    baseDatosActual.name() // <-- quinto argumento: la casa visible
             );
 
             // Aplicar el tema actual al modal
