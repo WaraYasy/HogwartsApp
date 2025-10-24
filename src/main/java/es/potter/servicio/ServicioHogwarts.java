@@ -48,7 +48,7 @@ public class ServicioHogwarts {
      *
      * @return CompletableFuture con la lista observable de alumnos cargada desde MariaDB.
      *
-     * @author Marco
+     * @author Wara
      */
     public static CompletableFuture<ObservableList<Alumno>> cargarAlumnos() {
         return DaoAlumno.cargarAlumnos(TipoBaseDatos.MARIADB);
@@ -60,7 +60,7 @@ public class ServicioHogwarts {
      * @param tipo Tipo de base de datos desde la que se cargan los alumnos.
      * @return CompletableFuture con la lista observable de alumnos.
      *
-     * @author Marco
+     * @author Wara
      */
     public static CompletableFuture<ObservableList<Alumno>> cargarAlumnosDesde(TipoBaseDatos tipo) {
         return DaoAlumno.cargarAlumnos(tipo);
@@ -76,7 +76,7 @@ public class ServicioHogwarts {
      * @param alumno Alumno a crear
      * @return CompletableFuture que indica true si se guardó correctamente en todas las bases.
      *
-     * @author Marco
+     * @author Wara
      */
     public static CompletableFuture<Boolean> nuevoAlumno(Alumno alumno) {
         logger.info("Creando alumno '{}' en sistema Master-Slave", alumno.getNombre());
@@ -100,7 +100,7 @@ public class ServicioHogwarts {
      * @param alumno Alumno a eliminar.
      * @return CompletableFuture que indica true si se eliminó correctamente en todas las bases.
      *
-     * @author Marco
+     * @author Wara
      */
     public static CompletableFuture<Boolean> eliminarAlumno(Alumno alumno) {
         logger.info("Eliminando alumno '{}' del sistema Master-Slave", alumno.getNombre());
@@ -124,7 +124,7 @@ public class ServicioHogwarts {
      * @param alumno Datos nuevos del alumno.
      * @return CompletableFuture que indica true si la modificación fue exitosa en todas las bases.
      *
-     * @author Marco
+     * @author Wara
      */
     public static CompletableFuture<Boolean> modificarAlumno(String id, Alumno alumno) {
         logger.info("Modificando alumno '{}' en sistema Master-Slave", alumno.getNombre());
@@ -149,7 +149,7 @@ public class ServicioHogwarts {
      *
      * @return CompletableFuture indicando si todas las sincronizaciones fueron exitosas.
      *
-     * @author Marco
+     * @author Wara
      */
     public static CompletableFuture<Boolean> sincronizarDesdeMaster() {
         logger.info("🔄 Iniciando sincronización completa desde MASTER...");
@@ -197,8 +197,9 @@ public class ServicioHogwarts {
      * @param tipo Tipo de base de datos a sincronizar.
      * @return CompletableFuture que indica true si la sincronización fue exitosa.
      *
-     * @author Marco
+     * @author Wara
      */
+    @Deprecated
     public static CompletableFuture<Boolean> sincronizarBaseDesdeMaster(TipoBaseDatos tipo) {
         logger.info("🔄 Sincronizando {} desde MASTER...", tipo);
 
@@ -236,7 +237,7 @@ public class ServicioHogwarts {
      * @param alumno alumno a copiar.
      * @return CompletableFuture que indica true si se copió correctamente en ambas bases.
      *
-     * @author Marco
+     * @author Wara
      */
     private static CompletableFuture<Boolean> copiarASlaves(Alumno alumno) {
         TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
@@ -263,7 +264,7 @@ public class ServicioHogwarts {
      * @param alumno alumno que se debe eliminar.
      * @return CompletableFuture con true si se eliminó correctamente en ambas bases.
      *
-     * @author Marco
+     * @author Wara
      */
     private static CompletableFuture<Boolean> eliminarDeSlaves(Alumno alumno) {
         TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
@@ -291,7 +292,7 @@ public class ServicioHogwarts {
      * @param alumno datos nuevos del alumno.
      * @return CompletableFuture con true si la modificación fue exitosa en ambas bases.
      *
-     * @author Marco
+     * @author Wara
      */
     private static CompletableFuture<Boolean> modificarEnSlaves(String id, Alumno alumno) {
         TipoBaseDatos casa = TipoBaseDatos.obtenerTipoBaseDatosPorCasa(alumno.getCasa());
@@ -319,7 +320,7 @@ public class ServicioHogwarts {
      * @param slave base de datos slave a sincronizar.
      * @return CompletableFuture con true si la sincronización fue completa.
      *
-     * @author Marco
+     * @author Wara
      */
     private static CompletableFuture<Boolean> sincronizarSlave(List<Alumno> alumnosMaster, TipoBaseDatos slave) {
         logger.debug("Sincronizando {} con {} alumnos del MASTER", slave, alumnosMaster.size());
@@ -375,7 +376,7 @@ public class ServicioHogwarts {
      * @param casa nombre de la casa.
      * @return lista filtrada de alumnos de la casa especificada.
      *
-     * @author Marco
+     * @author Wara
      */
     private static List<Alumno> filtrarPorCasa(List<Alumno> alumnos, String casa) {
         return alumnos.stream()
