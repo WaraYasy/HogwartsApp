@@ -48,7 +48,7 @@ import java.util.concurrent.CompletableFuture;
  * Proporciona funcionalidades CRUD (crear, leer, actualizar, eliminar)
  * y opciones de sincronización, filtrado y ayuda.
  *
- * @author Marco
+ * @author Marco, Arantxa, Erlantz
  * @version 1.0
  * @since 2025-10-23
  */
@@ -146,7 +146,7 @@ public class ControladorPrincipal {
      * Inicializa todos los elementos visuales, listeners y bindings en la interfaz.
      * Se ejecuta automáticamente al cargar la vista principal.
      *
-     * @author Marco
+     * @author Marco, Arantxa
      */
     @FXML
     public void initialize() {
@@ -169,7 +169,7 @@ public class ControladorPrincipal {
     /**
      * Configura el mapeo de propiedades con las columnas de la tabla.
      *
-     * @author Marco
+     * @author Arantxa
      */
     private void configurarColumnas() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -191,7 +191,7 @@ public class ControladorPrincipal {
     /**
      * Configura la columnas de selección múltiple y los checkboxes individuales.
      *
-     * @author Marco
+     * @author Arantxa
      */
     private void configurarSeleccionMultiple() {
         CheckBox seleccionarTodosCheckBox = new CheckBox();
@@ -250,7 +250,7 @@ public class ControladorPrincipal {
     /**
      * Define los anchos proporcionales de las columnas respecto al tamaño de la tabla.
      *
-     * @author Marco
+     * @author Arantxa
      */
     private void configurarAnchosColumnas() {
         // Configurar anchos de columnas proporcionales
@@ -282,7 +282,7 @@ public class ControladorPrincipal {
      * Configura la animación de carga usando las imágenes del caldero.
      * Alterna entre caldero.png y caldero2.png para crear un efecto de burbujeo.
      *
-     * @author Marco
+     * @author Arantxa
      */
     private void configurarAnimacionCarga() {
         try {
@@ -335,16 +335,22 @@ public class ControladorPrincipal {
      * @author Marco
      */
     private void actualizarEstadoBotones() {
-        long seleccionados = checkBoxMap.values().stream().filter(CheckBox::isSelected).count();
-        btnEditar.setDisable(seleccionados != 1);
-        btnEliminar.setDisable(seleccionados == 0);
+        // Asegurarse de que el checkBoxMap esté actualizado antes de contar
+        Platform.runLater(() -> {
+            long seleccionados = checkBoxMap.values().stream()
+                    .filter(CheckBox::isSelected)
+                    .count();
+            btnEditar.setDisable(seleccionados != 1);
+            btnEliminar.setDisable(seleccionados == 0);
+        });
     }
 
     /**
      * Actualiza los estilos visuales de los botones de casa, del panel raíz
      * y del escudo según la base de datos actualmente seleccionada.
      * Aplica la clase CSS correspondiente a la casa activa y cambia la imagen del escudo.
-     * También considera el modo oscuro para aplicar las clases de casa correctas.
+     *También considera el modo oscuro para aplicar las clases de casa correctas.
+     * @author Arantxa
      */
     private void actualizarEstilosCasa() {
         // Remover la clase 'selected' de todos los botones
@@ -424,7 +430,7 @@ public class ControladorPrincipal {
      * Se eliminan los alumnos de todas las bases de datos (master y slaves).
      * Si ocurre un error, se muestra una alerta de tipo ERROR.
      *
-     * @author Wara
+     * @author Marco, Wara
      */
     @FXML
     void actionEliminar() {
@@ -536,7 +542,7 @@ public class ControladorPrincipal {
      * de la base de datos actualmente seleccionada.
      * Si ocurre un error, se muestra una alerta con el mensaje de error detallado.
      *
-     * @author Marco
+     * @author Marco, Arantxa
      */
     @FXML
     void actionRecargar() {
@@ -592,7 +598,7 @@ public class ControladorPrincipal {
      * Utiliza un componente {@link javafx.scene.control.Hyperlink Hyperlink} para abrir una URL externa
      * en el navegador predeterminado.
      *
-     * @author Marco
+     * @author Marco, Arantxa
      */
     @FXML
     void actionAyuda() {
@@ -741,6 +747,14 @@ public class ControladorPrincipal {
         cargarAlumnosPorCasa(tipoBase, false);
     }
 
+    /**
+     * Carga y muestra los alumnos según la casa o base de datos indicada.
+     *
+     * @param tipoBase Tipo de base de datos a cargar (MariaDB, Gryffindor...)
+     * @param esCargaInicial Se inicia la primera vez o se recarga la lista
+     *
+     * @author Marco, Arantxa
+     */
     private void cargarAlumnosPorCasa(TipoBaseDatos tipoBase, boolean esCargaInicial) {
         baseDatosActual = tipoBase;
         listaAlumnos.clear();
@@ -866,7 +880,7 @@ public class ControladorPrincipal {
      * y cambia el icono del botón entre luna (modo claro) y sol (modo oscuro).
      * También actualiza la clase de casa para usar los colores correspondientes al tema.
      *
-     * @author Marco
+     * @author Arantxa
      */
     @FXML
     void actionCambiarTema() {

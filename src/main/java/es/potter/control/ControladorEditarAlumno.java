@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
  * Gestiona la carga de datos del alumno, validación y guardado de cambios.
  * Actualiza la vista principal mediante la modificación directa del objeto Alumno.
  *
- * @author Marco
+ * @author Marco, Erlantz
  * @version 1.0
  * @since 2025-10-23
  */

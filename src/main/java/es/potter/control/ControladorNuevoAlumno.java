@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  * Ahora filtra la adición de alumnos según la casa visible en la tabla principal
  * para evitar que se muestren temporalmente en otras casas.
  *
- * @author Marco
+ * @author Marco, Erlantz
  * @version 1.1
  * @since 2025-10-23
  */
