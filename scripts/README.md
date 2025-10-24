@@ -1,28 +1,91 @@
 # Scripts de HogwartsApp
 
-Este directorio contiene los scripts de ejecución para HogwartsApp.
+Scripts para ejecutar HogwartsApp en diferentes sistemas operativos.
 
 ## Scripts Disponibles
 
-### `ejecutar.sh` (macOS/Linux)
-Script para ejecutar el JAR portable en sistemas Unix.
+### `ejecutar.sh` - Ejecutar en macOS/Linux
 
-**Uso:**
+Script principal para ejecutar HogwartsApp en sistemas Unix.
+
+**Cómo usar:**
 ```bash
 ./scripts/ejecutar.sh
 ```
 
-### `ejecutar.bat` (Windows)
-Script para ejecutar el JAR portable en Windows.
+**Qué hace:**
+- Verifica que exista el JAR portable en `target/`
+- Comprueba que Java 21+ esté instalado
+- Muestra dónde se guardarán la BD y los logs
+- Ejecuta la app con configuración optimizada de JVM
+- Informa del resultado al cerrar
 
-**Uso:**
+**Ubicaciones:**
+- Base de datos: `~/Library/Application Support/HogwartsApp/hogwarts.db`
+- Logs: `./logs/`
+
+---
+
+### `ejecutar.bat` - Ejecutar en Windows
+
+Script principal para ejecutar HogwartsApp en Windows.
+
+**Cómo usar:**
 ```cmd
 scripts\ejecutar.bat
 ```
 
-## Notas
+**Qué hace:**
+- Verifica que exista el JAR portable en `target\`
+- Comprueba que Java esté instalado
+- Muestra dónde se guardarán la BD y los logs
+- Ejecuta la app con configuración optimizada de JVM
+- Informa del resultado al cerrar
 
-- Ambos scripts buscan automáticamente el JAR portable en `target/`
-- Verifican que Java 21+ esté instalado
-- Muestran información sobre ubicación de logs y base de datos
-- Configuran opciones óptimas de JVM
+**Ubicaciones:**
+- Base de datos: `%APPDATA%\HogwartsApp\hogwarts.db`
+- Logs: `.\logs\`
+
+---
+
+### `hogwartsApp.bat` - Cliente con Tailscale (Windows)
+
+Script especial para ejecutar HogwartsApp como cliente conectado vía Tailscale.
+
+**Cómo usar:**
+```cmd
+hogwartsApp.bat
+```
+
+**Requisitos:**
+- Tailscale instalado y activo
+- Conexión al servidor en `100.104.4.128`
+- JAR portable en la misma carpeta que el script
+
+**Qué hace:**
+1. Verifica que Java esté instalado
+2. Comprueba que Tailscale esté activo
+3. Hace ping al servidor (100.104.4.128)
+4. Si todo está OK, ejecuta la app en background
+
+**Nota:** Este script es para despliegues cliente-servidor con VPN.
+
+---
+
+## Opciones de JVM
+
+Los scripts principales usan estas opciones optimizadas:
+- `--enable-native-access=ALL-UNNAMED` - Permite acceso nativo (JavaFX)
+- `-Xmx512m` - Máximo 512MB de RAM
+- `-Xms256m` - Mínimo 256MB de RAM
+- `-Dfile.encoding=UTF-8` - Codificación UTF-8
+
+## Compilar el JAR Portable
+
+Si el JAR no existe, compílalo primero:
+
+```bash
+mvn clean package -DskipTests
+```
+
+Esto genera: `target/hogwartsApp-1.0-SNAPSHOT-portable.jar`
