@@ -438,7 +438,7 @@ public class ControladorPrincipal {
         // Mostrar alerta de confirmación antes de eliminar
         Alert confirmacion = new Alert(Alert.AlertType.WARNING);
         confirmacion.setTitle("Confirmar eliminación");
-        confirmacion.setHeaderText("¿Estás seguro de eliminar " + alumnosSeleccionados.size() + " alumno(s)?");
+        confirmacion.setHeaderText("¿Estás seguro de continuar con esta acción?");
         confirmacion.setContentText("Esta acción eliminará los alumnos de todas las bases de datos y no se puede deshacer.");
 
         ButtonType botonSi = new ButtonType("Eliminar", ButtonBar.ButtonData.OK_DONE);
