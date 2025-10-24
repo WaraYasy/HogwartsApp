@@ -1,5 +1,4 @@
 
-
 # Aplicacion de Base de Datos de la Casa Hogwarts
 
 ## 📖 Descripción del repositorio
