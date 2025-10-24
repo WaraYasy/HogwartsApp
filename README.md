@@ -1,5 +1,5 @@
 
-# Aplicacion de Base de Datos de la Casa Hogwarts
+# Aplicación de Base de Datos de la Casa Hogwarts
 
 ## 📖 Descripción del repositorio
 Este proyecto es una aplicación Java diseñada para la gestión de las Bases de Datos del Colegio de Hogwarts. Utiliza **JavaFX** para la interfaz de usuario, una base de datos para la gestión de información.
@@ -151,15 +151,45 @@ Archivos de traducción de la interfaz y mensajes del sistema.
    
 3. Importa el proyecto en tu IDE preferido.
 
-    #### Edita el archivo `configuration.properties` con los valores correspondientes a tu entorno:
+4. **Configura las conexiones a bases de datos:**
 
-    ```properties
-    url=jdbc:tu_tipo_base_de_datos://tu_IP_de_tailscale:tu_puerto/tu_base_de_datos
-    user=tu_usuario
-    password=tu_contraseña
-    ```
-   Para más detalles sobre la configuración y el uso del servicio, consulta la guía:
-   📘 [ComoUsarElServicio.md](docs/DocsDesarrollador/ComoUsarElServicio.md)
+   Edita el archivo `src/main/resources/es/potter/configuration.properties` con tus credenciales.
+
+   La aplicación soporta múltiples bases de datos simultáneamente. Configura las que necesites:
+
+   ```properties
+   # MariaDB (Base de datos principal - MASTER)
+   db.mariadb.url=jdbc:mariadb://tu_ip_tailscale:3306/hogwarts
+   db.mariadb.user=tu_usuario
+   db.mariadb.password=tu_contraseña
+
+   # Oracle (Gryffindor)
+   db.oracle.url=jdbc:oracle:thin:@//tu_ip_tailscale:1521/hogwarts
+   db.oracle.user=tu_usuario
+   db.oracle.password=tu_contraseña
+
+   # H2 (Slytherin)
+   db.h2.url=jdbc:h2:tcp://tu_ip_tailscale:9092/hogwarts
+   db.h2.user=tu_usuario
+   db.h2.password=tu_contraseña
+
+   # Apache Derby (Ravenclaw)
+   db.derby.url=jdbc:derby://tu_ip_tailscale:1527/derby_data/hogwarts;create=true
+   db.derby.user=tu_usuario
+   db.derby.password=tu_contraseña
+
+   # HSQLDB (Hufflepuff)
+   db.hsqldb.url=jdbc:hsqldb:hsql://tu_ip_tailscale:9001/hogwarts
+   db.hsqldb.user=tu_usuario
+   db.hsqldb.password=tu_contraseña
+
+   # SQLite (Embebida - NO requiere configuración)
+   ```
+
+   **Notas importantes:**
+   - MariaDB es la base de datos principal (MASTER)
+   - Cada casa tiene su propia base de datos (SLAVE)
+   - SQLite se configura automáticamente, no necesitas modificarla
 
 
 4. Ejecuta `Lanzador.java` para iniciar la aplicación.
