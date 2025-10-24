@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
  * Clase principal de la aplicación JavaFX.
  * Se encarga de inicializar y mostrar la ventana principal con su FXML y CSS.
  *
- * @author Wara
+ * @author Arantxa, Wara
  * @version 1.0
  * @since 2025-10-23
  */
@@ -35,7 +35,7 @@ public class HogwartsApp extends Application {
      * @param primaryStage la ventana principal (stage) proporcionada por el sistema JavaFX.
      * @throws Exception si ocurre un error durante la inicialización de la interfaz gráfica.
      *
-     * @author Wara
+     * @author Wara, Arantxa
      */
     public void start(Stage primaryStage) throws Exception {
         try {
@@ -94,7 +94,7 @@ public class HogwartsApp extends Application {
      *
      * @param args argumentos de línea de comandos, si los hubiera.
      *
-     * @author Wara
+     * @author Wara, Arantxa
      */
     public static void main(String[] args) {
         logger.info("=== INICIO DE HOGWARTS APP ===");
