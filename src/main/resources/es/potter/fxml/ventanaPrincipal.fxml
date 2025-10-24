@@ -31,12 +31,12 @@
             </columnConstraints>
 
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="30.0" percentHeight="60.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+                <RowConstraints minHeight="30.0" prefHeight="200.0" vgrow="ALWAYS" />
                 <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="NEVER" />
             </rowConstraints>
 
@@ -70,7 +70,7 @@
                     </tooltip>
                 </Button>
 
-                <ImageView fx:id="escudoImageView" fitHeight="259.0" fitWidth="318.0" pickOnBounds="true" preserveRatio="true" smooth="false" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="BOTTOM">
+                <ImageView fx:id="escudoImageView" fitHeight="259.0" fitWidth="318.0" pickOnBounds="true" preserveRatio="true" smooth="false" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                     <Image url="@../img/hogwarts.png" />
                 </ImageView>
 
