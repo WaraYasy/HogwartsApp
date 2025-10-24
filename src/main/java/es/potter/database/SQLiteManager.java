@@ -10,31 +10,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 /**
- * Gestor de base de datos SQLite embebida para aplicaciones empaquetadas.
- * <p>
- * Esta clase maneja la inicialización y ubicación de la base de datos SQLite,
- * garantizando que funcione tanto en modo desarrollo como en aplicación empaquetada (JAR).
- * </p>
- *
- * <h2>Problema que resuelve:</h2>
- * <ul>
- *   <li>Los recursos dentro de un JAR son de solo lectura</li>
- *   <li>SQLite necesita acceso de escritura al archivo de base de datos</li>
- * </ul>
- *
- * <h2>Solución:</h2>
- * <ol>
- *   <li>Extrae la BD desde resources al directorio de datos de la aplicación</li>
- *   <li>Usa una ubicación escribible en el sistema del usuario</li>
- *   <li>Solo copia la BD si no existe (preserva datos existentes)</li>
- * </ol>
- *
- * <h2>Ubicaciones de la base de datos:</h2>
- * <ul>
- *   <li><b>macOS:</b> ~/Library/Application Support/HogwartsApp/hogwarts.db</li>
- *   <li><b>Windows:</b> %APPDATA%\HogwartsApp\hogwarts.db</li>
- *   <li><b>Linux:</b> ~/.config/HogwartsApp/hogwarts.db</li>
- * </ul>
+ * Gestiona la ubicación e inicialización de la base de datos SQLite.
+ * PROBLEMA: Los archivos dentro de un JAR son de solo lectura, pero SQLite necesita escribir.
+ * SOLUCIÓN: Copia la BD desde el JAR a una carpeta del usuario donde sí se puede escribir.
+ * UBICACIONES según el sistema operativo:
+ * - macOS:~/Library/Application Support/HogwartsApp/hogwarts.db
+ * - Windows: %APPDATA%\HogwartsApp\hogwarts.db
+ * - Linux:~/.config/HogwartsApp/hogwarts.db
  *
  * @author Wara Pacheco
  * @version 2.0
@@ -58,182 +40,125 @@ public class SQLiteManager {
     private static Path databasePath = null;
 
     /**
-     * Obtiene la ruta absoluta al archivo de base de datos SQLite.
-     * <p>
-     * Este procedimiento garantiza que:
-     * <ol>
-     *   <li>El directorio de datos de la aplicación existe</li>
-     *   <li>La base de datos se copia desde resources si no existe</li>
-     *   <li>Se devuelve una ruta escribible en el sistema de archivos</li>
-     * </ol>
-     * </p>
+     * Obtiene la ruta donde está guardada la base de datos.
+     * CÓMO FUNCIONA:
+     * 1. Si ya se calculó antes, devuelve la ruta guardada (caché)
+     * 2. Busca la carpeta de datos de la app según el SO
+     * 3. Crea la carpeta si no existe
+     * 4. Si es la primera vez, copia hogwarts.db desde el JAR
+     * 5. Guarda y devuelve la ruta
      *
-     * <h3>Flujo de ejecución:</h3>
-     * <pre>
-     * 1. ¿Ya se obtuvo la ruta? → Retornar caché
-     * 2. ¿No existe? → Obtener directorio de datos del usuario
-     * 3. Crear directorio HogwartsApp si no existe
-     * 4. ¿Existe hogwarts.db en ese directorio?
-     *    - SÍ: Usar la existente (preserva datos)
-     *    - NO: Copiar desde resources (primera vez)
-     * 5. Retornar ruta absoluta
-     * </pre>
-     *
-     * @return Path absoluto al archivo hogwarts.db en ubicación escribible
-     * @throws RuntimeException si no se puede inicializar la base de datos
-     *
-     * @author Wara Pacheco
+     * @return Ruta absoluta al archivo hogwarts.db
+     * @throws RuntimeException si hay problemas al crear/copiar la BD
      */
     public static Path getDatabasePath() {
-        // Patrón Singleton: retornar si ya se calculó
+        // Si ya tenemos la ruta guardada, la devolvemos directamente
         if (databasePath != null) {
             return databasePath;
         }
 
         try {
-            // 1. Obtener directorio de datos específico del sistema operativo
-            Path appDataDir = getApplicationDataDirectory();
+            // Obtener la carpeta donde guardaremos la BD (depende del SO)
+            Path carpetaDatos = getApplicationDataDirectory();
 
-            // 2. Crear directorio si no existe
-            if (!Files.exists(appDataDir)) {
-                Files.createDirectories(appDataDir);
-                logger.info("Directorio de datos creado: {}", appDataDir);
+            // Crear la carpeta si no existe
+            if (!Files.exists(carpetaDatos)) {
+                Files.createDirectories(carpetaDatos);
+                logger.info("Directorio de datos creado: {}", carpetaDatos);
             }
 
-            // 3. Ruta completa al archivo de base de datos
-            Path dbFile = appDataDir.resolve(DB_FILENAME);
+            // Construir la ruta completa al archivo hogwarts.db
+            Path archivoBD = carpetaDatos.resolve(DB_FILENAME);
 
-            // 4. Si no existe, copiar desde resources (solo primera vez)
-            if (!Files.exists(dbFile)) {
-                logger.info("Base de datos no encontrada en {}. Copiando desde resources...", dbFile);
-                copyDatabaseFromResources(dbFile);
-                logger.info("Base de datos SQLite inicializada correctamente en: {}", dbFile);
+            // Si es la primera vez, copiar la BD desde el JAR
+            if (!Files.exists(archivoBD)) {
+                logger.info("Base de datos no encontrada. Copiando desde el JAR...");
+                copyDatabaseFromResources(archivoBD);
+                logger.info("Base de datos inicializada en: {}", archivoBD);
             } else {
-                logger.info("Base de datos SQLite encontrada en: {}", dbFile);
+                logger.info("Base de datos encontrada en: {}", archivoBD);
             }
 
-            // 5. Cachear la ruta y retornarla
-            databasePath = dbFile;
+            // Guardar la ruta para no tener que calcularla de nuevo
+            databasePath = archivoBD;
             return databasePath;
 
         } catch (IOException e) {
-            String errorMsg = "Error al inicializar la base de datos SQLite: " + e.getMessage();
+            String errorMsg = "Error al inicializar la base de datos: " + e.getMessage();
             logger.error(errorMsg, e);
             throw new RuntimeException(errorMsg, e);
         }
     }
 
     /**
-     * Obtiene el directorio de datos de la aplicación según el sistema operativo.
-     * <p>
-     * Implementa las convenciones estándar de cada plataforma:
-     * </p>
+     * Decide dónde guardar los datos según el sistema operativo.
+     * Cada SO tiene su propia convención:
+     * - macOS:   ~/Library/Application Support/HogwartsApp
+     * - Windows: %APPDATA%\HogwartsApp
+     * - Linux:   ~/.config/HogwartsApp
      *
-     * <table border="1">
-     *   <tr>
-     *     <th>Sistema</th>
-     *     <th>Variable de entorno</th>
-     *     <th>Ruta por defecto</th>
-     *   </tr>
-     *   <tr>
-     *     <td>macOS</td>
-     *     <td>-</td>
-     *     <td>~/Library/Application Support/HogwartsApp</td>
-     *   </tr>
-     *   <tr>
-     *     <td>Windows</td>
-     *     <td>APPDATA</td>
-     *     <td>%APPDATA%\HogwartsApp</td>
-     *   </tr>
-     *   <tr>
-     *     <td>Linux</td>
-     *     <td>XDG_CONFIG_HOME</td>
-     *     <td>~/.config/HogwartsApp</td>
-     *   </tr>
-     * </table>
-     *
-     * @return Path al directorio de datos de la aplicación
-     *
-     * @author Wara Pacheco
+     * @return Ruta al directorio de datos de la aplicación
      */
     private static Path getApplicationDataDirectory() {
-        String userHome = System.getProperty("user.home");
-        String os = System.getProperty("os.name").toLowerCase();
+        String carpetaUsuario = System.getProperty("user.home");
+        String sistemaOperativo = System.getProperty("os.name").toLowerCase();
 
-        if (os.contains("mac")) {
-            // macOS: ~/Library/Application Support/HogwartsApp
-            return Path.of(userHome, "Library", "Application Support", APP_DATA_DIR);
-        } else if (os.contains("win")) {
-            // Windows: %APPDATA%\HogwartsApp
+        if (sistemaOperativo.contains("mac")) {
+            return Path.of(carpetaUsuario, "Library", "Application Support", APP_DATA_DIR);
+
+        } else if (sistemaOperativo.contains("win")) {
             String appData = System.getenv("APPDATA");
             if (appData != null) {
                 return Path.of(appData, APP_DATA_DIR);
             }
-            // Fallback si APPDATA no está definido
-            return Path.of(userHome, "AppData", "Roaming", APP_DATA_DIR);
+            // Si APPDATA no existe, usar la ruta por defecto
+            return Path.of(carpetaUsuario, "AppData", "Roaming", APP_DATA_DIR);
+
         } else {
-            // Linux/Unix: ~/.config/HogwartsApp (XDG Base Directory Specification)
+            // Linux: usar XDG_CONFIG_HOME si está definido, sino ~/.config
             String xdgConfig = System.getenv("XDG_CONFIG_HOME");
             if (xdgConfig != null) {
                 return Path.of(xdgConfig, APP_DATA_DIR);
             }
-            return Path.of(userHome, ".config", APP_DATA_DIR);
+            return Path.of(carpetaUsuario, ".config", APP_DATA_DIR);
         }
     }
 
     /**
-     * Copia el archivo de base de datos desde los recursos del JAR al sistema de archivos.
-     * <p>
-     * Esta función extrae el archivo {@code hogwarts.db} embebido en el JAR
-     * ({@code /es/potter/db/hogwarts.db}) y lo copia a una ubicación escribible.
-     * </p>
+     * Copia hogwarts.db desde el JAR a una ubicación donde se pueda escribir.
+     * Extrae el archivo /es/potter/db/hogwarts.db del JAR y lo copia al
+     * directorio de datos del usuario.
      *
-     * <h3>Detalles de implementación:</h3>
-     * <ul>
-     *   <li>Usa {@link Class#getResourceAsStream} para leer desde el JAR</li>
-     *   <li>Usa {@link Files#copy} con {@link StandardCopyOption#REPLACE_EXISTING}</li>
-     *   <li>Cierra automáticamente el InputStream con try-with-resources</li>
-     * </ul>
-     *
-     * @param destination Path de destino donde copiar la base de datos
-     * @throws IOException si no se puede leer el recurso o escribir el archivo
-     *
-     * @author Wara Pacheco
+     * @param destino Dónde guardar la copia de la base de datos
+     * @throws IOException si no se puede leer o copiar el archivo
      */
-    private static void copyDatabaseFromResources(Path destination) throws IOException {
-        // Obtener el recurso como InputStream (funciona tanto en IDE como en JAR)
-        try (InputStream inputStream = SQLiteManager.class.getResourceAsStream(RESOURCE_PATH)) {
-            if (inputStream == null) {
+    private static void copyDatabaseFromResources(Path destino) throws IOException {
+        // Leer el archivo desde dentro del JAR
+        try (InputStream archivoEnJAR = SQLiteManager.class.getResourceAsStream(RESOURCE_PATH)) {
+            if (archivoEnJAR == null) {
                 throw new IOException("No se encontró el recurso: " + RESOURCE_PATH);
             }
 
-            // Copiar desde el InputStream al archivo de destino
-            Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
-            logger.debug("Base de datos copiada desde {} a {}", RESOURCE_PATH, destination);
+            // Copiarlo a la ubicación de destino
+            Files.copy(archivoEnJAR, destino, StandardCopyOption.REPLACE_EXISTING);
+            logger.debug("BD copiada desde {} a {}", RESOURCE_PATH, destino);
         }
     }
 
     /**
-     * Obtiene la URL JDBC completa para conectarse a la base de datos SQLite.
-     * <p>
-     * Genera una URL en el formato: {@code jdbc:sqlite:/ruta/absoluta/al/archivo.db}
-     * </p>
+     * Genera la URL para conectarse a la base de datos.
+     * Devuelve algo como: jdbc:sqlite:/ruta/completa/a/hogwarts.db
+     * Ejemplo de uso:
+     * String url = SQLiteManager.getJdbcUrl();
+     * Connection conn = DriverManager.getConnection(url);
      *
-     * <h3>Ejemplo de uso:</h3>
-     * <pre>{@code
-     * String jdbcUrl = SQLiteManager.getJdbcUrl();
-     * Connection conn = DriverManager.getConnection(jdbcUrl);
-     * }</pre>
-     *
-     * @return String con la URL JDBC completa (ej: jdbc:sqlite:/Users/usuario/Library/Application Support/HogwartsApp/hogwarts.db)
-     *
-     * @author Wara Pacheco
+     * @return URL JDBC para conectar con SQLite
      */
     public static String getJdbcUrl() {
-        Path dbPath = getDatabasePath();
-        String jdbcUrl = "jdbc:sqlite:" + dbPath.toAbsolutePath();
-        logger.debug("URL JDBC de SQLite: {}", jdbcUrl);
-        return jdbcUrl;
+        Path rutaBD = getDatabasePath();
+        String urlJdbc = "jdbc:sqlite:" + rutaBD.toAbsolutePath();
+        logger.debug("URL JDBC: {}", urlJdbc);
+        return urlJdbc;
     }
 
 }
