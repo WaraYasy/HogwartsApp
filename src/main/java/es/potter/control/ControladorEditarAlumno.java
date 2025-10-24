@@ -102,9 +102,14 @@ public class ControladorEditarAlumno {
     void actionGuardar() {
         if (alumnoActual == null) return;
 
-        String nombre = txtNombre.getText().trim();
-        String apellido = txtApellido.getText().trim();
-        String patronus = txtPatronus.getText().trim().isEmpty() ? null : txtPatronus.getText().trim();
+        // Validar que los campos no sean null antes de hacer trim()
+        String nombre = (txtNombre.getText() != null) ? txtNombre.getText().trim() : "";
+        String apellido = (txtApellido.getText() != null) ? txtApellido.getText().trim() : "";
+
+        // Manejar patronus que puede ser null o vacío
+        String patronusText = (txtPatronus.getText() != null) ? txtPatronus.getText().trim() : "";
+        String patronus = patronusText.isEmpty() ? null : patronusText;
+
         Integer curso = cmbxCurso.getValue();
 
         if (nombre.isEmpty() || apellido.isEmpty() || curso == null) {
