@@ -647,6 +647,7 @@ public class ControladorPrincipal {
                     getClass().getResource("/es/potter/fxml/modalEditarAlumno.fxml"),
                     bundle
             );
+
             Parent root = loader.load();
 
             ControladorEditarAlumno controladorEditar = loader.getController();
@@ -665,6 +666,15 @@ public class ControladorPrincipal {
             modalStage.initModality(Modality.APPLICATION_MODAL);
             modalStage.initOwner(btnEditar.getScene().getWindow());
             modalStage.setResizable(false);
+
+            // Añadir icono de la aplicación
+            try {
+                Image icon = new Image(getClass().getResourceAsStream("/es/potter/img/icono.png"));
+                modalStage.getIcons().add(icon);
+            } catch (Exception e) {
+                logger.warn("No se pudo cargar el icono para el modal de editar alumno", e);
+            }
+
             modalStage.showAndWait();
 
             // Deseleccionar todos los checkboxes y refrescar la tabla
@@ -725,6 +735,15 @@ public class ControladorPrincipal {
             modalStage.initModality(Modality.APPLICATION_MODAL);
             modalStage.initOwner(btnNuevo.getScene().getWindow());
             modalStage.setResizable(false);
+
+            // Añadir icono de la aplicación
+            try {
+                Image icon = new Image(getClass().getResourceAsStream("/es/potter/img/icono.png"));
+                modalStage.getIcons().add(icon);
+            } catch (Exception e) {
+                logger.warn("No se pudo cargar el icono para el modal de nuevo alumno", e);
+            }
+
             modalStage.showAndWait();
 
         } catch (IOException ex) {
