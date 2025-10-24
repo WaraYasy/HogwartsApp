@@ -151,8 +151,15 @@ Archivos de traducción de la interfaz y mensajes del sistema.
    ```
    
 3. Importa el proyecto en tu IDE preferido.
-4. 
 4. Configura la base de datos en `configuration.properties`.
+
+   ```properties
+    url=jdbc:tu_tipo_base_de_datos://tu_IP_de_tailscale:tu_puerto/tu_base_de_datos
+    user=tu_usuario
+    password=tu_contraseña
+   ```
+    LEE el documento en docs/DocsDesarrollador/ComoUsarElServicio.md
+
 5. Ejecuta `Lanzador.java` para iniciar la aplicación.
 
 
