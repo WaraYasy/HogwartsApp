@@ -246,7 +246,7 @@ public class Alumno {
     public void setPatronus(String patronus) {
         // Validación del patronus no vacío si se proporciona
         if (patronus != null && patronus.trim().isEmpty()) {
-            throw new IllegalArgumentException("El patronus no puede estar vacío si se proporciona.");
+            patronus=null;
         }
         this.patronus = patronus;
     }
